@@ -38,6 +38,9 @@ input:focus{border-color:#1e7e5e;box-shadow:0 0 0 3px rgba(30,126,94,.15)}
 .footer-links{text-align:center;margin-top:1.2rem;font-size:.9rem;color:#45748a}
 .footer-links a{color:#1e7e5e;text-decoration:none;margin:0 .4rem}
 .footer-links a:hover{text-decoration:underline}
+.tab-switch{display:flex;gap:.5rem;margin-bottom:1rem;background:#e8f3f0;padding:.3rem;border-radius:12px}
+.tab-switch button{flex:1;padding:.55rem;border:none;background:none;border-radius:9px;cursor:pointer;font-family:inherit;font-weight:600;color:#45748a;font-size:.92rem;transition:.15s}
+.tab-switch button.active{background:#1e7e5e;color:#fff}
 </style>
 </head>
 <body>
@@ -49,24 +52,53 @@ input:focus{border-color:#1e7e5e;box-shadow:0 0 0 3px rgba(30,126,94,.15)}
 
   <div class="card">
     <div id="signedOut">
-      <div class="form-group">
-        <label><i class="fas fa-envelope"></i> ইমেইল ঠিকানা</label>
-        <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+      <!-- ট্যাব সুইচ -->
+      <div class="tab-switch">
+        <button type="button" id="tabPassword" class="active" onclick="switchTab('password')">
+          <i class="fas fa-key"></i> পাসওয়ার্ড
+        </button>
+        <button type="button" id="tabEmail" onclick="switchTab('email')">
+          <i class="fas fa-envelope"></i> ইমেইল লিংক
+        </button>
       </div>
-      <button class="btn btn-block" id="sendBtn">
-        <i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান
-      </button>
-      <p class="alert mt-2" id="msg" style="display:none"></p>
+
+      <!-- মোবাইল + পাসওয়ার্ড -->
+      <div id="formPassword">
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> মোবাইল নম্বর</label>
+          <input type="tel" id="loginPhone" placeholder="01XXXXXXXXX" maxlength="11" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
+          <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড" autocomplete="current-password">
+        </div>
+        <button class="btn btn-block" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i> লগইন করুন
+        </button>
+        <p class="alert mt-2" id="msgPassword" style="display:none"></p>
+      </div>
+
+      <!-- ইমেইল ম্যাজিক লিংক (বিকল্প) -->
+      <div id="formEmail" class="hidden">
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> ইমেইল ঠিকানা</label>
+          <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <button class="btn btn-block" id="sendEmailBtn">
+          <i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান
+        </button>
+        <p class="alert mt-2" id="msgEmail" style="display:none"></p>
+      </div>
+
       <div class="note mt-2">
-        <i class="fas fa-info-circle"></i> আপনার ইমেইলে একটি নিরাপদ ম্যাজিক লিংক পাঠানো হবে।
-        লিংকে ক্লিক করলেই লগইন হয়ে যাবে। পাসওয়ার্ড মনে রাখার দরকার নেই।
+        <i class="fas fa-info-circle"></i> প্রথমবার ব্যবহার করছেন? নিচে "রেজিস্ট্রেশন করুন" এ ক্লিক করুন।
       </div>
     </div>
 
     <div id="signedIn" class="hidden text-center">
       <div class="alert alert-success">
         <i class="fas fa-check-circle"></i> আপনি লগইন করেছেন<br>
-        <strong id="userEmail"></strong>
+        <strong id="userEmailDisplay"></strong>
       </div>
       <a href="dashboard.html" class="btn mt-1" style="display:inline-flex">
         <i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ডে যান
@@ -79,47 +111,103 @@ input:focus{border-color:#1e7e5e;box-shadow:0 0 0 3px rgba(30,126,94,.15)}
 
   <div class="footer-links">
     <a href="register.html"><i class="fas fa-user-plus"></i> নতুন সদস্য? রেজিস্ট্রেশন করুন</a>
-    <a href="admin-login.html"><i class="fas fa-shield-alt"></i> অ্যাডমিন</a>
   </div>
 </div>
 
 <script>
-const msg = document.getElementById('msg');
-const sendBtn = document.getElementById('sendBtn');
+const msgPassword = document.getElementById('msgPassword');
+const msgEmail = document.getElementById('msgEmail');
+
+function showMsg(el, text, isError) {
+  el.style.display = 'block';
+  el.className = 'alert mt-2 ' + (isError ? 'alert-error' : 'alert-success');
+  el.innerHTML = text;
+}
+
+function switchTab(which) {
+  document.getElementById('tabPassword').classList.toggle('active', which === 'password');
+  document.getElementById('tabEmail').classList.toggle('active', which === 'email');
+  document.getElementById('formPassword').classList.toggle('hidden', which !== 'password');
+  document.getElementById('formEmail').classList.toggle('hidden', which !== 'email');
+}
 
 async function refresh() {
   const s = await RH.getSession();
   document.getElementById('signedOut').classList.toggle('hidden', !!s);
   document.getElementById('signedIn').classList.toggle('hidden', !s);
-  if (s) document.getElementById('userEmail').textContent = s.user.email;
+  if (s) document.getElementById('userEmailDisplay').textContent = s.user.email;
 }
 
-sendBtn.addEventListener('click', async () => {
-  const email = document.getElementById('email').value.trim();
-  if (!email) return RH.toast('ইমেইল লিখুন', false);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return RH.toast('সঠিক ইমেইল ঠিকানা লিখুন', false);
+// ============ মোবাইল + পাসওয়ার্ড লগইন ============
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  if (!/^01\d{9}$/.test(phone)) {
+    showMsg(msgPassword, 'সঠিক ১১-ডিজিটের মোবাইল নম্বর লিখুন (01 দিয়ে শুরু)', true);
+    return;
+  }
+  if (!password || password.length < 6) {
+    showMsg(msgPassword, 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দিন', true);
+    return;
   }
 
-  sendBtn.disabled = true;
-  sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লগইন হচ্ছে...';
+
+  try {
+    // ১. মোবাইল থেকে ইমেইল বের করি
+    const { data: email, error: rpcErr } = await sb.rpc('find_email_by_phone', { p_phone: phone });
+
+    if (rpcErr) throw new Error('সার্ভার ত্রুটি: ' + rpcErr.message);
+    if (!email) throw new Error('এই মোবাইল নম্বর দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি। আগে রেজিস্ট্রেশন করুন।');
+
+    // ২. ইমেইল + পাসওয়ার্ড দিয়ে sign in
+    const { error: signInErr } = await sb.auth.signInWithPassword({ email, password });
+    if (signInErr) {
+      if (signInErr.message.includes('Invalid login credentials')) {
+        throw new Error('পাসওয়ার্ড ভুল হয়েছে।');
+      }
+      throw signInErr;
+    }
+
+    // ৩. সফল → ড্যাশবোর্ডে
+    showMsg(msgPassword, '✅ লগইন সফল! ড্যাশবোর্ডে যাচ্ছেন...', false);
+    setTimeout(() => location.href = 'dashboard.html', 500);
+  } catch (err) {
+    showMsg(msgPassword, '❌ ' + err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
+  }
+});
+
+// ============ ইমেইল ম্যাজিক লিংক ============
+document.getElementById('sendEmailBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showMsg(msgEmail, 'সঠিক ইমেইল ঠিকানা লিখুন', true);
+    return;
+  }
+
+  const btn = document.getElementById('sendEmailBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
 
   const { error } = await sb.auth.signInWithOtp({
     email,
     options: { emailRedirectTo: location.origin + '/dashboard.html' }
   });
 
-  sendBtn.disabled = false;
-  sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান';
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান';
 
-  msg.style.display = 'block';
   if (error) {
-    msg.className = 'alert alert-error mt-2';
-    msg.textContent = 'ব্যর্থ: ' + error.message;
+    showMsg(msgEmail, '❌ ' + error.message, true);
   } else {
-    msg.className = 'alert alert-success mt-2';
-    msg.innerHTML = '✅ আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স ও স্প্যাম ফোল্ডার চেক করুন।';
-    document.getElementById('email').value = '';
+    showMsg(msgEmail, '✅ আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স/স্প্যাম চেক করুন।', false);
+    document.getElementById('loginEmail').value = '';
   }
 });
 
