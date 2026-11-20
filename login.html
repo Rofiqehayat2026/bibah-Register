@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>লগইন | রফিকে হায়াত</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+</head>
+<body>
+<div class="container" style="max-width:520px;margin-top:3rem">
+  <div class="text-center mb-2">
+    <h1 style="color:#0e4d64;font-size:2rem">
+      রফিকে হায়াত <i class="fas fa-heart" style="color:#1e7e5e"></i>
+    </h1>
+    <p style="color:#45748a;margin-top:.3rem">সদস্য লগইন</p>
+  </div>
+
+  <div class="card">
+    <div id="signedOut">
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> ইমেইল ঠিকানা</label>
+        <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <button class="btn btn-block" id="sendBtn">
+        <i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান
+      </button>
+      <p class="alert mt-2" id="msg" style="display:none"></p>
+      <div class="note mt-2" style="font-size:.85rem">
+        <i class="fas fa-info-circle"></i> আপনার ইমেইলে একটি নিরাপদ ম্যাজিক লিংক পাঠানো হবে।
+        লিংকে ক্লিক করলেই লগইন হয়ে যাবে। পাসওয়ার্ড মনে রাখার দরকার নেই।
+      </div>
+    </div>
+
+    <div id="signedIn" class="hidden text-center">
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> আপনি লগইন করেছেন<br>
+        <strong id="userEmail"></strong>
+      </div>
+      <a href="dashboard.html" class="btn mt-1" style="display:inline-flex">
+        <i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ডে যান
+      </a>
+      <button class="btn btn-secondary mt-1" onclick="RH.logout()">
+        <i class="fas fa-sign-out-alt"></i> লগআউট
+      </button>
+    </div>
+  </div>
+
+  <div class="text-center mt-2" style="font-size:.9rem;color:#45748a">
+    <a href="register.html" style="color:#1e7e5e">
+      <i class="fas fa-user-plus"></i> নতুন সদস্য? রেজিস্ট্রেশন করুন
+    </a>
+    &nbsp;|&nbsp;
+    <a href="admin-login.html" style="color:#1e7e5e">
+      <i class="fas fa-shield-alt"></i> অ্যাডমিন
+    </a>
+  </div>
+</div>
+
+<script>
+const msg = document.getElementById('msg');
+const sendBtn = document.getElementById('sendBtn');
+
+async function refresh() {
+  const s = await RH.getSession();
+  document.getElementById('signedOut').classList.toggle('hidden', !!s);
+  document.getElementById('signedIn').classList.toggle('hidden', !s);
+  if (s) document.getElementById('userEmail').textContent = s.user.email;
+}
+
+sendBtn.addEventListener('click', async () => {
+  const email = document.getElementById('email').value.trim();
+  if (!email) return RH.toast('ইমেইল লিখুন', false);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return RH.toast('সঠিক ইমেইল ঠিকানা লিখুন', false);
+  }
+
+  sendBtn.disabled = true;
+  sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: location.origin + '/dashboard.html' }
+  });
+
+  sendBtn.disabled = false;
+  sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান';
+
+  msg.style.display = 'block';
+  if (error) {
+    msg.className = 'alert alert-error mt-2';
+    msg.textContent = 'ব্যর্থ: ' + error.message;
+  } else {
+    msg.className = 'alert alert-success mt-2';
+    msg.textContent = '✅ আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স চেক করুন না পেলে স্প্যাম ফোল্ডার চেক করুন।';
+    document.getElementById('email').value = '';
+  }
+});
+
+sb.auth.onAuthStateChange(() => refresh());
+refresh();
+</script>
+</body>
+</html>
