@@ -1,139 +1,412 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>লগইন | রফিকে হায়াত</title>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+
 <style>
-
-/* ===== রফিকে হায়াত: এমবেডেড কমন CSS (এই HTML ফাইলের ভেতরেই) ===== */
-:root{--primary:#0e4d64;--green:#1e7e5e;--ink:#1e2b3a;--muted:#587487;--line:#dce7ef;--soft:#f2f7fa;--danger:#b42318;--shadow:0 14px 36px rgba(12,45,62,.09)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;padding:20px;background:#f2f5f9;color:var(--ink);font-family:'Noto Sans Bengali','Segoe UI',Tahoma,sans-serif;line-height:1.65}a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}button,input,select,textarea{font:inherit}button{cursor:pointer} .container{width:min(100%,1100px);margin:0 auto;background:#fff;border:1px solid #e3ebf1;border-radius:20px;padding:clamp(16px,3vw,30px);box-shadow:var(--shadow)}
-.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:clamp(14px,2.5vw,22px);margin:0 0 18px;box-shadow:0 5px 18px rgba(15,55,75,.045)}.text-center{text-align:center}.hidden{display:none!important}.mb-2{margin-bottom:1rem}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.section-title{font-size:1.15rem;font-weight:700;color:var(--primary);margin:1.2rem 0 .7rem}
-.form-group{margin-bottom:1rem}.form-group label,label{display:block;font-weight:600;color:#244b5d;margin-bottom:.4rem}input:not([type=checkbox]):not([type=radio]),select,textarea{display:block;width:100%;min-height:44px;border:1px solid #cbd9e3;border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(30,126,94,.12)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;background:var(--green);color:#fff;padding:11px 17px;font-weight:700;transition:transform .15s,background .15s,box-shadow .15s;text-decoration:none}.btn:hover{background:#17694e;transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,126,94,.18);text-decoration:none}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}.btn-secondary{background:#eaf1f5;color:var(--primary)}.btn-secondary:hover{background:#dce9ef}.btn-block{width:100%}
-.alert{padding:12px 14px;border-radius:10px;margin:12px 0;background:#eef5f8;color:#244b5d;border:1px solid #d5e5ec}.alert-info{background:#eef7fb;border-color:#c9e3ef;color:#24566b}.alert-success{background:#eaf7ef;border-color:#c8e8d2;color:#17603a}.alert-error{background:#fff0ef;border-color:#f3cbc7;color:#9b241b}.note{background:#f4f8fa;border-left:3px solid #8bb7c8;padding:10px 12px;border-radius:7px;color:var(--muted)}
-.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.badge{display:inline-block;border-radius:30px;padding:5px 11px;font-size:.82rem;font-weight:700;background:#edf2f5;color:#405969}.badge-pending{background:#fff4d6;color:#805b00}.badge-verified{background:#e2f5e9;color:#17603a}.badge-rejected{background:#ffebea;color:#9b241b}.badge-matched{background:#e5f5ed;color:#17603a}
-.header-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--line)}.header-bar h1{margin:0;color:var(--primary);font-size:clamp(1.25rem,3vw,1.8rem)}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem;border-bottom:2px solid #d0e0ea;padding-bottom:.45rem}.tab-btn{background:#f1f6f8;border:0;padding:.65rem 1rem;border-radius:10px;cursor:pointer;font-weight:600;color:#45748a;font-family:inherit;font-size:.94rem;transition:.15s}.tab-btn:hover{background:#e8f3f0;color:var(--primary)}.tab-btn.active{background:var(--green);color:#fff}.tab-panel{display:none}.tab-panel.active{display:block}
-.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(7,27,38,.58);padding:18px;overflow:auto;align-items:center;justify-content:center}.modal.show,.modal[style*="display: block"]{display:flex!important}.modal-box{width:min(100%,760px);max-height:92vh;overflow:auto;background:#fff;border-radius:17px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.text-muted{color:var(--muted)}
-@media(max-width:760px){body{padding:10px}.container{border-radius:14px}.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}.header-bar{align-items:flex-start}.modal-box{padding:16px}}
-@media(max-width:420px){.btn{padding:10px 12px;font-size:.9rem}.tab-btn{padding:.55rem .7rem;font-size:.85rem}}
-
-/* ===== এই পৃষ্ঠার নিজস্ব বিন্যাস ===== */
-body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding-top:clamp(20px,7vh,65px)}
-.container{max-width:520px!important;width:100%}.container h1{line-height:1.35}.container>.text-center{margin-bottom:20px}.container>.text-center:last-child{line-height:2.1}.container>.card{padding:clamp(18px,4vw,26px)}
-
+:root{
+  --primary:#0e4d64;
+  --green:#1e7e5e;
+  --ink:#1e2b3a;
+  --muted:#587487;
+  --line:#dce7ef;
+  --shadow:0 14px 36px rgba(12,45,62,.09);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  padding:22px;
+  background:#f2f5f9;
+  color:var(--ink);
+  font-family:'Noto Sans Bengali','Segoe UI',sans-serif;
+  line-height:1.65;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+}
+.container{
+  width:min(100%,520px);
+  margin:clamp(20px,7vh,65px) auto 20px;
+  background:#fff;
+  border:1px solid #e3ebf1;
+  border-radius:20px;
+  padding:clamp(18px,4vw,30px);
+  box-shadow:var(--shadow);
+}
+.text-center{text-align:center}
+.mt-1{margin-top:.5rem}
+.mt-2{margin-top:1rem}
+.hidden{display:none!important}
+h1{
+  color:var(--primary);
+  font-size:1.9rem;
+  line-height:1.35;
+  margin:0;
+}
+.subtitle{color:#45748a;margin:.35rem 0 1.2rem}
+.card{
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:clamp(16px,3vw,24px);
+  box-shadow:0 5px 18px rgba(15,55,75,.045);
+}
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:18px;
+}
+.tab{
+  border:0;
+  border-radius:10px;
+  padding:11px 8px;
+  background:#edf3f6;
+  color:var(--primary);
+  font:600 .95rem inherit;
+  cursor:pointer;
+}
+.tab.active{background:var(--green);color:#fff}
+.form-group{margin-bottom:1rem}
+label{
+  display:block;
+  font-weight:600;
+  color:#244b5d;
+  margin-bottom:.4rem;
+}
+input{
+  display:block;
+  width:100%;
+  min-height:46px;
+  border:1px solid #cbd9e3;
+  border-radius:10px;
+  padding:10px 12px;
+  background:#fff;
+  color:var(--ink);
+  font:inherit;
+  outline:none;
+}
+input:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(30,126,94,.12);
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:0;
+  border-radius:10px;
+  background:var(--green);
+  color:#fff;
+  padding:12px 17px;
+  font:700 1rem inherit;
+  cursor:pointer;
+  text-decoration:none;
+}
+.btn:hover{background:#17694e}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-block{width:100%}
+.alert{
+  padding:12px 14px;
+  border-radius:10px;
+  margin:12px 0;
+  border:1px solid #d5e5ec;
+  background:#eef5f8;
+  color:#244b5d;
+}
+.alert-error{
+  background:#fff0ef;
+  border-color:#f3cbc7;
+  color:#9b241b;
+}
+.alert-success{
+  background:#eaf7ef;
+  border-color:#c8e8d2;
+  color:#17603a;
+}
+.note{
+  background:#f4f8fa;
+  border-left:3px solid #8bb7c8;
+  padding:10px 12px;
+  border-radius:7px;
+  color:var(--muted);
+  font-size:.85rem;
+}
+.links{
+  font-size:.9rem;
+  color:#45748a;
+  line-height:2.2;
+}
+.links a{
+  color:var(--green);
+  text-decoration:none;
+}
+.links a:hover{text-decoration:underline}
+@media(max-width:420px){
+  body{padding:10px}
+  .container{border-radius:14px}
+  .tab{font-size:.85rem}
+}
 </style>
 </head>
+
 <body>
-<div class="container" style="max-width:520px;margin-top:3rem">
-  <div class="text-center mb-2">
-    <h1 style="color:#0e4d64;font-size:2rem">
-      রফিকে হায়াত <i class="fas fa-heart" style="color:#1e7e5e"></i>
+
+<div class="container">
+
+  <div class="text-center">
+    <h1>
+      রফিকে হায়াত
+      <i class="fas fa-heart" style="color:#1e7e5e"></i>
     </h1>
-    <p style="color:#45748a;margin-top:.3rem">সদস্য লগইন</p>
+    <p class="subtitle">নিরাপদ সদস্য ও অ্যাডমিন লগইন</p>
   </div>
 
   <div class="card">
-    <div id="signedOut">
+
+    <div class="tabs">
+      <button type="button" class="tab active" id="memberTab">
+        <i class="fas fa-user"></i> সদস্য লগইন
+      </button>
+
+      <button type="button" class="tab" id="adminTab">
+        <i class="fas fa-shield-alt"></i> অ্যাডমিন লগইন
+      </button>
+    </div>
+
+    <form id="loginForm">
+
       <div class="form-group">
-        <label><i class="fas fa-envelope"></i> ইমেইল ঠিকানা</label>
-        <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+        <label id="identifierLabel" for="identifier">
+          <i class="fas fa-mobile-alt"></i> মোবাইল নম্বর
+        </label>
+
+        <input
+          id="identifier"
+          autocomplete="username"
+          inputmode="tel"
+          placeholder="01XXXXXXXXX"
+          required
+        >
       </div>
-      <button class="btn btn-block" id="sendBtn">
-        <i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান
+
+      <div class="form-group">
+        <label for="password">
+          <i class="fas fa-lock"></i> পাসওয়ার্ড
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="আপনার পাসওয়ার্ড"
+          required
+        >
+      </div>
+
+      <button class="btn btn-block" id="loginBtn" type="submit">
+        <i class="fas fa-sign-in-alt"></i> লগইন করুন
       </button>
-      <p class="alert mt-2" id="msg" style="display:none"></p>
-      <div class="note mt-2" style="font-size:.85rem">
-        <i class="fas fa-info-circle"></i> আপনার ইমেইলে একটি নিরাপদ ম্যাজিক লিংক পাঠানো হবে।
-        লিংকে ক্লিক করলেই লগইন হয়ে যাবে। পাসওয়ার্ড মনে রাখার দরকার নেই।
-      </div>
+
+      <div id="msg" class="alert hidden" role="status" aria-live="polite"></div>
+
+    </form>
+
+    <div class="note mt-2" id="loginNote">
+      নিবন্ধনের সময় ব্যবহৃত মোবাইল নম্বর ও পাসওয়ার্ড দিন।
     </div>
 
-    <div id="signedIn" class="hidden text-center">
-      <div class="alert alert-success">
-        <i class="fas fa-check-circle"></i> আপনি লগইন করেছেন<br>
-        <strong id="userEmail"></strong>
-      </div>
-      <a href="dashboard.html" class="btn mt-1" style="display:inline-flex">
-        <i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ডে যান
-      </a>
-      <button class="btn btn-secondary mt-1" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i> লগআউট
-      </button>
-    </div>
   </div>
 
-  <div class="text-center mt-2" style="font-size:.9rem;color:#45748a">
-    <a href="index.html" style="color:#1e7e5e"><i class="fas fa-home"></i> মূল পেজে ফিরে যান</a>
-    &nbsp;|&nbsp;
-    <a href="register.html" style="color:#1e7e5e">
-      <i class="fas fa-user-plus"></i> নতুন সদস্য? রেজিস্ট্রেশন করুন
+  <div class="text-center links mt-2">
+    <a href="index.html">
+      <i class="fas fa-home"></i> মূল পেজ
     </a>
     &nbsp;|&nbsp;
-    <a href="admin-login.html" style="color:#1e7e5e">
-      <i class="fas fa-shield-alt"></i> অ্যাডমিন
+    <a href="register.html">
+      <i class="fas fa-user-plus"></i> নতুন সদস্য? রেজিস্ট্রেশন
     </a>
   </div>
+
 </div>
 
 <script>
+const form = document.getElementById('loginForm');
+const identifier = document.getElementById('identifier');
+const password = document.getElementById('password');
+const loginBtn = document.getElementById('loginBtn');
 const msg = document.getElementById('msg');
-const sendBtn = document.getElementById('sendBtn');
-const logoutBtn = document.getElementById('logoutBtn');
 
-async function refresh() {
-  const s = await RH.getSession();
-  document.getElementById('signedOut').classList.toggle('hidden', !!s);
-  document.getElementById('signedIn').classList.toggle('hidden', !s);
-  if (s) document.getElementById('userEmail').textContent = s.user.email;
+const memberTab = document.getElementById('memberTab');
+const adminTab = document.getElementById('adminTab');
+const label = document.getElementById('identifierLabel');
+const note = document.getElementById('loginNote');
+
+let loginKind = 'member';
+
+function setKind(kind){
+
+  loginKind = kind;
+
+  const isMember = kind === 'member';
+
+  memberTab.classList.toggle('active',isMember);
+  adminTab.classList.toggle('active',!isMember);
+
+  label.innerHTML = isMember
+    ? '<i class="fas fa-mobile-alt"></i> মোবাইল নম্বর'
+    : '<i class="fas fa-user-shield"></i> অ্যাডমিন ইউজারনেম';
+
+  identifier.type = 'text';
+  identifier.inputMode = isMember ? 'tel' : 'text';
+  identifier.autocomplete = 'username';
+
+  identifier.placeholder = isMember
+    ? '01XXXXXXXXX'
+    : 'Nurul_Anwar';
+
+  note.textContent = isMember
+    ? 'নিবন্ধনের সময় ব্যবহৃত মোবাইল নম্বর ও পাসওয়ার্ড দিন।'
+    : 'অনুমোদিত অ্যাডমিন ইউজারনেম ও পাসওয়ার্ড দিন।';
+
+  hideMessage();
 }
 
-sendBtn.addEventListener('click', async () => {
-  const email = document.getElementById('email').value.trim();
-  if (!email) return RH.toast('ইমেইল লিখুন', false);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return RH.toast('সঠিক ইমেইল ঠিকানা লিখুন', false);
-  }
+function showMessage(text,isError){
 
-  sendBtn.disabled = true;
-  sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
+  msg.textContent = text;
 
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: location.origin + '/dashboard.html' }
-  });
+  msg.className = 'alert ' +
+    (isError ? 'alert-error' : 'alert-success');
 
-  sendBtn.disabled = false;
-  sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান';
+}
 
-  msg.style.display = 'block';
-  if (error) {
-    msg.className = 'alert alert-error mt-2';
-    msg.textContent = 'ব্যর্থ: ' + error.message;
-  } else {
-    msg.className = 'alert alert-success mt-2';
-    msg.textContent = '✅ আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স চেক করুন, না পেলে স্প্যাম ফোল্ডার দেখুন।';
-    document.getElementById('email').value = '';
-  }
+function hideMessage(){
+
+  msg.textContent = '';
+  msg.className = 'alert hidden';
+
+}
+
+memberTab.addEventListener('click',()=>{
+  setKind('member');
 });
 
-logoutBtn.addEventListener('click', async () => {
-  logoutBtn.disabled = true;
-  try {
-    await RH.logout();
-  } catch (err) {
-    RH.toast('লগআউট ব্যর্থ: ' + err.message, false);
-    logoutBtn.disabled = false;
-  }
+adminTab.addEventListener('click',()=>{
+  setKind('admin');
 });
 
-sb.auth.onAuthStateChange(() => refresh());
-refresh();
+form.addEventListener('submit',async(event)=>{
+
+  event.preventDefault();
+
+  hideMessage();
+
+  const value = identifier.value.trim();
+  const pass = password.value;
+
+  if(!value || !pass){
+    return showMessage(
+      'মোবাইল/ইউজারনেম ও পাসওয়ার্ড দিন।',
+      true
+    );
+  }
+
+  if(loginKind === 'member'){
+
+    const normalized = value.replace(/[\s-]/g,'');
+
+    if(!/^(?:\+?88)?01[3-9]\d{8}$/.test(normalized)){
+      return showMessage(
+        'সঠিক বাংলাদেশি মোবাইল নম্বর দিন (01XXXXXXXXX)।',
+        true
+      );
+    }
+
+  }
+
+  loginBtn.disabled = true;
+
+  loginBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> যাচাই হচ্ছে...';
+
+  try{
+
+    const {data,error} = await sb.functions.invoke(
+      'login-with-identifier',
+      {
+        body:{
+          kind:loginKind,
+          identifier:value,
+          password:pass
+        }
+      }
+    );
+
+    if(error) throw error;
+
+    if(
+      !data?.session?.access_token ||
+      !data?.session?.refresh_token
+    ){
+      throw new Error('বৈধ লগইন সেশন পাওয়া যায়নি।');
+    }
+
+    const {error:sessionError} = await sb.auth.setSession({
+
+      access_token:data.session.access_token,
+      refresh_token:data.session.refresh_token
+
+    });
+
+    if(sessionError) throw sessionError;
+
+    password.value = '';
+
+    showMessage(
+      'লগইন সফল। ড্যাশবোর্ডে নেওয়া হচ্ছে...',
+      false
+    );
+
+    const destination = loginKind === 'admin'
+      ? 'admin-dashboard.html'
+      : 'dashboard.html';
+
+    setTimeout(()=>{
+      location.replace(destination);
+    },700);
+
+  }catch(err){
+
+    console.error('Login error:',err);
+
+    showMessage(
+      'লগইন ব্যর্থ। তথ্য সঠিক কি না এবং অ্যাকাউন্ট সক্রিয় কি না যাচাই করুন।',
+      true
+    );
+
+  }finally{
+
+    loginBtn.disabled = false;
+
+    loginBtn.innerHTML =
+      '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
+
+  }
+
+});
+
 </script>
+
 </body>
 </html>
