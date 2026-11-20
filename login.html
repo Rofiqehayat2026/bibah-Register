@@ -317,6 +317,12 @@ input:focus, select:focus {
         লগইন করুন
       </button>
 
+      <div style="text-align:right;margin-top:10px">
+        <a href="forgot-password.html" style="color:var(--green);font-size:.9rem;text-decoration:none">
+          <i class="fas fa-key"></i> পাসওয়ার্ড ভুলে গেছেন?
+        </a>
+      </div>
+
       <div id="msg" class="alert hidden" role="alert"></div>
 
       <div class="note">
@@ -533,44 +539,24 @@ loginBtn.addEventListener("click", async () => {
       }
     );
 
-    // প্রকৃত Edge Function error response সংগ্রহ
     if (error) {
-      let responseBody = "";
 
-      try {
-        if (error.context) {
-          responseBody = await error.context.clone().text();
-        }
-      } catch (readError) {
-        console.warn("Edge Function response body পড়া যায়নি:", readError);
+      console.error("Edge Function error:", error);
+
+      let errorMessage = "লগইন অনুরোধ ব্যর্থ হয়েছে।";
+
+      if (data && data.error) {
+        errorMessage = data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
       }
 
-      console.error("LOGIN ERROR DETAILS:", {
-        status: error.context?.status || null,
-        body: responseBody,
-        error: error
-      });
-
-      let serverMessage = "";
-
-      try {
-        const parsed = responseBody ? JSON.parse(responseBody) : null;
-        serverMessage = parsed?.error || parsed?.message || "";
-      } catch (_) {
-        serverMessage = responseBody;
-      }
-
-      throw new Error(
-        serverMessage ||
-        error.message ||
-        "লগইন অনুরোধ ব্যর্থ হয়েছে।"
-      );
+      throw new Error(errorMessage);
     }
 
-    if (!data || !data.success || !data.session) {
-      console.error("LOGIN RESPONSE INVALID:", data);
+    if (!data || !data.session) {
       throw new Error(
-        data?.error || "সার্ভার থেকে বৈধ লগইন সেশন পাওয়া যায়নি।"
+        data?.error || "সার্ভার থেকে লগইন সেশন পাওয়া যায়নি।"
       );
     }
 
