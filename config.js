@@ -8,14 +8,16 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 // ============ হেল্পার ============
 const RH = {
   async getSession() {
-    const { data } = await sb.auth.getSession();
+    const { data, error } = await sb.auth.getSession();
+    if (error) console.warn('getSession:', error);
     return data?.session || null;
   },
 
   async getProfile() {
     const s = await RH.getSession();
     if (!s) return null;
-    const { data } = await sb.from('profiles').select('*').eq('id', s.user.id).single();
+    const { data, error } = await sb.from('profiles').select('*').eq('id', s.user.id).single();
+    if (error) console.warn('getProfile:', error);
     return data;
   },
 
@@ -32,37 +34,54 @@ const RH = {
     return { session: s };
   },
 
-  // ৬-সংখ্যার ইউনিক আইডি: M/F/MK/FK + ৬ ডিজিট
+  // ৬-সংখ্যার ইউনিক আইডি: প্রিফিক্স + ৬ ডিজিট (প্রাইভেসি-সচেতন)
   async generateBiodataCode(applicantType) {
-    const prefix = { 'পাত্র': 'M', 'পাত্রী': 'F', 'ছেলে খুনসা': 'MK', 'মেয়ে খুনসা': 'FK' }[applicantType] || 'M';
+    // prefix আর লিঙ্গ ফাঁস করবে না — সব ক্ষেত্রে 'RH'
+    // চাইলে এখানে ভিন্ন স্ট্র্যাটেজি নিতে পারেন
     for (let i = 0; i < 20; i++) {
       const num = String(Math.floor(100000 + Math.random() * 900000));
-      const code = prefix + num;
-      const { data } = await sb.from('biodata_records').select('id').eq('biodata_code', code).maybeSingle();
+      const code = 'RH' + num;
+      const { data, error } = await sb.from('biodata_records')
+        .select('id').eq('biodata_code', code).maybeSingle();
+      if (error) throw error;
       if (!data) return code;
     }
     throw new Error('আইডি তৈরি ব্যর্থ, আবার চেষ্টা করুন');
   },
 
-  // ৮-ডিজিট অ্যাক্সেস কোড
+  // ৮-ডিজিট অ্যাক্সেস কোড (রেফারেন্সের জন্য)
   generateAccessCode() {
     return 'AC' + Math.floor(100000 + Math.random() * 900000);
   },
 
   fmtDate(d) {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+    try {
+      return new Date(d).toLocaleDateString('bn-BD', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+    } catch { return String(d); }
+  },
+
+  // অ্যারে বা স্ক্যালার উভয়কেই সুন্দরভাবে দেখাও
+  fmtVal(v) {
+    if (v == null || v === '') return '';
+    if (Array.isArray(v)) return v.filter(Boolean).map(x => RH.esc(x)).join(', ');
+    return RH.esc(v);
   },
 
   esc(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
   },
 
   toast(msg, ok = true) {
     const d = document.createElement('div');
     d.textContent = msg;
-    d.style.cssText = `position:fixed;top:20px;right:20px;z-index:9999;padding:14px 22px;border-radius:12px;
-      color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);
+    d.style.cssText = `position:fixed;top:20px;right:20px;z-index:9999;
+      padding:14px 22px;border-radius:12px;color:#fff;font-weight:600;
+      box-shadow:0 8px 24px rgba(0,0,0,.2);
       background:${ok ? '#1e7e5e' : '#b42318'};transition:.3s;opacity:0`;
     document.body.appendChild(d);
     requestAnimationFrame(() => d.style.opacity = '1');
@@ -72,7 +91,7 @@ const RH = {
   logout: async () => { await sb.auth.signOut(); location.href = 'login.html'; }
 };
 
-// ============ থানা → জেলা → বিভাগ ডেটা (সংক্ষিপ্ত; চাইলে বাড়ান) ============
+// ============ থানা → জেলা → বিভাগ ডেটা ============
 const BD_GEO = {
   'ঢাকা': {
     'ঢাকা': ['ধামরাই', 'সাভার', 'কেরানীগঞ্জ', 'নবাবগঞ্জ', 'দোহার'],
@@ -131,7 +150,6 @@ function bindGeoSelects(divisionId, districtId, thanaId) {
   const tSel = document.getElementById(thanaId);
   if (!tSel) return;
 
-  // সব থানা এক লিস্টে
   const allThanas = [];
   Object.entries(BD_GEO).forEach(([div, dists]) => {
     Object.entries(dists).forEach(([dist, thanas]) => {
@@ -146,7 +164,7 @@ function bindGeoSelects(divisionId, districtId, thanaId) {
   tSel.addEventListener('change', () => {
     const opt = tSel.selectedOptions[0];
     if (!opt || !opt.dataset.div) { if (dSel) dSel.value = ''; if (distSel) distSel.value = ''; return; }
-    if (dSel) { dSel.innerHTML = `<option>${opt.dataset.div}</option>`; }
-    if (distSel) { distSel.innerHTML = `<option>${opt.dataset.dist}</option>`; }
+    if (dSel) dSel.innerHTML = `<option>${opt.dataset.div}</option>`;
+    if (distSel) distSel.innerHTML = `<option>${opt.dataset.dist}</option>`;
   });
 }
