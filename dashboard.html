@@ -43,17 +43,34 @@
   .countdown-danger{background:#f8d7da;color:#842118;animation:pulse 1.5s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
   .countdown-timer{font-family:monospace;letter-spacing:.02em}
+
+.role-chip{display:inline-block;padding:5px 11px;border-radius:30px;background:#eaf1f5;color:#0e4d64;font-size:.82rem;font-weight:700}
+.admin-table-wrap{overflow-x:auto;border:1px solid #dce7ef;border-radius:12px;background:#fff}
+.admin-table{width:100%;border-collapse:collapse;min-width:650px}
+.admin-table th,.admin-table td{padding:10px 12px;border-bottom:1px solid #e7eef3;text-align:left;vertical-align:top;font-size:.9rem}
+.admin-table th{background:#f2f7fa;color:#244b5d}
+.admin-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.btn-small{padding:7px 10px;font-size:.82rem}
+.btn-danger{background:#b42318}.btn-danger:hover{background:#8f1d14}
+.btn-warning{background:#946200}.btn-warning:hover{background:#765000}
+.perm-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #edf2f5}
+.perm-row:last-child{border-bottom:0}
+.id-short{font-family:monospace;font-size:.8rem;overflow-wrap:anywhere;color:#587487}
+.preview-row{display:grid;grid-template-columns:minmax(110px,.8fr) minmax(0,2fr);gap:12px;padding:8px 10px;border-bottom:1px solid #edf2f5}
+.preview-row .lbl{font-weight:700;color:#587487}.preview-row .val{overflow-wrap:anywhere}
+@media(max-width:600px){.preview-row{grid-template-columns:1fr;gap:2px}}
+
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header-bar">
-    <h1><i class="fas fa-user-circle"></i> আমার ড্যাশবোর্ড</h1>
+    <h1 id="dashboardHeading"><i class="fas fa-user-circle"></i> আমার ড্যাশবোর্ড</h1>
     <a class="btn btn-secondary" href="index.html" style="padding:.5rem 1rem;font-size:.9rem;text-decoration:none">
       <i class="fas fa-home"></i> মূল পেজ
     </a>
     <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
-      <span id="userInfo" style="font-size:.9rem;color:#45748a"></span>
+      <span id="roleChip" class="role-chip hidden"></span><span id="userInfo" style="font-size:.9rem;color:#45748a"></span>
       <button class="btn btn-secondary" onclick="RH.logout()" style="padding:.5rem 1rem;font-size:.9rem">
         <i class="fas fa-sign-out-alt"></i> লগআউট
       </button>
@@ -61,10 +78,14 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i> হোম</button>
-    <button class="tab-btn" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
-    <button class="tab-btn" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
-    <button class="tab-btn" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
+    <button class="tab-btn active role-member" data-tab="home"><i class="fas fa-home"></i> হোম</button>
+    <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
+    <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
+    <button class="tab-btn role-member" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
+    <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
+    <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
+    <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
+    <button class="tab-btn role-audit hidden" id="tabAudit" data-tab="audit"><i class="fas fa-clipboard-list"></i> অডিট লগ</button>
   </div>
 
   <div class="tab-panel active" id="panel-home">
@@ -116,6 +137,40 @@
   <div class="tab-panel" id="panel-approved">
     <div id="approvedList">লোড হচ্ছে...</div>
   </div>
+
+  <div class="tab-panel" id="panel-admin-requests">
+    <div class="section-title"><i class="fas fa-clipboard-check"></i> বিস্তারিত বায়োডাটা দেখার আবেদন</div>
+    <div class="alert alert-info">অ্যাডমিন অনুমোদন করলে আবেদনকারী ৭ দিনের জন্য বায়োডাটা দেখতে পারবেন। মালিকের আলাদা অনুমোদন প্রয়োজন নেই।</div>
+    <button class="btn btn-secondary mb-2" onclick="loadAdminRequests()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
+    <div id="adminRequestsList">লোড হচ্ছে...</div>
+  </div>
+
+  <div class="tab-panel" id="panel-admin-biodata">
+    <div class="section-title"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</div>
+    <div class="alert alert-info">এই অংশ চালাতে নিচে দেওয়া SQL-এ থাকা দুটি নিরাপদ RPC একবার Supabase SQL Editor-এ চালাতে হবে।</div>
+    <button class="btn btn-secondary mb-2" onclick="loadAdminBiodata()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
+    <div id="adminBiodataList">লোড হচ্ছে...</div>
+  </div>
+
+  <div class="tab-panel" id="panel-super-admin">
+    <div class="section-title"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</div>
+    <div class="card">
+      <h3 style="color:#0e4d64;margin-top:0">নতুন অ্যাডমিন যুক্ত করুন</h3>
+      <p class="text-muted">প্রথমে ব্যক্তির Auth অ্যাকাউন্ট তৈরি থাকতে হবে। এরপর তার Auth User ID (UUID) দিন।</p>
+      <div class="grid-2">
+        <div class="form-group"><label for="newAdminUserId">Auth User ID (UUID)</label><input id="newAdminUserId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
+        <div class="form-group" style="display:flex;align-items:end"><button class="btn" onclick="addAdminUser()"><i class="fas fa-user-plus"></i> অ্যাডমিন যুক্ত করুন</button></div>
+      </div>
+    </div>
+    <button class="btn btn-secondary mb-2" onclick="loadAdminMatrix()"><i class="fas fa-rotate"></i> Permission Matrix রিফ্রেশ</button>
+    <div id="adminMatrix">লোড হচ্ছে...</div>
+  </div>
+
+  <div class="tab-panel" id="panel-audit">
+    <div class="section-title"><i class="fas fa-clipboard-list"></i> অডিট লগ</div>
+    <button class="btn btn-secondary mb-2" onclick="loadAuditLogs()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
+    <div id="auditLogsList">লোড হচ্ছে...</div>
+  </div>
 </div>
 
 <div id="detailModal" class="modal">
@@ -156,18 +211,24 @@ let currentProfile = null;
 
 (async function init() {
   currentSession = await RH.getSession();
-  if (!currentSession) { location.href = 'login.html'; return; }
+  if (!currentSession) { location.replace('login.html'); return; }
   currentProfile = await RH.getProfile();
-
   document.getElementById('userInfo').innerHTML =
     `<i class="fas fa-user"></i> ${RH.esc(currentProfile?.full_name || currentSession.user.email)}`;
 
-  try {
-    const { error } = await sb.rpc('expire_old_access_requests');
-    if (error) console.warn('expire RPC:', error);
-  } catch (e) { console.warn('expire:', e); }
+  const ok = await loadDashboardRole();
+  if (!ok) return;
+  applyRoleUI();
 
-  await Promise.all([loadHome(), loadNotifications()]);
+  if (currentRole === 'member') {
+    try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
+    await Promise.all([loadHome(), loadNotifications()]);
+  } else {
+    if (can('access_requests.view')) await loadAdminRequests();
+    if (can('biodata.verify')) await loadAdminBiodata();
+    if (currentRole === 'super_admin') await loadAdminMatrix();
+    if (can('audit_logs.view')) await loadAuditLogs();
+  }
 })();
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -180,6 +241,10 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
+    if (btn.dataset.tab === 'admin-requests') await loadAdminRequests();
+    if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata();
+    if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
+    if (btn.dataset.tab === 'audit') await loadAuditLogs();
   });
 });
 
@@ -624,6 +689,238 @@ function startAllCountdowns() {
     }
   }, 1000);
 }
+
+// ================= ROLE AND PERMISSIONS =================
+let currentRole = 'member';
+let currentPermissions = {};
+const PERMISSION_CODES = [
+'access_requests.approve','access_requests.extend','access_requests.reject','access_requests.view',
+'admins.manage','admins.permissions.manage','audit_logs.view',
+'biodata.delete','biodata.update','biodata.verify','biodata.view_all',
+'dashboard.view','notifications.send','notifications.view',
+'payments.approve','payments.manage','payments.view','settings.manage','users.manage','users.view'
+];
+
+function can(code) {
+  return currentRole === 'super_admin' || (currentRole === 'admin' && currentPermissions[code] === true);
+}
+
+async function loadDashboardRole() {
+  const {data, error} = await sb.from('admin_users')
+    .select('user_id,role,is_active,username')
+    .eq('user_id', currentSession.user.id).maybeSingle();
+
+  if (error) {
+    console.error('admin_users lookup failed:', error);
+    RH.toast('অ্যাডমিন পরিচয় যাচাই করা যায়নি। পেজ রিফ্রেশ করুন।', false);
+    return false;
+  }
+  if (!data) { currentRole = 'member'; return true; }
+  if (!data.is_active) {
+    RH.toast('আপনার অ্যাডমিন অ্যাকাউন্ট নিষ্ক্রিয়।', false);
+    await sb.auth.signOut();
+    location.replace('login.html');
+    return false;
+  }
+
+  currentRole = data.role === 'super_admin' ? 'super_admin' : 'admin';
+  if (currentRole === 'admin') {
+    const results = await Promise.all(PERMISSION_CODES.map(async code => {
+      const {data: allowed, error: e} = await sb.rpc('has_admin_permission', {p_permission_code: code});
+      if (e) { console.warn('Permission check failed:', code, e); return [code, false]; }
+      return [code, allowed === true];
+    }));
+    results.forEach(([code, allowed]) => currentPermissions[code] = allowed);
+  }
+  return true;
+}
+
+function applyRoleUI() {
+  const names = {member:'সদস্য',admin:'অ্যাডমিন',super_admin:'সুপার অ্যাডমিন'};
+  document.getElementById('dashboardHeading').innerHTML = `<i class="fas fa-user-circle"></i> ${names[currentRole]} ড্যাশবোর্ড`;
+  const chip = document.getElementById('roleChip');
+  chip.textContent = names[currentRole]; chip.classList.remove('hidden');
+
+  document.querySelectorAll('.role-member').forEach(x => x.classList.toggle('hidden', currentRole !== 'member'));
+  document.querySelectorAll('.role-admin').forEach(x => x.classList.toggle('hidden', currentRole === 'member'));
+  document.getElementById('tabAdminRequests').classList.toggle('hidden', !can('access_requests.view'));
+  document.getElementById('tabAdminBiodata').classList.toggle('hidden', !can('biodata.verify'));
+  document.getElementById('tabSuperAdmin').classList.toggle('hidden', currentRole !== 'super_admin');
+  document.getElementById('tabAudit').classList.toggle('hidden', !can('audit_logs.view'));
+
+  if (currentRole !== 'member') {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const first = document.querySelector('.tab-btn:not(.hidden)');
+    if (first) first.click();
+    else document.getElementById('panel-admin-requests').innerHTML = '<div class="alert alert-info">এই অ্যাকাউন্টে ড্যাশবোর্ডের কোনো মেনু অনুমোদিত নেই। Super Admin-এর সঙ্গে যোগাযোগ করুন।</div>';
+  }
+}
+
+// ================= ADMIN: ACCESS REQUESTS =================
+async function loadAdminRequests() {
+  const el = document.getElementById('adminRequestsList');
+  if (!can('access_requests.view')) { el.innerHTML = '<div class="alert alert-error">আবেদন দেখার অনুমতি নেই।</div>'; return; }
+  el.innerHTML = 'লোড হচ্ছে...';
+  const {data, error} = await sb.from('access_requests')
+    .select('id,biodata_id,owner_user_id,requester_user_id,message,status,created_at,approved_at,expires_at,admin_note')
+    .order('created_at',{ascending:false}).limit(100);
+  if (error) { el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`; return; }
+  if (!data?.length) { el.innerHTML = '<div class="alert alert-info">কোনো আবেদন পাওয়া যায়নি।</div>'; return; }
+
+  el.innerHTML = data.map(r => {
+    const badge = r.status === 'approved' ? 'অনুমোদিত' : r.status === 'rejected' ? 'বাতিল' : r.status === 'expired' ? 'মেয়াদ শেষ' : 'অপেক্ষমাণ';
+    let buttons = '';
+    if (r.status === 'pending' && can('access_requests.approve')) buttons += `<button class="btn btn-small" onclick="approveAccessRequest('${r.id}')">অনুমোদন</button>`;
+    if (r.status === 'pending' && can('access_requests.reject')) buttons += `<button class="btn btn-small btn-danger" onclick="rejectAccessRequest('${r.id}')">বাতিল</button>`;
+    if ((r.status === 'approved' || r.status === 'expired') && can('access_requests.extend')) buttons += `<button class="btn btn-small btn-warning" onclick="extendAccessRequest('${r.id}')">মেয়াদ বাড়ান</button>`;
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <strong>আবেদন #${RH.esc(r.id.slice(0,8))}</strong><span class="badge ${r.status==='approved'?'badge-verified':r.status==='pending'?'badge-pending':'badge-rejected'}">${badge}</span>
+      </div>
+      <p class="muted-small">বায়োডাটা ID: <span class="id-short">${RH.esc(r.biodata_id)}</span></p>
+      <p class="muted-small">আবেদনকারী: <span class="id-short">${RH.esc(r.requester_user_id)}</span></p>
+      <p class="muted-small">মালিক: <span class="id-short">${RH.esc(r.owner_user_id)}</span></p>
+      ${r.message ? `<p><strong>বার্তা:</strong> ${RH.esc(r.message)}</p>` : ''}
+      ${r.admin_note ? `<p class="note">${RH.esc(r.admin_note)}</p>` : ''}
+      <div class="muted-small">জমা: ${RH.fmtDate(r.created_at)} ${r.expires_at ? '| মেয়াদ: '+RH.fmtDate(r.expires_at):''}</div>
+      <div class="admin-actions mt-1">${buttons || '<span class="muted-small">এখানে কোনো কার্যকর অনুমতি নেই।</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+async function approveAccessRequest(id) {
+  if (!can('access_requests.approve')) return RH.toast('অনুমতি নেই।',false);
+  if (!confirm('অনুমোদন করলে আবেদনকারী ৭ দিনের জন্য বায়োডাটা দেখতে পারবেন। অনুমোদন করবেন?')) return;
+  const {data,error} = await sb.rpc('admin_approve_access_request',{p_request_id:id});
+  if (error) return RH.toast('অনুমোদন ব্যর্থ: '+error.message,false);
+  if (!data) return RH.toast('আবেদনটি আর অপেক্ষমাণ নেই।',false);
+  RH.toast('আবেদন অনুমোদিত হয়েছে।'); await loadAdminRequests();
+}
+
+async function rejectAccessRequest(id) {
+  if (!can('access_requests.reject')) return RH.toast('অনুমতি নেই।',false);
+  const note = prompt('বাতিলের কারণ লিখুন (ঐচ্ছিক):') || null;
+  const {error} = await sb.from('access_requests').update({
+    status:'rejected',admin_note:note,updated_at:new Date().toISOString()
+  }).eq('id',id).eq('status','pending');
+  if (error) return RH.toast('বাতিল ব্যর্থ: '+error.message,false);
+  RH.toast('আবেদন বাতিল করা হয়েছে।'); await loadAdminRequests();
+}
+
+async function extendAccessRequest(id) {
+  if (!can('access_requests.extend')) return RH.toast('অনুমতি নেই।',false);
+  const raw = prompt('কত দিন মেয়াদ বাড়াবেন? (১–৩০ দিন)','7');
+  if (raw === null) return;
+  const days = Number(raw);
+  if (!Number.isInteger(days) || days < 1 || days > 30) return RH.toast('১ থেকে ৩০ দিনের মধ্যে লিখুন।',false);
+  const {data:row,error:readError} = await sb.from('access_requests').select('expires_at,status').eq('id',id).maybeSingle();
+  if (readError || !row) return RH.toast('আবেদন পাওয়া যায়নি: '+(readError?.message||''),false);
+  const base = row.expires_at && new Date(row.expires_at)>new Date() ? new Date(row.expires_at) : new Date();
+  base.setDate(base.getDate()+days);
+  const {error} = await sb.from('access_requests').update({
+    status:'approved',admin_approved:true,expires_at:base.toISOString(),updated_at:new Date().toISOString()
+  }).eq('id',id);
+  if (error) return RH.toast('মেয়াদ বাড়ানো যায়নি: '+error.message,false);
+  RH.toast('মেয়াদ বাড়ানো হয়েছে।'); await loadAdminRequests();
+}
+
+// ================= ADMIN: BIODATA REVIEW =================
+async function loadAdminBiodata() {
+  const el = document.getElementById('adminBiodataList');
+  if (!can('biodata.verify')) { el.innerHTML='<div class="alert alert-error">বায়োডাটা যাচাইয়ের অনুমতি নেই।</div>'; return; }
+  el.innerHTML='লোড হচ্ছে...';
+  const {data,error}=await sb.rpc('list_pending_biodata_for_review');
+  if(error){el.innerHTML=`<div class="alert alert-error">${RH.esc(error.message)}<br>প্রয়োজনীয় SQL এই উত্তরের নিচে দেওয়া আছে।</div>`;return;}
+  if(!data?.length){el.innerHTML='<div class="alert alert-info">যাচাইয়ের অপেক্ষায় কোনো বায়োডাটা নেই।</div>';return;}
+  el.innerHTML=data.map(b=>`<div class="card">
+    <strong>${RH.esc(b.biodata_code)}</strong> <span class="badge badge-pending">যাচাই অপেক্ষমাণ</span>
+    <div>${RH.esc(b.full_name)}</div>
+    <div class="muted-small">${RH.esc(b.applicant_type)} | ${RH.esc(b.current_division||'—')} | ${RH.esc(b.current_district||'—')} | ${RH.fmtDate(b.created_at)}</div>
+    <div class="admin-actions mt-1">
+      <button class="btn btn-small" onclick="reviewBiodata('${b.id}','verified')">যাচাই করে অনুমোদন</button>
+      <button class="btn btn-small btn-danger" onclick="reviewBiodata('${b.id}','rejected')">বাতিল</button>
+    </div>
+  </div>`).join('');
+}
+
+async function reviewBiodata(id,status) {
+  if (!can('biodata.verify')) return RH.toast('অনুমতি নেই।',false);
+  const note=prompt(status==='verified'?'অ্যাডমিন নোট (ঐচ্ছিক):':'বাতিলের কারণ লিখুন:')||null;
+  if(status==='rejected'&&!note)return RH.toast('বাতিলের কারণ আবশ্যক।',false);
+  const {data,error}=await sb.rpc('admin_review_biodata',{p_biodata_id:id,p_status:status,p_admin_notes:note});
+  if(error)return RH.toast('পর্যালোচনা ব্যর্থ: '+error.message,false);
+  if(!data)return RH.toast('বায়োডাটা পরিবর্তন করা যায়নি।',false);
+  RH.toast(status==='verified'?'বায়োডাটা যাচাই হয়েছে।':'বায়োডাটা বাতিল হয়েছে।');
+  await loadAdminBiodata();
+}
+
+// ================= SUPER ADMIN =================
+async function addAdminUser() {
+  if(currentRole!=='super_admin')return RH.toast('শুধু Super Admin পারবেন।',false);
+  const input=document.getElementById('newAdminUserId'), id=input.value.trim();
+  const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if(!uuid.test(id))return RH.toast('সঠিক Auth User UUID দিন।',false);
+  if(!confirm('এই ব্যবহারকারীকে সাধারণ Admin করবেন?'))return;
+  const {data,error}=await sb.rpc('add_admin_user',{p_user_id:id});
+  if(error)return RH.toast('অ্যাডমিন যুক্ত হয়নি: '+error.message,false);
+  if(!data)return RH.toast('অ্যাডমিন যুক্ত করা যায়নি।',false);
+  input.value='';RH.toast('অ্যাডমিন যুক্ত হয়েছে।');await loadAdminMatrix();
+}
+
+async function loadAdminMatrix() {
+  const el=document.getElementById('adminMatrix');
+  if(currentRole!=='super_admin'){el.innerHTML='<div class="alert alert-error">শুধু Super Admin দেখতে পারবেন।</div>';return;}
+  el.innerHTML='লোড হচ্ছে...';
+  const {data,error}=await sb.rpc('get_admin_permission_matrix_v2');
+  if(error){el.innerHTML=`<div class="alert alert-error">${RH.esc(error.message)}</div>`;return;}
+  if(!data?.length){el.innerHTML='<div class="alert alert-info">এখনো কোনো সাধারণ Admin নেই।</div>';return;}
+  const grouped={};
+  data.forEach(p=>{if(!grouped[p.user_id])grouped[p.user_id]={user_id:p.user_id,active:p.is_active,permissions:[]};grouped[p.user_id].permissions.push(p);});
+  el.innerHTML=Object.values(grouped).map(a=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+      <div><strong>সাধারণ অ্যাডমিন</strong><div class="id-short">${RH.esc(a.user_id)}</div></div>
+      <div class="admin-actions"><span class="badge ${a.active?'badge-verified':'badge-rejected'}">${a.active?'সক্রিয়':'নিষ্ক্রিয়'}</span>
+      <button class="btn btn-small ${a.active?'btn-danger':''}" onclick="toggleAdminActive('${a.user_id}',${!a.active})">${a.active?'নিষ্ক্রিয় করুন':'সক্রিয় করুন'}</button></div>
+    </div>
+    <h4>অনুমতিসমূহ</h4>
+    ${a.permissions.map(p=>`<div class="perm-row"><div><strong>${RH.esc(p.permission_name)}</strong><div class="muted-small">${RH.esc(p.permission_code)}</div></div>
+      <div class="admin-actions"><span class="badge ${p.is_granted?'badge-verified':''}">${p.is_granted?'প্রদান করা আছে':'নেই'}</span>
+      <button class="btn btn-small ${p.is_granted?'btn-danger':''}" onclick="changeAdminPermission('${a.user_id}','${p.permission_code}',${!p.is_granted})">${p.is_granted?'বাতিল':'অনুমতি দিন'}</button></div></div>`).join('')}
+  </div>`).join('');
+}
+
+async function changeAdminPermission(userId,code,grant) {
+  if(currentRole!=='super_admin')return RH.toast('অনুমতি নেই।',false);
+  const fn=grant?'grant_admin_permission':'revoke_admin_permission';
+  const {data,error}=await sb.rpc(fn,{p_user_id:userId,p_permission_code:code});
+  if(error)return RH.toast('পরিবর্তন ব্যর্থ: '+error.message,false);
+  if(!data)return RH.toast('পরিবর্তন হয়নি।',false);
+  RH.toast(grant?'অনুমতি প্রদান করা হয়েছে।':'অনুমতি বাতিল করা হয়েছে।');await loadAdminMatrix();
+}
+
+async function toggleAdminActive(userId,active) {
+  if(currentRole!=='super_admin')return RH.toast('অনুমতি নেই।',false);
+  if(!confirm(active?'অ্যাডমিন সক্রিয় করবেন?':'অ্যাডমিন নিষ্ক্রিয় করবেন?'))return;
+  const {data,error}=await sb.rpc('set_admin_active_status',{p_user_id:userId,p_is_active:active});
+  if(error)return RH.toast('স্ট্যাটাস পরিবর্তন ব্যর্থ: '+error.message,false);
+  if(!data)return RH.toast('স্ট্যাটাস পরিবর্তন হয়নি।',false);
+  RH.toast('অ্যাডমিন স্ট্যাটাস পরিবর্তিত হয়েছে।');await loadAdminMatrix();
+}
+
+// ================= AUDIT LOG =================
+async function loadAuditLogs() {
+  const el=document.getElementById('auditLogsList');
+  if(!can('audit_logs.view')){el.innerHTML='<div class="alert alert-error">অডিট লগ দেখার অনুমতি নেই।</div>';return;}
+  el.innerHTML='লোড হচ্ছে...';
+  const {data,error}=await sb.from('audit_logs').select('id,actor_user_id,action,target_table,target_id,details,created_at').order('created_at',{ascending:false}).limit(100);
+  if(error){el.innerHTML=`<div class="alert alert-error">${RH.esc(error.message)}</div>`;return;}
+  if(!data?.length){el.innerHTML='<div class="alert alert-info">অডিট লগ নেই।</div>';return;}
+  el.innerHTML=`<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>সময়</th><th>কার্যক্রম</th><th>Actor</th><th>Target</th><th>বিবরণ</th></tr></thead><tbody>
+    ${data.map(x=>`<tr><td>${RH.fmtDate(x.created_at)}</td><td>${RH.esc(x.action)}</td><td class="id-short">${RH.esc(x.actor_user_id||'—')}</td><td>${RH.esc((x.target_table||'')+' / '+(x.target_id||''))}</td><td>${RH.esc(JSON.stringify(x.details||{}))}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
 </script>
 </body>
 </html>
