@@ -6,10 +6,23 @@
 <title>ড্যাশবোর্ড | রফিকে হায়াত</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="shared.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
+
+/* ===== রফিকে হায়াত: এমবেডেড কমন CSS (এই HTML ফাইলের ভেতরেই) ===== */
+:root{--primary:#0e4d64;--green:#1e7e5e;--ink:#1e2b3a;--muted:#587487;--line:#dce7ef;--soft:#f2f7fa;--danger:#b42318;--shadow:0 14px 36px rgba(12,45,62,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;padding:20px;background:#f2f5f9;color:var(--ink);font-family:'Noto Sans Bengali','Segoe UI',Tahoma,sans-serif;line-height:1.65}a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}button,input,select,textarea{font:inherit}button{cursor:pointer} .container{width:min(100%,1100px);margin:0 auto;background:#fff;border:1px solid #e3ebf1;border-radius:20px;padding:clamp(16px,3vw,30px);box-shadow:var(--shadow)}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:clamp(14px,2.5vw,22px);margin:0 0 18px;box-shadow:0 5px 18px rgba(15,55,75,.045)}.text-center{text-align:center}.hidden{display:none!important}.mb-2{margin-bottom:1rem}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.section-title{font-size:1.15rem;font-weight:700;color:var(--primary);margin:1.2rem 0 .7rem}
+.form-group{margin-bottom:1rem}.form-group label,label{display:block;font-weight:600;color:#244b5d;margin-bottom:.4rem}input:not([type=checkbox]):not([type=radio]),select,textarea{display:block;width:100%;min-height:44px;border:1px solid #cbd9e3;border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(30,126,94,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;background:var(--green);color:#fff;padding:11px 17px;font-weight:700;transition:transform .15s,background .15s,box-shadow .15s;text-decoration:none}.btn:hover{background:#17694e;transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,126,94,.18);text-decoration:none}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}.btn-secondary{background:#eaf1f5;color:var(--primary)}.btn-secondary:hover{background:#dce9ef}.btn-block{width:100%}
+.alert{padding:12px 14px;border-radius:10px;margin:12px 0;background:#eef5f8;color:#244b5d;border:1px solid #d5e5ec}.alert-info{background:#eef7fb;border-color:#c9e3ef;color:#24566b}.alert-success{background:#eaf7ef;border-color:#c8e8d2;color:#17603a}.alert-error{background:#fff0ef;border-color:#f3cbc7;color:#9b241b}.note{background:#f4f8fa;border-left:3px solid #8bb7c8;padding:10px 12px;border-radius:7px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.badge{display:inline-block;border-radius:30px;padding:5px 11px;font-size:.82rem;font-weight:700;background:#edf2f5;color:#405969}.badge-pending{background:#fff4d6;color:#805b00}.badge-verified{background:#e2f5e9;color:#17603a}.badge-rejected{background:#ffebea;color:#9b241b}.badge-matched{background:#e5f5ed;color:#17603a}
+.header-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--line)}.header-bar h1{margin:0;color:var(--primary);font-size:clamp(1.25rem,3vw,1.8rem)}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem;border-bottom:2px solid #d0e0ea;padding-bottom:.45rem}.tab-btn{background:#f1f6f8;border:0;padding:.65rem 1rem;border-radius:10px;cursor:pointer;font-weight:600;color:#45748a;font-family:inherit;font-size:.94rem;transition:.15s}.tab-btn:hover{background:#e8f3f0;color:var(--primary)}.tab-btn.active{background:var(--green);color:#fff}.tab-panel{display:none}.tab-panel.active{display:block}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(7,27,38,.58);padding:18px;overflow:auto;align-items:center;justify-content:center}.modal.show,.modal[style*="display: block"]{display:flex!important}.modal-box{width:min(100%,760px);max-height:92vh;overflow:auto;background:#fff;border-radius:17px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.text-muted{color:var(--muted)}
+@media(max-width:760px){body{padding:10px}.container{border-radius:14px}.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}.header-bar{align-items:flex-start}.modal-box{padding:16px}}
+@media(max-width:420px){.btn{padding:10px 12px;font-size:.9rem}.tab-btn{padding:.55rem .7rem;font-size:.85rem}}
+
   .tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem;border-bottom:2px solid #d0e0ea;padding-bottom:.3rem}
   .tab-btn{background:none;border:none;padding:.65rem 1.1rem;border-radius:10px 10px 0 0;cursor:pointer;font-weight:600;color:#45748a;font-family:inherit;font-size:.95rem;transition:.15s}
   .tab-btn:hover{background:#e8f3f0;color:#0e4d64}
@@ -36,6 +49,9 @@
 <div class="container">
   <div class="header-bar">
     <h1><i class="fas fa-user-circle"></i> আমার ড্যাশবোর্ড</h1>
+    <a class="btn btn-secondary" href="index.html" style="padding:.5rem 1rem;font-size:.9rem;text-decoration:none">
+      <i class="fas fa-home"></i> মূল পেজ
+    </a>
     <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
       <span id="userInfo" style="font-size:.9rem;color:#45748a"></span>
       <button class="btn btn-secondary" onclick="RH.logout()" style="padding:.5rem 1rem;font-size:.9rem">
