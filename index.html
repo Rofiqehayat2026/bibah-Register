@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="রফিকে হায়াত — শরীয়তসম্মত বিবাহের উদ্দেশ্যে নিরাপদ বায়োডাটা জমা দেওয়ার প্ল্যাটফর্ম।">
     <title>রফিকে হায়াত | বিবাহ সেবা</title>
-    <!-- ফন্ট Awesome (আইকনের জন্য) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- বাংলা ফন্ট (গুগল ফন্ট) -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -34,7 +32,6 @@
             border: 1px solid #e6edf4;
         }
 
-        /* হেডার */
         .header {
             text-align: center;
             margin-bottom: 2rem;
@@ -67,7 +64,6 @@
             border: 1px solid #b7d4de;
         }
 
-        /* সেকশন শিরোনাম */
         .section-title {
             font-size: 1.6rem;
             font-weight: 600;
@@ -232,9 +228,7 @@
             box-shadow: 0 10px 22px rgba(30, 126, 94, 0.35);
         }
 
-        .btn-submit i {
-            font-size: 1.4rem;
-        }
+        .btn-submit i { font-size: 1.4rem; }
 
         .hint {
             font-size: 0.85rem;
@@ -247,33 +241,15 @@
             margin-left: 4px;
         }
 
-        /* শর্তাধীন সেকশন */
-        .conditional-section {
-            display: none;
-        }
+        .conditional-section { display: none; }
+        .conditional-section.active { display: block; }
 
-        .conditional-section.active {
-            display: block;
-        }
-
-        /* ছোট স্ক্রিন */
         @media (max-width: 700px) {
-            .container {
-                padding: 1.5rem;
-            }
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
-                gap: 0.8rem;
-            }
-            .header h1 {
-                font-size: 1.9rem;
-            }
-            .section-title {
-                font-size: 1.3rem;
-            }
-            .radio-group {
-                gap: 0.4rem 1rem;
-            }
+            .container { padding: 1.5rem; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 0.8rem; }
+            .header h1 { font-size: 1.9rem; }
+            .section-title { font-size: 1.3rem; }
+            .radio-group { gap: 0.4rem 1rem; }
         }
 
         .privacy-box {
@@ -295,20 +271,16 @@
             padding-right: 1.5rem;
             padding-left: 1.2rem;
         }
-        .privacy-box li {
-            margin-bottom: 0.3rem;
-        }
+        .privacy-box li { margin-bottom: 0.3rem; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- হেডার -->
         <div class="header">
             <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
             <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
         </div>
 
-        <!-- লক্ষ্য ও নীতিমালা সংক্ষেপে -->
         <div class="card" style="background: #f3faf8;">
             <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;">
                 <div style="flex: 1; min-width: 200px;">
@@ -334,7 +306,6 @@
             </div>
         </div>
 
-        <!-- গোপনীয়তা নীতিমালা -->
         <div class="privacy-box">
             <h3><i class="fas fa-lock"></i> গোপনীয়তা নীতিমালা</h3>
             <ul style="font-size: 0.95rem;">
@@ -343,7 +314,6 @@
             </ul>
         </div>
 
-        <!-- নিরাপদ লগইন: Supabase Email OTP / Magic Link -->
         <div class="card" id="authPanel" style="background:#f3faf8;">
             <h3 style="color:#0e4d64; margin-bottom:.7rem;"><i class="fas fa-user-shield"></i> নিরাপদ লগইন</h3>
             <p style="margin-bottom:.8rem;">বায়োডাটা জমা দিতে প্রথমে আপনার ইমেইল দিয়ে লগইন করুন। আপনার ইমেইলে একটি নিরাপদ লগইন লিংক পাঠানো হবে।</p>
@@ -364,9 +334,7 @@
 
         <p class="hint" style="margin:0 0 1rem;">নিরাপত্তার জন্য সম্পূর্ণ বায়োডাটা কেবল লগইন করা আবেদনকারী ও অনুমোদিত কর্তৃপক্ষ দেখতে পারবেন।</p>
 
-        <!-- ফরম শুরু -->
         <form id="biodataForm" style="display:none;" novalidate>
-            <!-- ১. ফরম পূরণের তথ্য (স্বয়ংক্রিয়) -->
             <div class="section-title"><i class="fas fa-file-alt"></i> ১. ফরম পূরণের তথ্য</div>
             <div class="card grid-2">
                 <div class="form-group">
@@ -379,7 +347,6 @@
                 </div>
             </div>
 
-            <!-- ২. আবেদনকারীর ধরন -->
             <div class="section-title"><i class="fas fa-user-tag"></i> ২. আবেদনকারীর ধরন</div>
             <div class="card">
                 <div class="radio-group">
@@ -390,7 +357,6 @@
                 </div>
             </div>
 
-            <!-- ৩. ব্যক্তিগত পরিচিতি -->
             <div class="section-title"><i class="fas fa-user-circle"></i> ৩. ব্যক্তিগত পরিচিতি</div>
             <div class="card grid-2">
                 <div class="form-group">
@@ -428,7 +394,6 @@
                 </div>
             </div>
 
-            <!-- ৪. যোগাযোগ তথ্য -->
             <div class="section-title"><i class="fas fa-address-card"></i> ৪. যোগাযোগ তথ্য</div>
             <div class="card grid-2">
                 <div class="form-group">
@@ -453,7 +418,6 @@
                 </div>
             </div>
 
-            <!-- ৫. শারীরিক তথ্য -->
             <div class="section-title"><i class="fas fa-ruler"></i> ৫. শারীরিক তথ্য</div>
             <div class="card grid-2">
                 <div class="form-group">
@@ -484,7 +448,6 @@
                 </div>
             </div>
 
-            <!-- ৬. পারিবারিক পরিচিতি -->
             <div class="section-title"><i class="fas fa-home"></i> ৬. পারিবারিক পরিচিতি</div>
             <div class="card grid-2">
                 <div class="form-group"><label>পিতার নাম <span class="required-star">*</span></label><input type="text" name="fatherName" required></div>
@@ -497,7 +460,6 @@
                 <div class="form-group"><label>বোনদের পেশা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="sistersJob"></div>
             </div>
 
-            <!-- ৭. পারিবারিক দ্বীনী অবস্থা -->
             <div class="section-title"><i class="fas fa-mosque"></i> ৭. পারিবারিক দ্বীনী অবস্থা</div>
             <div class="card">
                 <div class="checkbox-group">
@@ -511,7 +473,6 @@
                 </div>
             </div>
 
-            <!-- ৮. ব্যক্তিগত দ্বীনী অবস্থা -->
             <div class="section-title"><i class="fas fa-pray"></i> ৮. ব্যক্তিগত দ্বীনী অবস্থা</div>
             <div class="card">
                 <div class="grid-2">
@@ -559,7 +520,6 @@
                 </div>
             </div>
 
-            <!-- ৯. মাযহাব / ফিকহি অনুসরণ -->
             <div class="section-title"><i class="fas fa-book-open"></i> ৯. মাযহাব / ফিকহি অনুসরণ</div>
             <div class="card">
                 <div class="radio-group">
@@ -572,7 +532,6 @@
                 </div>
             </div>
 
-            <!-- ১০. শিক্ষার ধরন -->
             <div class="section-title"><i class="fas fa-graduation-cap"></i> ১০. শিক্ষার ধরন</div>
             <div class="card">
                 <div class="radio-group">
@@ -584,13 +543,11 @@
                 </div>
             </div>
 
-            <!-- ১১. শিক্ষাগত যোগ্যতার বিবরণ -->
             <div class="section-title"><i class="fas fa-certificate"></i> ১১. শিক্ষাগত যোগ্যতার বিবরণ</div>
             <div class="card">
                 <textarea name="educationDetail" placeholder="শিক্ষাগত যোগ্যতা সম্পর্কে বিস্তারিত..."></textarea>
             </div>
 
-            <!-- ১২. অর্থনৈতিক তথ্য -->
             <div class="section-title"><i class="fas fa-coins"></i> ১২. অর্থনৈতিক তথ্য</div>
             <div class="card grid-2">
                 <div class="form-group">
@@ -615,16 +572,13 @@
                 </div>
             </div>
 
-            <!-- ১৩. দক্ষতা, অভিজ্ঞতা ও আগ্রহ -->
             <div class="section-title"><i class="fas fa-star"></i> ১৩. দক্ষতা, অভিজ্ঞতা ও আগ্রহ</div>
             <div class="card">
                 <textarea name="skills" placeholder="আপনার দক্ষতা, অভিজ্ঞতা ও আগ্রহ সম্পর্কে লিখুন..."></textarea>
             </div>
 
-            <!-- ১৪. বৈবাহিক অবস্থা -->
             <div class="section-title"><i class="fas fa-ring"></i> ১৪. বৈবাহিক অবস্থা</div>
             <div class="card" id="maritalStatusSection">
-                <!-- পাত্রের জন্য -->
                 <div id="groomMarital" class="conditional-section active">
                     <label style="font-weight:600; margin-bottom:0.5rem; display:block;">পাত্রের বৈবাহিক অবস্থা</label>
                     <div class="radio-group">
@@ -636,7 +590,6 @@
                         <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ৩ স্ত্রী আছে"> বর্তমানে ৩ স্ত্রী আছে</label>
                     </div>
                 </div>
-                <!-- পাত্রীর জন্য -->
                 <div id="brideMarital" class="conditional-section">
                     <label style="font-weight:600; margin-bottom:0.5rem; display:block;">পাত্রীর বৈবাহিক অবস্থা</label>
                     <div class="radio-group">
@@ -647,7 +600,6 @@
                 </div>
             </div>
 
-            <!-- ১৫. সন্তান -->
             <div class="section-title"><i class="fas fa-child"></i> ১৫. সন্তান</div>
             <div class="card" id="childrenSection">
                 <div class="radio-group">
@@ -662,7 +614,6 @@
                 </div>
             </div>
 
-            <!-- ১৬. জীবনসঙ্গীর ক্ষেত্রে চাহিদা -->
             <div class="section-title"><i class="fas fa-heartbeat"></i> ১৬. জীবনসঙ্গীর ক্ষেত্রে চাহিদা</div>
             <div class="card">
                 <div id="partnerPreferenceGroom" class="conditional-section active">
@@ -745,13 +696,11 @@
                 </div>
             </div>
 
-            <!-- ১৭. অতিরিক্ত চাহিদা -->
             <div class="section-title"><i class="fas fa-plus-circle"></i> ১৭. অতিরিক্ত চাহিদা</div>
             <div class="card">
                 <textarea name="extraRequirements" placeholder="অতিরিক্ত কোনো চাহিদা থাকলে লিখুন..."></textarea>
             </div>
 
-            <!-- ১৮. সম্মতিপত্র -->
             <div class="section-title"><i class="fas fa-check-circle"></i> ১৮. সম্মতিপত্র</div>
             <div class="card">
                 <div class="checkbox-group" style="flex-direction: column; gap: 0.8rem;">
@@ -761,7 +710,6 @@
                 </div>
             </div>
 
-            <!-- সাবমিট বাটন -->
             <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> বায়োডাটা জমা দিন</button>
         </form>
 
@@ -771,25 +719,19 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script>
-        // রফিকে হায়াত — Supabase কনফিগারেশন
-        // এখানে কেবল Project URL ও Publishable Key থাকবে; service_role key কখনো নয়।
-        const SUPABASE_URL = 'https://ijixcsmhxpuvcwpiddhf.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_D97i1M-jPfNIao5NQuZGkQ_JjYsa61m';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
         const form = document.getElementById('biodataForm');
-        const authPanel = document.getElementById('authPanel');
         const authMessage = document.getElementById('authMessage');
         const formMessage = document.getElementById('formMessage');
         const sendOtpBtn = document.getElementById('sendOtpBtn');
         const signOutBtn = document.getElementById('signOutBtn');
         let currentSession = null;
 
-        function showMessage(element, message, isError = false) {
-            element.textContent = message;
-            element.style.display = message ? 'block' : 'none';
-            element.style.color = isError ? '#b42318' : '#146b4e';
+        function showMessage(el, msg, isError = false) {
+            el.textContent = msg;
+            el.style.display = msg ? 'block' : 'none';
+            el.style.color = isError ? '#b42318' : '#146b4e';
         }
 
         function setAuthUI(session) {
@@ -799,14 +741,15 @@
             document.getElementById('signedInArea').style.display = signedIn ? 'block' : 'none';
             document.getElementById('signedInEmail').textContent = session?.user?.email || '';
             form.style.display = signedIn ? 'block' : 'none';
-            if (signedIn) showMessage(authMessage, 'আপনি লগইন করেছেন। এখন বায়োডাটা ফরম পূরণ করতে পারবেন।');
-            else showMessage(authMessage, 'বায়োডাটা জমা দেওয়ার আগে ইমেইল দিয়ে লগইন করুন।');
+            showMessage(authMessage, signedIn
+                ? 'আপনি লগইন করেছেন। এখন বায়োডাটা ফরম পূরণ করতে পারবেন।'
+                : 'বায়োডাটা জমা দেওয়ার আগে ইমেইল দিয়ে লগইন করুন।');
         }
 
-        // বর্তমান তারিখ ও অস্থায়ী প্রদর্শন আইডি সেট
         function initializeForm() {
             const today = new Date();
-            document.getElementById('fillDate').value = today.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('fillDate').value = today.toLocaleDateString('bn-BD',
+                { year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('biodataId').value = 'জমার পর তৈরি হবে';
             calculateAge();
             toggleGenderSections();
@@ -827,9 +770,9 @@
         }
 
         function toggleGenderSections() {
-            const selected = document.querySelector('input[name="applicantType"]:checked')?.value || 'পাত্র';
-            const isGroom = selected === 'পাত্র' || selected === 'ছেলে খুনসা';
-            const isBride = selected === 'পাত্রী' || selected === 'মেয়ে খুনসা';
+            const sel = document.querySelector('input[name="applicantType"]:checked')?.value || 'পাত্র';
+            const isGroom = sel === 'পাত্র' || sel === 'ছেলে খুনসা';
+            const isBride = sel === 'পাত্রী' || sel === 'মেয়ে খুনসা';
             document.getElementById('groomMarital').classList.toggle('active', isGroom);
             document.getElementById('brideMarital').classList.toggle('active', isBride);
             document.getElementById('partnerPreferenceGroom').classList.toggle('active', isGroom);
@@ -840,50 +783,49 @@
         }
 
         function updateChildrenSection() {
-            const selected = document.querySelector('input[name="applicantType"]:checked')?.value || 'পাত্র';
-            const isGroom = selected === 'পাত্র' || selected === 'ছেলে খুনসা';
+            const sel = document.querySelector('input[name="applicantType"]:checked')?.value || 'পাত্র';
+            const isGroom = sel === 'পাত্র' || sel === 'ছেলে খুনসা';
             const marital = isGroom
                 ? document.querySelector('input[name="groomMaritalStatus"]:checked')?.value
                 : document.querySelector('input[name="brideMaritalStatus"]:checked')?.value;
             const unmarried = marital === 'অবিবাহিত' || marital === 'অবিবাহিতা';
             document.getElementById('childrenSection').style.display = unmarried ? 'none' : 'block';
             if (unmarried) {
-                document.querySelector('input[name="hasChildren"][value="না"]').checked = true;
+                const na = document.querySelector('input[name="hasChildren"][value="না"]');
+                if (na) na.checked = true;
                 toggleChildrenDetail();
             }
         }
 
         function togglePhysicalDetail() {
-            const selected = document.querySelector('input[name="physicalProblem"]:checked');
-            document.getElementById('physicalDetail').classList.toggle('active', selected?.value === 'হ্যাঁ');
+            const sel = document.querySelector('input[name="physicalProblem"]:checked');
+            document.getElementById('physicalDetail').classList.toggle('active', sel?.value === 'হ্যাঁ');
         }
 
         function toggleChildrenDetail() {
-            const selected = document.querySelector('input[name="hasChildren"]:checked');
-            document.getElementById('childrenDetail').classList.toggle('active', selected?.value === 'হ্যাঁ');
+            const sel = document.querySelector('input[name="hasChildren"]:checked');
+            document.getElementById('childrenDetail').classList.toggle('active', sel?.value === 'হ্যাঁ');
         }
 
-        // Email OTP / Magic Link লগইন
         sendOtpBtn.addEventListener('click', async () => {
             const emailInput = document.getElementById('authEmail');
             const email = emailInput.value.trim();
-            if (!emailInput.checkValidity() || !email) {
-                emailInput.reportValidity();
+            if (!email || !emailInput.checkValidity()) {
                 showMessage(authMessage, 'সঠিক ইমেইল ঠিকানা লিখুন।', true);
                 return;
             }
             sendOtpBtn.disabled = true;
-            sendOtpBtn.textContent = 'পাঠানো হচ্ছে...';
+            sendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
             try {
-                const { error } = await supabaseClient.auth.signInWithOtp({
+                const { error } = await sb.auth.signInWithOtp({
                     email,
-                    options: { emailRedirectTo: window.location.href }
+                    options: { emailRedirectTo: location.origin + '/dashboard.html' }
                 });
                 if (error) throw error;
-                showMessage(authMessage, 'আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স/স্প্যাম ফোল্ডার খুলে লিংকে ক্লিক করুন।');
-            } catch (error) {
-                console.error('Magic link error:', error);
-                showMessage(authMessage, 'লগইন লিংক পাঠানো যায়নি: ' + (error.message || 'নেটওয়ার্ক সমস্যা'), true);
+                showMessage(authMessage, 'আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স/স্প্যাম ফোল্ডার চেক করুন।');
+            } catch (err) {
+                console.error(err);
+                showMessage(authMessage, 'লগইন লিংক পাঠানো যায়নি: ' + (err.message || 'নেটওয়ার্ক সমস্যা'), true);
             } finally {
                 sendOtpBtn.disabled = false;
                 sendOtpBtn.textContent = 'লগইন লিংক পাঠান';
@@ -893,11 +835,11 @@
         signOutBtn.addEventListener('click', async () => {
             signOutBtn.disabled = true;
             try {
-                const { error } = await supabaseClient.auth.signOut();
+                const { error } = await sb.auth.signOut();
                 if (error) throw error;
                 showMessage(authMessage, 'আপনি লগআউট করেছেন।');
-            } catch (error) {
-                showMessage(authMessage, 'লগআউট করা যায়নি: ' + (error.message || 'অজানা সমস্যা'), true);
+            } catch (err) {
+                showMessage(authMessage, 'লগআউট ব্যর্থ: ' + (err.message || 'অজানা সমস্যা'), true);
             } finally {
                 signOutBtn.disabled = false;
             }
@@ -911,21 +853,17 @@
                 if (Object.prototype.hasOwnProperty.call(data, key)) {
                     if (!Array.isArray(data[key])) data[key] = [data[key]];
                     data[key].push(value);
-                } else data[key] = value;
+                } else {
+                    data[key] = value;
+                }
             }
             return data;
         }
 
-        function createBiodataCode() {
-            const bytes = new Uint8Array(6);
-            crypto.getRandomValues(bytes);
-            return 'RH-' + Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-        }
-
-        // বায়োডাটা Supabase-এ ব্যক্তিগত pending রেকর্ড হিসেবে সংরক্ষণ
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             showMessage(formMessage, '');
+
             if (!currentSession?.user) {
                 showMessage(formMessage, 'সেশন শেষ হয়েছে। আবার লগইন করুন।', true);
                 setAuthUI(null);
@@ -935,34 +873,40 @@
 
             const dobValue = form.querySelector('[name="dob"]').value;
             const dob = new Date(dobValue + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            if (!dobValue || Number.isNaN(dob.getTime()) || dob > today) {
-                showMessage(formMessage, 'জন্মতারিখ সঠিকভাবে নির্বাচন করুন।', true); return;
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            if (!dobValue || isNaN(dob) || dob > today) {
+                showMessage(formMessage, 'জন্মতারিখ সঠিকভাবে নির্বাচন করুন।', true);
+                return;
             }
             const applicantType = form.querySelector('[name="applicantType"]:checked')?.value;
-            const age = Number.parseInt(document.getElementById('ageField').value, 10);
-            const minimumAge = (applicantType === 'পাত্র' || applicantType === 'ছেলে খুনসা') ? 21 : 18;
-            if (!Number.isFinite(age) || age < minimumAge) {
-                showMessage(formMessage, `বাংলাদেশের প্রচলিত সাধারণ আইন অনুযায়ী এই আবেদন জমা দিতে ন্যূনতম বয়স ${minimumAge} বছর হতে হবে।`, true); return;
+            const age = parseInt(document.getElementById('ageField').value, 10);
+            const minAge = (applicantType === 'পাত্র' || applicantType === 'ছেলে খুনসা') ? 21 : 18;
+            if (!Number.isFinite(age) || age < minAge) {
+                showMessage(formMessage,
+                    `প্রচলিত আইন অনুযায়ী এই আবেদন জমা দিতে ন্যূনতম বয়স ${minAge} বছর হতে হবে।`, true);
+                return;
             }
 
             const isGroom = applicantType === 'পাত্র' || applicantType === 'ছেলে খুনসা';
             const maritalStatus = isGroom
                 ? form.querySelector('[name="groomMaritalStatus"]:checked')?.value || null
                 : form.querySelector('[name="brideMaritalStatus"]:checked')?.value || null;
+
             const consentValues = Array.from(form.querySelectorAll('[name="consent"]:checked')).map(el => el.value);
             if (consentValues.length !== 3) {
-                showMessage(formMessage, 'জমা দেওয়ার আগে সম্মতিপত্রের সবগুলো শর্তে সম্মতি দিন।', true); return;
+                showMessage(formMessage, 'জমা দেওয়ার আগে সম্মতিপত্রের সবগুলো শর্তে সম্মতি দিন।', true);
+                return;
             }
 
             const formData = collectFormData();
-            const biodataCode = createBiodataCode();
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = '<i class="fas fa-paper-plane"></i> বায়োডাটা জমা দিন';
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> জমা হচ্ছে...';
 
             try {
+                const biodataCode = await RH.generateBiodataCode(applicantType);
+
                 const payload = {
                     biodata_code: biodataCode,
                     user_id: currentSession.user.id,
@@ -981,25 +925,25 @@
                     status: 'pending'
                 };
 
-                const { data, error } = await supabaseClient
-                    .from('biodata_records')
-                    .insert(payload)
-                    .select('id,biodata_code,status')
-                    .single();
+                const { data, error } = await sb.from('biodata_records')
+                    .insert(payload).select('id,biodata_code,status').single();
                 if (error) throw error;
 
                 document.getElementById('biodataId').value = data.biodata_code;
-                showMessage(formMessage, 'আলহামদুলিল্লাহ! আপনার বায়োডাটা জমা হয়েছে। বায়োডাটা আইডি: ' + data.biodata_code + '। এটি কর্তৃপক্ষের যাচাইয়ের অপেক্ষায় আছে।');
+                showMessage(formMessage,
+                    `আলহামদুলিল্লাহ! আপনার বায়োডাটা জমা হয়েছে। আইডি: ${data.biodata_code}। কর্তৃপক্ষের যাচাইয়ের অপেক্ষায় আছে।`);
+
                 form.reset();
                 document.getElementById('biodataId').value = data.biodata_code;
-                document.getElementById('fillDate').value = new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('fillDate').value = new Date().toLocaleDateString('bn-BD',
+                    { year: 'numeric', month: 'long', day: 'numeric' });
                 toggleGenderSections(); togglePhysicalDetail(); toggleChildrenDetail(); calculateAge();
                 window.scrollTo({ top: formMessage.getBoundingClientRect().top + window.scrollY - 30, behavior: 'smooth' });
-            } catch (error) {
-                console.error('Biodata submit error:', error);
-                const message = error.code === '23505'
-                    ? 'এই বায়োডাটা আইডি আগে ব্যবহৃত হয়েছে। অনুগ্রহ করে আবার জমা দিন।'
-                    : 'বায়োডাটা জমা হয়নি: ' + (error.message || 'নেটওয়ার্ক/ডেটাবেজ সমস্যা');
+            } catch (err) {
+                console.error(err);
+                const message = err.code === '23505'
+                    ? 'এই বায়োডাটা আইডি আগে ব্যবহৃত হয়েছে। আবার জমা দিন।'
+                    : 'বায়োডাটা জমা হয়নি: ' + (err.message || 'নেটওয়ার্ক/ডেটাবেজ সমস্যা');
                 showMessage(formMessage, message, true);
             } finally {
                 submitButton.disabled = false;
@@ -1007,17 +951,20 @@
             }
         });
 
-        // অ্যাপ চালু হলে বিদ্যমান সেশন পরীক্ষা এবং লগইন অবস্থা পর্যবেক্ষণ
-        supabaseClient.auth.onAuthStateChange((_event, session) => setAuthUI(session));
-        supabaseClient.auth.getSession().then(({ data, error }) => {
-            if (error) console.error('Session check error:', error);
+        sb.auth.onAuthStateChange((_event, session) => setAuthUI(session));
+        sb.auth.getSession().then(({ data, error }) => {
+            if (error) console.warn('Session check:', error);
             setAuthUI(data?.session || null);
         });
         initializeForm();
-        document.querySelectorAll('input[name="applicantType"]').forEach(el => el.addEventListener('change', toggleGenderSections));
-        document.querySelectorAll('input[name="groomMaritalStatus"], input[name="brideMaritalStatus"]').forEach(el => el.addEventListener('change', updateChildrenSection));
-        document.querySelectorAll('input[name="physicalProblem"]').forEach(el => el.addEventListener('change', togglePhysicalDetail));
-        document.querySelectorAll('input[name="hasChildren"]').forEach(el => el.addEventListener('change', toggleChildrenDetail));
+        document.querySelectorAll('input[name="applicantType"]').forEach(el =>
+            el.addEventListener('change', toggleGenderSections));
+        document.querySelectorAll('input[name="groomMaritalStatus"], input[name="brideMaritalStatus"]')
+            .forEach(el => el.addEventListener('change', updateChildrenSection));
+        document.querySelectorAll('input[name="physicalProblem"]').forEach(el =>
+            el.addEventListener('change', togglePhysicalDetail));
+        document.querySelectorAll('input[name="hasChildren"]').forEach(el =>
+            el.addEventListener('change', toggleChildrenDetail));
         document.querySelector('[name="dob"]').addEventListener('change', calculateAge);
     </script>
 </body>
