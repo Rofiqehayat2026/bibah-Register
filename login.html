@@ -6,17 +6,45 @@
 <title>লগইন | রফিকে হায়াত</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="shared.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Bengali','Segoe UI',Tahoma,sans-serif}
+body{background:#f2f5f9;color:#1e2b3a;line-height:1.6;padding:1rem;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{max-width:520px;width:100%;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 12px 32px rgba(0,20,30,.08);padding:2rem;border:1px solid #e6edf4}
+.card{background:#f9fcff;border-radius:16px;padding:1.6rem;margin-bottom:1rem;border:1px solid #d9e6f2}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-weight:600;margin-bottom:.35rem;font-size:.93rem;color:#0b3b4a}
+input{width:100%;padding:.7rem 1rem;border:1.5px solid #cbdae5;border-radius:12px;font-size:1rem;background:#fff;outline:none;font-family:inherit;transition:.15s}
+input:focus{border-color:#1e7e5e;box-shadow:0 0 0 3px rgba(30,126,94,.15)}
+.btn{background:linear-gradient(145deg,#1e7e5e,#146b4e);color:#fff;border:none;padding:.85rem 1.8rem;font-size:1rem;font-weight:700;border-radius:40px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit}
+.btn:hover{background:linear-gradient(145deg,#146b4e,#0e523b);transform:translateY(-1px);box-shadow:0 6px 16px rgba(30,126,94,.25)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+.btn-secondary{background:#e2f0f5;color:#0e4d64;border:1.5px solid #b7d4de}
+.btn-secondary:hover{background:#cfe5ee;color:#0e4d64;box-shadow:none}
+.btn-block{width:100%}
+.alert{padding:.8rem 1.1rem;border-radius:12px;margin:.8rem 0;font-size:.93rem}
+.alert-info{background:#e7f1f7;color:#0e4d64}
+.alert-error{background:#fce4e4;color:#b42318}
+.alert-success{background:#d9f1e8;color:#0f5132}
+.note{font-size:.85rem;color:#45748a;background:#e7f1f7;padding:.6rem 1rem;border-radius:10px}
+.hidden{display:none!important}
+.text-center{text-align:center}
+.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}
+.mb-1{margin-bottom:.5rem}.mb-2{margin-bottom:1rem}
+.header-title{color:#0e4d64;font-size:2rem;font-weight:700}
+.header-title i{color:#1e7e5e}
+.slogan{color:#45748a;margin-top:.3rem;font-size:.95rem}
+.footer-links{text-align:center;margin-top:1.2rem;font-size:.9rem;color:#45748a}
+.footer-links a{color:#1e7e5e;text-decoration:none;margin:0 .4rem}
+.footer-links a:hover{text-decoration:underline}
+</style>
 </head>
 <body>
-<div class="container" style="max-width:520px;margin-top:3rem">
+<div class="container">
   <div class="text-center mb-2">
-    <h1 style="color:#0e4d64;font-size:2rem">
-      রফিকে হায়াত <i class="fas fa-heart" style="color:#1e7e5e"></i>
-    </h1>
-    <p style="color:#45748a;margin-top:.3rem">সদস্য লগইন</p>
+    <h1 class="header-title">রফিকে হায়াত <i class="fas fa-heart"></i></h1>
+    <p class="slogan">সদস্য লগইন</p>
   </div>
 
   <div class="card">
@@ -29,7 +57,7 @@
         <i class="fas fa-paper-plane"></i> লগইন লিংক পাঠান
       </button>
       <p class="alert mt-2" id="msg" style="display:none"></p>
-      <div class="note mt-2" style="font-size:.85rem">
+      <div class="note mt-2">
         <i class="fas fa-info-circle"></i> আপনার ইমেইলে একটি নিরাপদ ম্যাজিক লিংক পাঠানো হবে।
         লিংকে ক্লিক করলেই লগইন হয়ে যাবে। পাসওয়ার্ড মনে রাখার দরকার নেই।
       </div>
@@ -49,14 +77,9 @@
     </div>
   </div>
 
-  <div class="text-center mt-2" style="font-size:.9rem;color:#45748a">
-    <a href="register.html" style="color:#1e7e5e">
-      <i class="fas fa-user-plus"></i> নতুন সদস্য? রেজিস্ট্রেশন করুন
-    </a>
-    &nbsp;|&nbsp;
-    <a href="admin-login.html" style="color:#1e7e5e">
-      <i class="fas fa-shield-alt"></i> অ্যাডমিন
-    </a>
+  <div class="footer-links">
+    <a href="register.html"><i class="fas fa-user-plus"></i> নতুন সদস্য? রেজিস্ট্রেশন করুন</a>
+    <a href="admin-login.html"><i class="fas fa-shield-alt"></i> অ্যাডমিন</a>
   </div>
 </div>
 
@@ -95,7 +118,7 @@ sendBtn.addEventListener('click', async () => {
     msg.textContent = 'ব্যর্থ: ' + error.message;
   } else {
     msg.className = 'alert alert-success mt-2';
-    msg.textContent = '✅ আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স চেক করুন না পেলে স্প্যাম ফোল্ডার চেক করুন।';
+    msg.innerHTML = '✅ আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স ও স্প্যাম ফোল্ডার চেক করুন।';
     document.getElementById('email').value = '';
   }
 });
