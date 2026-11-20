@@ -533,24 +533,44 @@ loginBtn.addEventListener("click", async () => {
       }
     );
 
+    // প্রকৃত Edge Function error response সংগ্রহ
     if (error) {
+      let responseBody = "";
 
-      console.error("Edge Function error:", error);
-
-      let errorMessage = "লগইন অনুরোধ ব্যর্থ হয়েছে।";
-
-      if (data && data.error) {
-        errorMessage = data.error;
-      } else if (error.message) {
-        errorMessage = error.message;
+      try {
+        if (error.context) {
+          responseBody = await error.context.clone().text();
+        }
+      } catch (readError) {
+        console.warn("Edge Function response body পড়া যায়নি:", readError);
       }
 
-      throw new Error(errorMessage);
+      console.error("LOGIN ERROR DETAILS:", {
+        status: error.context?.status || null,
+        body: responseBody,
+        error: error
+      });
+
+      let serverMessage = "";
+
+      try {
+        const parsed = responseBody ? JSON.parse(responseBody) : null;
+        serverMessage = parsed?.error || parsed?.message || "";
+      } catch (_) {
+        serverMessage = responseBody;
+      }
+
+      throw new Error(
+        serverMessage ||
+        error.message ||
+        "লগইন অনুরোধ ব্যর্থ হয়েছে।"
+      );
     }
 
-    if (!data || !data.session) {
+    if (!data || !data.success || !data.session) {
+      console.error("LOGIN RESPONSE INVALID:", data);
       throw new Error(
-        data?.error || "সার্ভার থেকে লগইন সেশন পাওয়া যায়নি।"
+        data?.error || "সার্ভার থেকে বৈধ লগইন সেশন পাওয়া যায়নি।"
       );
     }
 
