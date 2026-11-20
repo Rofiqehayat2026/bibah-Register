@@ -14,40 +14,115 @@
 <div class="container" style="max-width:520px;margin-top:3rem">
   <div class="text-center mb-2">
     <h1 style="color:#0e4d64;font-size:1.8rem">রেজিস্ট্রেশন</h1>
-    <p style="color:#45748a">একটি পাসওয়ার্ড দিন অথবা ইমেইল OTP ব্যবহার করুন</p>
+    <p style="color:#45748a">পাসওয়ার্ড দিয়ে অ্যাকাউন্ট তৈরি করুন</p>
   </div>
   <div class="card">
-    <div class="form-group"><label>পূর্ণ নাম</label><input id="fullName" placeholder="আপনার নাম"></div>
-    <div class="form-group"><label>মোবাইল</label><input id="phone" placeholder="01XXXXXXXXX"></div>
-    <div class="form-group"><label>ইমেইল</label><input type="email" id="email" placeholder="your@email.com"></div>
-    <div class="form-group"><label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input type="password" id="password"></div>
-    <button class="btn btn-block" id="regBtn"><i class="fas fa-user-plus"></i> রেজিস্ট্রেশন</button>
+    <div class="form-group">
+      <label>পূর্ণ নাম <span style="color:#d14545">*</span></label>
+      <input id="fullName" placeholder="আপনার নাম" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label>মোবাইল <span style="color:#d14545">*</span></label>
+      <input id="phone" placeholder="01XXXXXXXXX" inputmode="tel" autocomplete="tel">
+    </div>
+    <div class="form-group">
+      <label>ইমেইল <span style="color:#d14545">*</span></label>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর) <span style="color:#d14545">*</span></label>
+      <input type="password" id="password" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label>পাসওয়ার্ড আবার দিন <span style="color:#d14545">*</span></label>
+      <input type="password" id="password2" autocomplete="new-password">
+    </div>
+    <button class="btn btn-block" id="regBtn">
+      <i class="fas fa-user-plus"></i> রেজিস্ট্রেশন
+    </button>
     <p class="alert mt-2" id="msg" style="display:none"></p>
   </div>
-  <div class="text-center" style="font-size:.9rem"><a href="login.html" style="color:#1e7e5e">← লগইন</a></div>
+  <div class="text-center" style="font-size:.9rem">
+    <a href="login.html" style="color:#1e7e5e">← লগইন</a>
+  </div>
 </div>
+
 <script>
-document.getElementById('regBtn').addEventListener('click', async () => {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
+const msg = document.getElementById('msg');
+const regBtn = document.getElementById('regBtn');
+
+function showMsg(text, isError = false) {
+  msg.style.display = 'block';
+  msg.className = 'alert mt-2 ' + (isError ? 'alert-error' : 'alert-success');
+  msg.textContent = text;
+}
+
+regBtn.addEventListener('click', async () => {
   const fullName = document.getElementById('fullName').value.trim();
   const phone = document.getElementById('phone').value.trim();
-  const msg = document.getElementById('msg');
-  if (!email || password.length < 6) { RH.toast('ইমেইল ও ৬+ অক্ষরের পাসওয়ার্ড দিন', false); return; }
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const password2 = document.getElementById('password2').value;
 
-  const btn = document.getElementById('regBtn');
-  btn.disabled = true; btn.textContent = 'অপেক্ষা করুন...';
-  const { data, error } = await sb.auth.signUp({ email, password });
-  btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> রেজিস্ট্রেশন';
-  msg.style.display = 'block';
-  msg.className = error ? 'alert alert-error' : 'alert alert-success';
-  if (error) { msg.textContent = error.message; return; }
-
-  if (data.user) {
-    await sb.from('profiles').update({ full_name: fullName, phone }).eq('id', data.user.id);
+  // ভ্যালিডেশন
+  if (!fullName) return showMsg('পূর্ণ নাম লিখুন', true);
+  if (!/^01[3-9]\d{8}$/.test(phone.replace(/\s+/g, ''))) {
+    return showMsg('সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', true);
   }
-  msg.textContent = 'রেজিস্ট্রেশন সফল! এখন লগইন করুন।';
-  setTimeout(() => location.href = 'login.html', 1500);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return showMsg('সঠিক ইমেইল ঠিকানা দিন', true);
+  }
+  if (password.length < 6) return showMsg('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে', true);
+  if (password !== password2) return showMsg('পাসওয়ার্ড দুইবার একই দিন', true);
+
+  regBtn.disabled = true;
+  regBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> অপেক্ষা করুন...';
+  msg.style.display = 'none';
+
+  try {
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        // trigger এগুলো profiles-এ বসিয়ে দেবে
+        data: { full_name: fullName, phone }
+      }
+    });
+
+    if (error) {
+      showMsg('রেজিস্ট্রেশন ব্যর্থ: ' + error.message, true);
+      return;
+    }
+
+    // ইমেইল ইতিমধ্যে থাকলে identities খালি
+    if (data.user?.identities?.length === 0) {
+      showMsg('এই ইমেইলে আগেই অ্যাকাউন্ট আছে। লগইন করুন।', true);
+      return;
+    }
+
+    // যদি সেশন পাওয়া যায় (Confirm email বন্ধ), সরাসরি প্রোফাইল আপডেটের চেষ্টা
+    if (data.session?.user) {
+      const { error: pErr } = await sb.from('profiles').upsert({
+        id: data.session.user.id,
+        full_name: fullName,
+        phone
+      }, { onConflict: 'id' });
+      if (pErr) console.warn('profile upsert:', pErr);
+
+      showMsg('✅ রেজিস্ট্রেশন সফল! ড্যাশবোর্ডে নিয়ে যাচ্ছি...');
+      setTimeout(() => location.href = 'dashboard.html', 1200);
+    } else {
+      // Confirm email চালু: ইমেইল যাচাই দরকার
+      showMsg('✅ রেজিস্ট্রেশন সফল! ইমেইলে পাঠানো যাচাই লিংকে ক্লিক করে অ্যাকাউন্ট সক্রিয় করুন।');
+      setTimeout(() => location.href = 'login.html', 2200);
+    }
+  } catch (err) {
+    console.error(err);
+    showMsg('ব্যর্থ: ' + (err.message || 'নেটওয়ার্ক সমস্যা'), true);
+  } finally {
+    regBtn.disabled = false;
+    regBtn.innerHTML = '<i class="fas fa-user-plus"></i> রেজিস্ট্রেশন';
+  }
 });
 </script>
 </body>
