@@ -272,6 +272,39 @@
             padding-left: 1.2rem;
         }
         .privacy-box li { margin-bottom: 0.3rem; }
+
+        /* প্রধান নেভিগেশন ও ফিচার শর্টকাট */
+        .main-nav {
+            display:flex; flex-wrap:wrap; justify-content:center; gap:.65rem;
+            margin:0 0 1.5rem; padding:1rem; background:#f3faf8;
+            border:1px solid #cfe4dc; border-radius:16px;
+        }
+        .main-nav a, .feature-link {
+            display:inline-flex; align-items:center; justify-content:center;
+            gap:.5rem; text-decoration:none; font-weight:600;
+            border-radius:12px; padding:.7rem 1rem; transition:.2s;
+        }
+        .main-nav a { color:#0e4d64; background:#fff; border:1px solid #d9e6f2; }
+        .main-nav a:hover, .feature-link:hover { transform:translateY(-2px); box-shadow:0 5px 14px rgba(14,77,100,.12); }
+        .main-nav a.primary, .feature-link.primary { color:#fff; background:#1e7e5e; border-color:#1e7e5e; }
+        .feature-hub { margin:0 0 1.8rem; }
+        .feature-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+        .feature-card {
+            background:#fff; border:1px solid #d9e6f2; border-radius:16px;
+            padding:1.1rem; text-align:center; box-shadow:0 5px 14px rgba(0,0,0,.025);
+        }
+        .feature-card .feature-icon { font-size:1.7rem; color:#1e7e5e; margin-bottom:.45rem; }
+        .feature-card h3 { color:#0e4d64; font-size:1.05rem; margin-bottom:.35rem; }
+        .feature-card p { color:#5e7e8c; font-size:.88rem; min-height:2.8em; margin-bottom:.75rem; }
+        .feature-link { color:#1e7e5e; border:1px solid #b7d9d0; background:#f3faf8; width:100%; }
+        #biodataForm { scroll-margin-top:1rem; }
+        @media(max-width:760px) { .feature-grid { grid-template-columns:1fr 1fr; } }
+        @media(max-width:520px) {
+            .main-nav { padding:.7rem; }
+            .main-nav a { flex:1 1 42%; font-size:.88rem; }
+            .feature-grid { grid-template-columns:1fr; }
+        }
+
     </style>
 </head>
 <body>
@@ -280,6 +313,56 @@
             <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
             <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
         </div>
+
+        <nav class="main-nav" aria-label="প্রধান মেনু">
+            <a class="primary" href="#biodataForm"><i class="fas fa-file-signature"></i> বায়োডাটা জমা</a>
+            <a href="register.html"><i class="fas fa-user-plus"></i> রেজিস্ট্রেশন</a>
+            <a href="login.html"><i class="fas fa-sign-in-alt"></i> সদস্য লগইন</a>
+            <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ড</a>
+            <a href="admin-login.html"><i class="fas fa-user-shield"></i> অ্যাডমিন</a>
+        </nav>
+
+        <section class="feature-hub" aria-label="ওয়েবসাইটের ফিচারসমূহ">
+            <h2 class="section-title"><i class="fas fa-th-large"></i> সকল ফিচার</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>বায়োডাটা জমা</h3>
+                    <p>নিরাপদে নিজের বিস্তারিত বায়োডাটা পূরণ ও জমা দিন।</p>
+                    <a class="feature-link primary" href="#biodataForm">ফরম পূরণ করুন</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
+                    <h3>নতুন সদস্য</h3>
+                    <p>নতুন অ্যাকাউন্ট তৈরি করে প্ল্যাটফর্মের সদস্য হন।</p>
+                    <a class="feature-link" href="register.html">রেজিস্ট্রেশন</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-sign-in-alt"></i></div>
+                    <h3>সদস্য লগইন</h3>
+                    <p>আগের অ্যাকাউন্টে প্রবেশ করে আপনার কার্যক্রম চালিয়ে যান।</p>
+                    <a class="feature-link" href="login.html">লগইন করুন</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>প্রার্থী খুঁজুন</h3>
+                    <p>অনুমোদিত সদস্য হিসেবে প্রাথমিক বায়োডাটা অনুসন্ধান করুন।</p>
+                    <a class="feature-link" href="dashboard.html">ড্যাশবোর্ডে যান</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-paper-plane"></i></div>
+                    <h3>অনুরোধ ও অনুমোদন</h3>
+                    <p>বিস্তারিত বায়োডাটা দেখার অনুরোধ এবং অনুমোদনের অবস্থা দেখুন।</p>
+                    <a class="feature-link" href="dashboard.html">আমার অনুরোধ</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3>প্রশাসনিক প্যানেল</h3>
+                    <p>কর্তৃপক্ষের জন্য পৃথক অ্যাডমিন লগইন পেজ।</p>
+                    <a class="feature-link" href="admin-login.html">অ্যাডমিন লগইন</a>
+                </div>
+            </div>
+        </section>
 
         <div class="card" style="background: #f3faf8;">
             <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;">
