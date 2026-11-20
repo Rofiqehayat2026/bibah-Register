@@ -6,86 +6,30 @@
 <title>ড্যাশবোর্ড | রফিকে হায়াত</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
-/* ============ বেস ============ */
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Bengali','Segoe UI',Tahoma,sans-serif}
-body{background:#f2f5f9;color:#1e2b3a;line-height:1.6;padding:1rem}
-.container{max-width:1100px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 12px 32px rgba(0,20,30,.08);padding:1.8rem}
-.card{background:#f9fcff;border-radius:16px;padding:1.4rem;margin-bottom:1.4rem;border:1px solid #d9e6f2}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.4rem}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-.form-group{margin-bottom:.9rem}
-.form-group label{display:block;font-weight:600;margin-bottom:.35rem;font-size:.93rem;color:#0b3b4a}
-input,select,textarea{width:100%;padding:.65rem .95rem;border:1.5px solid #cbdae5;border-radius:12px;font-size:.97rem;background:#fff;outline:none;font-family:inherit;transition:.15s}
-input:focus,select:focus,textarea:focus{border-color:#1e7e5e;box-shadow:0 0 0 3px rgba(30,126,94,.15)}
-textarea{min-height:80px;resize:vertical}
-.btn{background:linear-gradient(145deg,#1e7e5e,#146b4e);color:#fff;border:none;padding:.85rem 1.8rem;font-size:1rem;font-weight:700;border-radius:40px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit}
-.btn:hover{background:linear-gradient(145deg,#146b4e,#0e523b);transform:translateY(-1px);box-shadow:0 6px 16px rgba(30,126,94,.25)}
-.btn:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
-.btn-secondary{background:#e2f0f5;color:#0e4d64;border:1.5px solid #b7d4de}
-.btn-secondary:hover{background:#cfe5ee;color:#0e4d64;box-shadow:none}
-.btn-block{width:100%}
-.section-title{font-size:1.35rem;font-weight:600;color:#0b3b4a;margin:1.6rem 0 .9rem;padding:.55rem .9rem;border-left:5px solid #1e7e5e;background:linear-gradient(to right,#e9f3f0,transparent);border-radius:0 10px 10px 0;display:flex;align-items:center;gap:8px}
-.section-title i{color:#1e7e5e}
-.badge{padding:.2rem .65rem;border-radius:20px;font-size:.78rem;font-weight:600;display:inline-block}
-.badge-pending{background:#fff3cd;color:#856404}
-.badge-verified{background:#d1e7dd;color:#0f5132}
-.badge-rejected{background:#f8d7da;color:#842029}
-.badge-matched{background:#cfe2ff;color:#084298}
-.header-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem;padding-bottom:1rem;border-bottom:2px dashed #cbd9e6}
-.header-bar h1{font-size:1.6rem;color:#0e4d64;display:flex;align-items:center;gap:10px}
-.header-bar h1 i{color:#1e7e5e}
-.alert{padding:.8rem 1.1rem;border-radius:12px;margin:.8rem 0;font-size:.93rem}
-.alert-info{background:#e7f1f7;color:#0e4d64}
-.alert-error{background:#fce4e4;color:#b42318}
-.alert-success{background:#d9f1e8;color:#0f5132}
-.alert-warning{background:#fff3cd;color:#856404}
-.hidden{display:none!important}
-.text-center{text-align:center}
-.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}
-.mb-1{margin-bottom:.5rem}.mb-2{margin-bottom:1rem}.mb-3{margin-bottom:1.5rem}
-.preview-row{display:flex;border-bottom:1px dashed #d0e0ea;padding:.5rem 0;font-size:.93rem}
-.preview-row .lbl{flex:1;font-weight:600;color:#0b3b4a}
-.preview-row .val{flex:2;color:#1e2b3a}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;overflow-y:auto;padding:1rem}
-.modal.show{display:block}
-.modal-box{max-width:760px;margin:2rem auto;background:#fff;padding:1.8rem;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-
-/* ============ ট্যাব ============ */
-.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem;border-bottom:2px solid #d0e0ea;padding-bottom:.3rem}
-.tab-btn{background:none;border:none;padding:.65rem 1.1rem;border-radius:10px 10px 0 0;cursor:pointer;font-weight:600;color:#45748a;font-family:inherit;font-size:.95rem;transition:.15s}
-.tab-btn:hover{background:#e8f3f0;color:#0e4d64}
-.tab-btn.active{background:#1e7e5e;color:#fff}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-/* ============ নোটিফিকেশন ============ */
-.notif-item{background:#fff8e5;border-left:4px solid #f0a500;padding:.8rem 1rem;border-radius:8px;margin-bottom:.6rem;font-size:.92rem}
-.notif-item.unread{background:#fff3cd;font-weight:500}
-
-/* ============ প্রার্থী কার্ড ============ */
-.candidate-card{background:#fff;border:1px solid #d9e6f2;border-radius:14px;padding:1rem;margin-bottom:1rem;transition:.15s}
-.candidate-card:hover{box-shadow:0 6px 18px rgba(30,126,94,.1);border-color:#1e7e5e}
-.candidate-card .code-badge{background:#e2f0f5;color:#0e4d64;padding:.15rem .6rem;border-radius:20px;font-size:.82rem;font-weight:600;font-family:monospace}
-.candidate-card .info-row{font-size:.9rem;color:#45748a;margin-top:.25rem}
-.candidate-card .info-row strong{color:#0b3b4a}
-.access-card{background:#f0f9f6;border:1px solid #b7d9d0;border-radius:14px;padding:1.1rem;margin-bottom:1rem}
-
-/* ============ কাউন্টডাউন ============ */
-.countdown{display:inline-flex;align-items:center;gap:6px;padding:.3rem .8rem;border-radius:20px;font-weight:600;font-size:.85rem}
-.countdown-ok{background:#d1e7dd;color:#0f5132}
-.countdown-warn{background:#fff3cd;color:#856404}
-.countdown-danger{background:#f8d7da;color:#842118;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
-.countdown-timer{font-family:monospace;letter-spacing:.02em}
-
-/* ============ রেসপন্সিভ ============ */
-@media(max-width:820px){
-  .grid-2,.grid-3{grid-template-columns:1fr}
-  .container{padding:1.2rem}
-}
+  .tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem;border-bottom:2px solid #d0e0ea;padding-bottom:.3rem}
+  .tab-btn{background:none;border:none;padding:.65rem 1.1rem;border-radius:10px 10px 0 0;cursor:pointer;font-weight:600;color:#45748a;font-family:inherit;font-size:.95rem;transition:.15s}
+  .tab-btn:hover{background:#e8f3f0;color:#0e4d64}
+  .tab-btn.active{background:#1e7e5e;color:#fff}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+  .notif-item{background:#fff8e5;border-left:4px solid #f0a500;padding:.8rem 1rem;border-radius:8px;margin-bottom:.6rem;font-size:.92rem}
+  .notif-item.unread{background:#fff3cd;font-weight:500}
+  .candidate-card{background:#fff;border:1px solid #d9e6f2;border-radius:14px;padding:1rem;margin-bottom:1rem;transition:.15s}
+  .candidate-card:hover{box-shadow:0 6px 18px rgba(30,126,94,.1);border-color:#1e7e5e}
+  .candidate-card .code-badge{background:#e2f0f5;color:#0e4d64;padding:.15rem .6rem;border-radius:20px;font-size:.82rem;font-weight:600;font-family:monospace}
+  .candidate-card .info-row{font-size:.9rem;color:#45748a;margin-top:.25rem}
+  .candidate-card .info-row strong{color:#0b3b4a}
+  .access-card{background:#f0f9f6;border:1px solid #b7d9d0;border-radius:14px;padding:1.1rem;margin-bottom:1rem}
+  .countdown{display:inline-flex;align-items:center;gap:6px;padding:.3rem .8rem;border-radius:20px;font-weight:600;font-size:.85rem}
+  .countdown-ok{background:#d1e7dd;color:#0f5132}
+  .countdown-warn{background:#fff3cd;color:#856404}
+  .countdown-danger{background:#f8d7da;color:#842118;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+  .countdown-timer{font-family:monospace;letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -107,14 +51,12 @@ textarea{min-height:80px;resize:vertical}
     <button class="tab-btn" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
   </div>
 
-  <!-- ট্যাব ১: হোম -->
   <div class="tab-panel active" id="panel-home">
     <div id="biodataStatusCard" class="card">লোড হচ্ছে...</div>
     <div class="section-title"><i class="fas fa-bell"></i> নোটিফিকেশন</div>
     <div id="notificationsList">লোড হচ্ছে...</div>
   </div>
 
-  <!-- ট্যাব ২: প্রার্থী খুঁজুন -->
   <div class="tab-panel" id="panel-browse">
     <div class="card">
       <div class="grid-3">
@@ -151,18 +93,15 @@ textarea{min-height:80px;resize:vertical}
     <div id="browseResults">লোড হচ্ছে...</div>
   </div>
 
-  <!-- ট্যাব ৩: আমার অনুরোধ -->
   <div class="tab-panel" id="panel-requests">
     <div id="myRequestsList">লোড হচ্ছে...</div>
   </div>
 
-  <!-- ট্যাব ৪: অনুমোদিত -->
   <div class="tab-panel" id="panel-approved">
     <div id="approvedList">লোড হচ্ছে...</div>
   </div>
 </div>
 
-<!-- বিস্তারিত মোডাল -->
 <div id="detailModal" class="modal">
   <div class="modal-box">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
@@ -175,11 +114,30 @@ textarea{min-height:80px;resize:vertical}
   </div>
 </div>
 
+<!-- অনুরোধ মোডাল -->
+<div id="requestModal" class="modal">
+  <div class="modal-box" style="max-width:520px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h2 style="color:#0e4d64;font-size:1.2rem"><i class="fas fa-paper-plane"></i> বিস্তারিত দেখার অনুরোধ</h2>
+      <button class="btn btn-secondary" onclick="closeRequest()" style="padding:.4rem .9rem">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <p style="color:#45748a;font-size:.9rem;margin-bottom:.7rem">
+      ঐচ্ছিক: কেন আগ্রহী — সংক্ষেপে লিখুন (সর্বোচ্চ ২৫০ অক্ষর)।
+    </p>
+    <textarea id="requestMessage" maxlength="250" placeholder="আপনার বার্তা..." style="min-height:100px"></textarea>
+    <div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:1rem">
+      <button class="btn btn-secondary" onclick="closeRequest()">বাতিল</button>
+      <button class="btn" id="sendRequestBtn"><i class="fas fa-paper-plane"></i> পাঠান</button>
+    </div>
+  </div>
+</div>
+
 <script>
 let currentSession = null;
 let currentProfile = null;
 
-// ============ সেশন গার্ড ============
 (async function init() {
   currentSession = await RH.getSession();
   if (!currentSession) { location.href = 'login.html'; return; }
@@ -188,13 +146,14 @@ let currentProfile = null;
   document.getElementById('userInfo').innerHTML =
     `<i class="fas fa-user"></i> ${RH.esc(currentProfile?.full_name || currentSession.user.email)}`;
 
-  // প্রতিবার লোডে মেয়াদোত্তীর্ণ গুলো expire মার্ক করি
-  sb.rpc('expire_old_access_requests').catch(err => console.warn('expire:', err));
+  try {
+    const { error } = await sb.rpc('expire_old_access_requests');
+    if (error) console.warn('expire RPC:', error);
+  } catch (e) { console.warn('expire:', e); }
 
   await Promise.all([loadHome(), loadNotifications()]);
 })();
 
-// ============ ট্যাব সুইচ ============
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -208,7 +167,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ============ হোম: বায়োডাটা স্ট্যাটাস ============
 async function loadHome() {
   const el = document.getElementById('biodataStatusCard');
   const { data, error } = await sb.from('biodata_records')
@@ -222,7 +180,6 @@ async function loadHome() {
     el.innerHTML = `<div class="alert alert-error">ত্রুটি: ${RH.esc(error.message)}</div>`;
     return;
   }
-
   if (!data) {
     el.innerHTML = `
       <div class="text-center" style="padding:1rem">
@@ -255,21 +212,19 @@ async function loadHome() {
       <div style="text-align:right">
         <div style="font-size:.85rem;color:#45748a">জমা দেওয়ার তারিখ</div>
         <div style="font-weight:600">${RH.fmtDate(data.created_at)}</div>
-        <a href="biodata-preview.html?id=${data.id}" class="btn mt-1" style="display:inline-flex;padding:.5rem 1rem;font-size:.9rem">
+        <a href="biodata-preview.html?id=${data.id}" class="btn mt-1"
+           style="display:inline-flex;padding:.5rem 1rem;font-size:.9rem">
           <i class="fas fa-eye"></i> প্রিভিউ / প্রিন্ট
         </a>
       </div>
     </div>`;
 }
 
-// ============ নোটিফিকেশন ============
 async function loadNotifications() {
   const el = document.getElementById('notificationsList');
   const { data, error } = await sb.from('notifications')
-    .select('*')
-    .eq('user_id', currentSession.user.id)
-    .order('created_at', { ascending: false })
-    .limit(20);
+    .select('*').eq('user_id', currentSession.user.id)
+    .order('created_at', { ascending: false }).limit(20);
 
   if (error) {
     el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`;
@@ -291,11 +246,12 @@ async function loadNotifications() {
 
   const unreadIds = data.filter(n => !n.is_read).map(n => n.id);
   if (unreadIds.length) {
-    await sb.from('notifications').update({ is_read: true }).in('id', unreadIds);
+    const { error: uErr } = await sb.from('notifications')
+      .update({ is_read: true }).in('id', unreadIds);
+    if (uErr) console.warn('notify update:', uErr);
   }
 }
 
-// ============ প্রার্থী খুঁজুন ============
 async function loadBrowse() {
   const el = document.getElementById('browseResults');
   el.innerHTML = 'লোড হচ্ছে...';
@@ -303,12 +259,8 @@ async function loadBrowse() {
   const division = document.getElementById('filterDivision').value || null;
 
   const { data, error } = await sb.rpc('list_public_biodatas', {
-    p_gender: gender,
-    p_division: division,
-    p_limit: 50,
-    p_offset: 0
+    p_gender: gender, p_division: division, p_limit: 50, p_offset: 0
   });
-
   if (error) {
     el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`;
     return;
@@ -326,7 +278,8 @@ async function loadBrowse() {
 
     const btnHtml = b.has_requested
       ? '<span class="badge badge-pending">অনুরোধ পাঠানো হয়েছে</span>'
-      : `<button class="btn" style="padding:.5rem 1rem;font-size:.88rem" onclick="requestAccess('${b.biodata_id}')">
+      : `<button class="btn" style="padding:.5rem 1rem;font-size:.88rem"
+                 onclick="openRequest('${b.biodata_id}')">
            <i class="fas fa-paper-plane"></i> বিস্তারিত দেখতে অনুরোধ
          </button>`;
 
@@ -353,53 +306,72 @@ async function loadBrowse() {
 }
 document.getElementById('searchBtn').addEventListener('click', loadBrowse);
 
-// ============ অনুরোধ পাঠান ============
-async function requestAccess(biodataId) {
-  const { data: biodata, error: fetchErr } = await sb.from('biodata_records')
-    .select('id, biodata_code, user_id, status')
-    .eq('id', biodataId)
-    .single();
+// ============ অনুরোধ মোডাল ============
+let pendingBiodataId = null;
 
-  if (fetchErr || !biodata) {
-    RH.toast('বায়োডাটা পাওয়া যায়নি', false);
-    return;
-  }
-  if (biodata.user_id === currentSession.user.id) {
-    RH.toast('নিজের বায়োডাটার অনুরোধ পাঠানো যায় না', false);
-    return;
-  }
-  if (biodata.status !== 'verified') {
-    RH.toast('এই বায়োডাটা এখনো যাচাই হয়নি', false);
-    return;
-  }
-
-  const message = prompt('(ঐচ্ছিক) কেন আগ্রহী — সংক্ষেপে লিখুন (সর্বোচ্চ ২৫০ অক্ষর):') || null;
-  if (message && message.length > 250) {
-    RH.toast('বার্তা ২৫০ অক্ষরের বেশি হবে না', false);
-    return;
-  }
-
-  const { error } = await sb.from('access_requests').insert({
-    biodata_id: biodata.id,
-    owner_user_id: biodata.user_id,
-    requester_user_id: currentSession.user.id,
-    message: message,
-    owner_approved: true,
-    admin_approved: false,
-    status: 'pending'
-  });
-
-  if (error) {
-    if (error.code === '23505') {
-      RH.toast('আপনি ইতিমধ্যে এই বায়োডাটার অনুরোধ পাঠিয়েছেন', false);
-    } else {
-      RH.toast('ব্যর্থ: ' + error.message, false);
-    }
-    return;
-  }
-  RH.toast('✅ অনুরোধ পাঠানো হয়েছে। অ্যাডমিন যাচাই করে অনুমোদন দেবেন।');
-  await loadBrowse();
+function openRequest(biodataId) {
+  pendingBiodataId = biodataId;
+  document.getElementById('requestMessage').value = '';
+  document.getElementById('requestModal').classList.add('show');
 }
+
+function closeRequest() {
+  pendingBiodataId = null;
+  document.getElementById('requestModal').classList.remove('show');
+}
+
+document.getElementById('sendRequestBtn').addEventListener('click', async () => {
+  if (!pendingBiodataId) return;
+  const message = document.getElementById('requestMessage').value.trim() || null;
+  const btn = document.getElementById('sendRequestBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
+
+  try {
+    const { data: biodata, error: fetchErr } = await sb.from('biodata_records')
+      .select('id, biodata_code, user_id, status')
+      .eq('id', pendingBiodataId)
+      .single();
+
+    if (fetchErr || !biodata) {
+      RH.toast('বায়োডাটা পাওয়া যায়নি', false);
+      return;
+    }
+    if (biodata.user_id === currentSession.user.id) {
+      RH.toast('নিজের বায়োডাটার অনুরোধ পাঠানো যায় না', false);
+      return;
+    }
+    if (biodata.status !== 'verified') {
+      RH.toast('এই বায়োডাটা এখনো যাচাই হয়নি', false);
+      return;
+    }
+
+    const { error } = await sb.from('access_requests').insert({
+      biodata_id: biodata.id,
+      owner_user_id: biodata.user_id,
+      requester_user_id: currentSession.user.id,
+      message,
+      owner_approved: false,
+      admin_approved: false,
+      status: 'pending'
+    });
+
+    if (error) {
+      if (error.code === '23505') RH.toast('ইতিমধ্যে এই বায়োডাটার অনুরোধ পাঠিয়েছেন', false);
+      else RH.toast('ব্যর্থ: ' + error.message, false);
+      return;
+    }
+    RH.toast('✅ অনুরোধ পাঠানো হয়েছে। অ্যাডমিন যাচাই করে অনুমোদন দেবেন।');
+    closeRequest();
+    await loadBrowse();
+  } catch (err) {
+    console.error(err);
+    RH.toast('ব্যর্থ: ' + (err.message || 'অজানা সমস্যা'), false);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> পাঠান';
+  }
+});
 
 // ============ আমার অনুরোধ ============
 async function loadMyRequests() {
@@ -461,7 +433,7 @@ async function loadMyRequests() {
       ${r.status === 'expired' ? `
         <div class="mt-1">
           <div class="alert alert-warning" style="font-size:.85rem;margin:0">
-            <i class="fas fa-info-circle"></i> মেয়াদ শেষ। আগ্রহী হলে অ্যাডমিনের সাথে যোগাযোগ করুন মেয়াদ বাড়ানোর জন্য।
+            <i class="fas fa-info-circle"></i> মেয়াদ শেষ। আগ্রহী হলে অ্যাডমিনের সাথে যোগাযোগ করুন।
           </div>
         </div>` : ''}
     </div>`).join('');
@@ -533,9 +505,10 @@ async function showDetail(biodataId) {
 
   const b = data[0];
   const fd = b.form_data || {};
-  const row = (label, val) => val
-    ? `<div class="preview-row"><div class="lbl">${label}</div><div class="val">${RH.esc(val)}</div></div>`
-    : '';
+  const row = (label, val) => {
+    const out = RH.fmtVal(val);
+    return out ? `<div class="preview-row"><div class="lbl">${label}</div><div class="val">${out}</div></div>` : '';
+  };
 
   document.getElementById('detailContent').innerHTML = `
     <div style="background:#f0f9f6;padding:1rem;border-radius:12px;margin-bottom:1rem;text-align:center">
@@ -550,7 +523,7 @@ async function showDetail(biodataId) {
     ${row('জেলা', b.current_district)}
     ${row('স্থায়ী জেলা', b.permanent_district)}
     ${row('বৈবাহিক অবস্থা', b.marital_status)}
-    ${row('মোবাইল', fd.mobile)}
+    ${row('মোবাইল', fd.whatsapp || fd.mobile)}
     ${row('WhatsApp', fd.whatsapp)}
     ${row('Telegram', fd.telegram)}
 
@@ -559,7 +532,8 @@ async function showDetail(biodataId) {
     ${row('পিতার পেশা', fd.fatherJob)}
     ${row('মাতার নাম', fd.motherName)}
     ${row('মাতার পেশা', fd.motherJob)}
-    ${row('ভাই', fd.brothers)} ${row('বোন', fd.sisters)}
+    ${row('ভাই', fd.brothers)}
+    ${row('বোন', fd.sisters)}
 
     <div class="section-title"><i class="fas fa-mosque"></i> দ্বীনী অবস্থা</div>
     ${row('৫ ওয়াক্ত সালাত', fd.salah)}
@@ -568,14 +542,14 @@ async function showDetail(biodataId) {
     ${row('হারাম বর্জন', fd.avoidHaram)}
     ${row('মাযহাব', fd.mazhab)}
     ${row('শিক্ষার ধরন', fd.educationType)}
-    ${fd.ownDeeniDetail ? `<div class="preview-row"><div class="lbl">দ্বীনী বিবরণ</div><div class="val">${RH.esc(fd.ownDeeniDetail)}</div></div>` : ''}
+    ${row('দ্বীনী বিবরণ', fd.ownDeeniDetail)}
 
     <div class="section-title"><i class="fas fa-heartbeat"></i> জীবনসঙ্গীর চাহিদা</div>
-    ${row('বয়স', fd.prefAge)}
-    ${row('উচ্চতা', fd.prefHeight)}
+    ${row('বয়স', fd.prefAgeFrom || fd.prefAgeTo ? `${fd.prefAgeFrom || '?'} – ${fd.prefAgeTo || '?'}` : null)}
+    ${row('উচ্চতা', fd.prefHeightFrom || fd.prefHeightTo ? `${fd.prefHeightFrom || '?'} – ${fd.prefHeightTo || '?'}` : null)}
     ${row('এলাকা', fd.prefArea)}
     ${row('শিক্ষা', fd.prefEducation)}
-    ${fd.extraRequirements ? `<div class="preview-row"><div class="lbl">অতিরিক্ত</div><div class="val">${RH.esc(fd.extraRequirements)}</div></div>` : ''}
+    ${row('অতিরিক্ত', fd.extraRequirements)}
   `;
 }
 
@@ -583,7 +557,7 @@ function closeDetail() {
   document.getElementById('detailModal').classList.remove('show');
 }
 
-// ============ কাউন্টডাউন হেল্পার ============
+// ============ কাউন্টডাউন ============
 function renderCountdown(expiresAt) {
   const now = new Date();
   const exp = new Date(expiresAt);
@@ -609,14 +583,29 @@ function renderCountdown(expiresAt) {
 }
 
 let countdownInterval = null;
+let expiryReloadScheduled = false;
+
 function startAllCountdowns() {
   if (countdownInterval) clearInterval(countdownInterval);
+  expiryReloadScheduled = false;
   countdownInterval = setInterval(() => {
+    let anyExpired = false;
     document.querySelectorAll('.countdown-wrap').forEach(el => {
       const exp = el.dataset.expires;
       if (!exp) return;
+      const diff = new Date(exp) - new Date();
+      if (diff <= 0) anyExpired = true;
       el.innerHTML = renderCountdown(exp);
     });
+    if (anyExpired && !expiryReloadScheduled) {
+      expiryReloadScheduled = true;
+      // একবার expire হলে DB ও UI রিফ্রেশ
+      setTimeout(() => {
+        sb.rpc('expire_old_access_requests').catch(() => {});
+        loadMyRequests();
+        loadApproved();
+      }, 1500);
+    }
   }, 1000);
 }
 </script>
