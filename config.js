@@ -17,19 +17,36 @@ const RH = {
     return data?.session || null;
   },
 
-  async getProfile() {
-    const s = await RH.getSession();
-    if (!s) return null;
+ 
+async getProfile() {
+  const s = await RH.getSession();
 
-    const { data, error } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('id', s.user.id)
-      .single();
+  if (!s) return null;
 
-    if (error) console.warn('getProfile:', error);
-    return data;
-  },
+  const { data, error } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', s.user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Profile Load Error:', {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint
+    });
+    return null;
+  }
+
+  if (!data) {
+    console.warn('এই সদস্যের profiles টেবিলে কোনো রেকর্ড নেই:', s.user.id);
+    return null;
+  }
+
+  return data;
+},
+
 
   async requireAuth(roles = null, redirect = 'login.html') {
     const s = await RH.getSession();
