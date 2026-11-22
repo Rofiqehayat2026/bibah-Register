@@ -82,6 +82,7 @@
     <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
     <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
     <button class="tab-btn role-member" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
+    <button class="tab-btn role-admin hidden" id="tabPasswordResets" data-tab="password-resets">পাসওয়ার্ড সহায়তা</button>
     <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
     <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
     <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
@@ -227,6 +228,7 @@ let currentProfile = null;
     if (can('access_requests.view')) await loadAdminRequests();
     if (can('biodata.verify')) await loadAdminBiodata();
     if (currentRole === 'super_admin') await loadAdminMatrix();
+    if (currentRole !== 'member') await loadPasswordResetRequests();
     if (can('audit_logs.view')) await loadAuditLogs();
   }
 })();
@@ -245,6 +247,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata();
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
+    if (btn.dataset.tab === 'password-resets') await loadPasswordResetRequests();
   });
 });
 
@@ -744,6 +747,7 @@ function applyRoleUI() {
   document.querySelectorAll('.role-member').forEach(x => x.classList.toggle('hidden', currentRole !== 'member'));
   document.querySelectorAll('.role-admin').forEach(x => x.classList.toggle('hidden', currentRole === 'member'));
   document.getElementById('tabAdminRequests').classList.toggle('hidden', !can('access_requests.view'));
+  document.getElementById('tabPasswordResets').classList.toggle('hidden', currentRole === 'member');
   document.getElementById('tabAdminBiodata').classList.toggle('hidden', !can('biodata.verify'));
   document.getElementById('tabSuperAdmin').classList.toggle('hidden', currentRole !== 'super_admin');
   document.getElementById('tabAudit').classList.toggle('hidden', !can('audit_logs.view'));
@@ -906,6 +910,36 @@ async function toggleAdminActive(userId,active) {
   if(error)return RH.toast('স্ট্যাটাস পরিবর্তন ব্যর্থ: '+error.message,false);
   if(!data)return RH.toast('স্ট্যাটাস পরিবর্তন হয়নি।',false);
   RH.toast('অ্যাডমিন স্ট্যাটাস পরিবর্তিত হয়েছে।');await loadAdminMatrix();
+}
+
+// ============== PASSWORD RESET REQUESTS (ADMIN) ==============
+async function loadPasswordResetRequests(){
+ const el=document.getElementById('passwordResetRequests');
+ if(!el || currentRole==='member') return;
+ el.innerHTML='লোড হচ্ছে...';
+ const {data,error}=await sb.rpc('admin_list_password_reset_requests');
+ if(error){el.innerHTML=`<div class="alert alert-error">অনুরোধ লোড হয়নি: ${RH.esc(error.message)}। SQL সেটআপ সম্পন্ন হয়েছে কি না দেখুন।</div>`;return;}
+ if(!data?.length){el.innerHTML='<div class="alert alert-info">কোনো অপেক্ষমাণ অনুরোধ নেই।</div>';return;}
+ el.innerHTML=data.map(r=>`<div class="card">
+  <strong>${RH.esc(r.phone)}</strong> <span class="badge badge-pending">${RH.esc(r.status)}</span>
+  <div>${RH.esc(r.note||'অতিরিক্ত তথ্য নেই')}</div>
+  <div class="muted-small">অনুরোধ: ${RH.fmtDate(r.created_at)}</div>
+  <div class="admin-actions mt-1">
+   <button class="btn btn-small" onclick="contactResetRequester('${r.id}','${RH.esc(r.phone)}')">যোগাযোগ / সম্পন্ন চিহ্নিত</button>
+  </div>
+ </div>`).join('');
+}
+async function contactResetRequester(id,phone){
+ if(currentRole==='member') return RH.toast('অনুমতি নেই।',false);
+ const tempPassword=prompt('সদস্যের জন্য নতুন অস্থায়ী পাসওয়ার্ড লিখুন (কমপক্ষে ৮ অক্ষর)। পাসওয়ার্ডটি সদস্যকে নিরাপদ মাধ্যমে জানাবেন।');
+ if(tempPassword===null) return;
+ if(tempPassword.length<8) return RH.toast('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।',false);
+ if(!confirm(phone+' নম্বরের অ্যাকাউন্টের পাসওয়ার্ড পরিবর্তন করবেন?')) return;
+ const {data,error}=await sb.functions.invoke('admin-reset-password',{body:{phone,password:tempPassword,request_id:id}});
+ if(error) return RH.toast('পাসওয়ার্ড পরিবর্তন হয়নি: '+error.message,false);
+ if(!data?.success) return RH.toast(data?.error||'পাসওয়ার্ড পরিবর্তন ব্যর্থ।',false);
+ RH.toast('পাসওয়ার্ড পরিবর্তন হয়েছে। সদস্যকে নিরাপদ মাধ্যমে জানান।');
+ await loadPasswordResetRequests();
 }
 
 // ================= AUDIT LOG =================
