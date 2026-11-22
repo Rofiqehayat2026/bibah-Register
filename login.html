@@ -260,7 +260,7 @@ input:focus, select:focus {
         </label>
 
         <select id="loginType">
-          <option value="member">সাধারণ সদস্য</option>
+          <option value="member">সদস্য</option>
           <option value="admin">অ্যাডমিন / সুপার অ্যাডমিন</option>
         </select>
       </div>
@@ -327,7 +327,7 @@ input:focus, select:focus {
 
       <div class="note">
         <i class="fas fa-info-circle"></i>
-        আপনার নিবন্ধিত মোবাইল নম্বর অথবা অ্যাডমিন ইউজারনেম এবং পাসওয়ার্ড ব্যবহার করে লগইন করুন।
+        সদস্য: মোবাইল নম্বর ও পাসওয়ার্ড। অ্যাডমিন: নির্ধারিত অ্যাডমিন ইউজারনেম ও পাসওয়ার্ড।
       </div>
 
     </div>
@@ -496,7 +496,7 @@ loginBtn.addEventListener("click", async () => {
   hideMessage();
 
   if (!userIdentifier || !userPassword) {
-    showMessage("মোবাইল নম্বর/ইউজারনেম এবং পাসওয়ার্ড লিখুন।");
+    showMessage("মোবাইল নম্বর ও পাসওয়ার্ড লিখুন।");
     return;
   }
 
