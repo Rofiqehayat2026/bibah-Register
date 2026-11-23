@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>লগইন | রফিকে হায়াত</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<style>
+:root {
+  --primary: #0e4d64;
+  --green: #1e7e5e;
+  --ink: #1e2b3a;
+  --muted: #587487;
+  --line: #dce7ef;
+  --soft: #f2f7fa;
+  --danger: #b42318;
+  --shadow: 0 14px 36px rgba(12,45,62,.09);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: clamp(20px, 7vh, 65px);
+  background: #f2f5f9;
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Segoe UI', sans-serif;
+  line-height: 1.65;
+}
+
+.container {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #e3ebf1;
+  border-radius: 20px;
+  padding: clamp(16px, 3vw, 30px);
+  box-shadow: var(--shadow);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.header h1 {
+  color: var(--primary);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  margin: 0;
+}
+
+.header p {
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: clamp(18px, 4vw, 26px);
+  box-shadow: 0 5px 18px rgba(15,55,75,.045);
+}
+
+.form-group {
+  margin-bottom: 17px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  color: #244b5d;
+  margin-bottom: 7px;
+}
+
+input, select {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #cbd9e3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  font: inherit;
+  transition: .2s;
+}
+
+input:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(30,126,94,.12);
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 48px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green);
+  color: #fff;
+  padding: 12px 17px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #17694e;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(30,126,94,.18);
+}
+
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-secondary {
+  background: #eaf1f5;
+  color: var(--primary);
+}
+
+.btn-secondary:hover {
+  background: #dce9ef;
+}
+
+.alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin: 12px 0;
+  background: #eef5f8;
+  color: #244b5d;
+  border: 1px solid #d5e5ec;
+  font-size: .92rem;
+}
+
+.alert-success {
+  background: #eaf7ef;
+  border-color: #c8e8d2;
+  color: #17603a;
+}
+
+.alert-error {
+  background: #fff0ef;
+  border-color: #f3cbc7;
+  color: #9b241b;
+}
+
+.note {
+  background: #f4f8fa;
+  border-left: 3px solid #8bb7c8;
+  padding: 10px 12px;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: .85rem;
+  margin-top: 15px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: .9rem;
+  color: var(--muted);
+  line-height: 2.2;
+}
+
+.footer a {
+  color: var(--green);
+  text-decoration: none;
+  margin: 0 4px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+@media(max-width:480px) {
+  body {
+    padding: 12px;
+    padding-top: 25px;
+  }
+
+  .container {
+    border-radius: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>
+      রফিকে হায়াত
+      <i class="fas fa-heart" style="color:#1e7e5e"></i>
+    </h1>
+    <p>শুধুমাত্র অনুমোদিত অ্যাডমিন ও সুপার অ্যাডমিন</p>
+  </div>
+
+  <div class="card">
+
+    <!-- লগইন ফর্ম -->
+    <div id="signedOut">
+
+      <div class="form-group">
+        <label for="loginType">
+          <i class="fas fa-user-shield"></i>
+          লগইনের ধরন
+        </label>
+
+        <select id="loginType">
+          <option value="admin">অ্যাডমিন / সুপার অ্যাডমিন</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+
+        <label id="identifierLabel" for="identifier">
+          <i class="fas fa-mobile-alt"></i>
+          মোবাইল নম্বর
+        </label>
+
+        <input
+          type="text"
+          id="identifier"
+          placeholder="01XXXXXXXXX"
+          autocomplete="username"
+          required
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="password">
+          <i class="fas fa-lock"></i>
+          পাসওয়ার্ড
+        </label>
+
+        <div class="password-wrap">
+
+          <input
+            type="password"
+            id="password"
+            placeholder="আপনার পাসওয়ার্ড লিখুন"
+            autocomplete="current-password"
+            required
+          >
+
+          <button
+            type="button"
+            class="toggle-password"
+            id="togglePassword"
+            aria-label="পাসওয়ার্ড দেখান"
+          >
+            <i class="fas fa-eye"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+      <button class="btn btn-block" id="loginBtn" type="button">
+        <i class="fas fa-sign-in-alt"></i>
+        লগইন করুন
+      </button>
+
+      <div style="text-align:right;margin-top:10px">
+        <a href="forgot-password.html" style="color:var(--green);font-size:.9rem;text-decoration:none">
+          <i class="fas fa-key"></i> পাসওয়ার্ড ভুলে গেছেন?
+        </a>
+      </div>
+
+      <div id="msg" class="alert hidden" role="alert"></div>
+
+      <div class="note">
+        <i class="fas fa-info-circle"></i>
+        আপনার নিবন্ধিত মোবাইল নম্বর অথবা অ্যাডমিন ইউজারনেম এবং পাসওয়ার্ড ব্যবহার করে লগইন করুন।
+      </div>
+
+    </div>
+
+    <!-- লগইন সফল হলে -->
+    <div id="signedIn" class="hidden">
+
+      <div class="alert alert-success text-center">
+        <i class="fas fa-check-circle"></i>
+        লগইন সফল হয়েছে!
+        <div style="margin-top:8px">
+          <strong id="userIdentity"></strong>
+        </div>
+      </div>
+
+      <a
+        href="dashboard.html"
+        id="dashboardLink"
+        class="btn btn-block"
+      >
+        <i class="fas fa-tachometer-alt"></i>
+        ড্যাশবোর্ডে যান
+      </a>
+
+      <button
+        class="btn btn-secondary btn-block"
+        id="logoutBtn"
+        type="button"
+        style="margin-top:12px"
+      >
+        <i class="fas fa-sign-out-alt"></i>
+        লগআউট
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <a href="index.html">
+      <i class="fas fa-home"></i>
+      মূল পেজ
+    </a>
+
+    |
+
+    <a href="index.html">
+      <i class="fas fa-user-plus"></i>
+      মূল পেজ
+    </a>
+
+    |
+
+    <a href="login.html">
+      <i class="fas fa-shield-alt"></i>
+      সদস্য লগইন
+    </a>
+
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+// ======================================
+// SUPABASE CLIENT CHECK
+// ======================================
+
+if (typeof sb === "undefined") {
+  document.body.innerHTML =
+    '<div style="padding:30px;color:#b42318;font-family:sans-serif">' +
+    'সমস্যা: config.js থেকে Supabase Client পাওয়া যায়নি।' +
+    '</div>';
+
+  throw new Error("Supabase client (sb) not found.");
+}
+
+// ======================================
+// ELEMENTS
+// ======================================
+
+const loginType = document.getElementById("loginType");
+const identifier = document.getElementById("identifier");
+const password = document.getElementById("password");
+
+const identifierLabel = document.getElementById("identifierLabel");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const msg = document.getElementById("msg");
+const togglePassword = document.getElementById("togglePassword");
+
+// ======================================
+// MESSAGE
+// ======================================
+
+function showMessage(message, type = "error") {
+  msg.className = "alert " +
+    (type === "success" ? "alert-success" : "alert-error");
+
+  msg.textContent = message;
+  msg.classList.remove("hidden");
+}
+
+function hideMessage() {
+  msg.classList.add("hidden");
+  msg.textContent = "";
+}
+
+// ======================================
+// LOGIN TYPE CHANGE
+// ======================================
+
+loginType.addEventListener("change", () => {
+
+  hideMessage();
+
+  if (loginType.value === "admin") {
+
+    identifierLabel.innerHTML =
+      '<i class="fas fa-user-shield"></i> অ্যাডমিন ইউজারনেম';
+
+    identifier.placeholder = "যেমন: A_Hasan";
+
+  } else {
+
+    identifierLabel.innerHTML =
+      '<i class="fas fa-mobile-alt"></i> মোবাইল নম্বর';
+
+    identifier.placeholder = "01XXXXXXXXX";
+
+  }
+
+  identifier.value = "";
+  password.value = "";
+});
+
+// ======================================
+// SHOW / HIDE PASSWORD
+// ======================================
+
+togglePassword.addEventListener("click", () => {
+
+  const isPassword = password.type === "password";
+
+  password.type = isPassword ? "text" : "password";
+
+  togglePassword.innerHTML = isPassword
+    ? '<i class="fas fa-eye-slash"></i>'
+    : '<i class="fas fa-eye"></i>';
+
+});
+
+// ======================================
+// LOGIN FUNCTION
+// ======================================
+
+loginBtn.addEventListener("click", async () => {
+
+  const kind = loginType.value;
+  const userIdentifier = identifier.value.trim();
+  const userPassword = password.value;
+
+  hideMessage();
+
+  if (!userIdentifier || !userPassword) {
+    showMessage("মোবাইল নম্বর/ইউজারনেম এবং পাসওয়ার্ড লিখুন।");
+    return;
+  }
+
+  if (kind === "member" &&
+      !/^(?:\+?88)?01[3-9]\d{8}$/.test(
+        userIdentifier.replace(/[\s-]/g, "")
+      )) {
+
+    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন।");
+    return;
+  }
+
+  if (kind === "admin" &&
+      !/^[a-zA-Z0-9_]{3,50}$/.test(userIdentifier)) {
+
+    showMessage("সঠিক অ্যাডমিন ইউজারনেম লিখুন।");
+    return;
+  }
+
+  loginBtn.disabled = true;
+
+  loginBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
+
+  try {
+
+    // ==================================
+    // EDGE FUNCTION LOGIN
+    // Function name: bright-api
+    // ==================================
+
+    const { data, error } = await sb.functions.invoke(
+      "bright-api",
+      {
+        body: {
+          kind: kind,
+          identifier: userIdentifier,
+          password: userPassword
+        }
+      }
+    );
+
+    if (error) {
+
+      console.error("Edge Function error:", error);
+
+      let errorMessage = "লগইন অনুরোধ ব্যর্থ হয়েছে।";
+
+      if (data && data.error) {
+        errorMessage = data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      throw new Error(errorMessage);
+    }
+
+    if (!data || !data.session) {
+      throw new Error(
+        data?.error || "সার্ভার থেকে লগইন সেশন পাওয়া যায়নি।"
+      );
+    }
+
+    // ==================================
+    // SET SUPABASE AUTH SESSION
+    // ==================================
+
+    const { data: sessionData, error: sessionError } =
+      await sb.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
+      });
+
+    if (sessionError) {
+      throw sessionError;
+    }
+
+    if (!sessionData.session) {
+      throw new Error("লগইন সেশন সংরক্ষণ করা যায়নি।");
+    }
+
+    // ==================================
+    // REDIRECT
+    // ==================================
+    
+    showMessage("লগইন সফল হয়েছে।", "success");
+    
+    location.replace("dashboard.html");
+    
+      } catch (error) {
+
+    console.error("Login error:", error);
+
+    showMessage(
+      error.message || "লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"
+    );
+
+  } finally {
+
+    loginBtn.disabled = false;
+
+    loginBtn.innerHTML =
+      '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
+
+  }
+
+});
+
+// ======================================
+// SESSION CHECK
+// ======================================
+
+async function refreshSession() {
+
+  try {
+
+    const { data, error } = await sb.auth.getSession();
+
+    if (error) throw error;
+
+    const session = data.session;
+
+    const signedOut = document.getElementById("signedOut");
+    const signedIn = document.getElementById("signedIn");
+
+    signedOut.classList.toggle("hidden", !!session);
+    signedIn.classList.toggle("hidden", !session);
+
+    if (session) {
+
+      const user = session.user;
+
+      document.getElementById("userIdentity").textContent =
+        user.email || user.phone || "লগইন করা ব্যবহারকারী";
+
+      // পূর্ববর্তী সেশন থাকলে সাধারণ ড্যাশবোর্ডে লিংক
+      document.getElementById("dashboardLink").href =
+        "dashboard.html";
+
+    }
+
+  } catch (error) {
+
+    console.error("Session check error:", error);
+
+  }
+
+}
+
+// ======================================
+// LOGOUT
+// ======================================
+
+logoutBtn.addEventListener("click", async () => {
+
+  logoutBtn.disabled = true;
+
+  logoutBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> লগআউট হচ্ছে...';
+
+  try {
+
+    const { error } = await sb.auth.signOut();
+
+    if (error) throw error;
+
+    location.replace("login.html");
+
+  } catch (error) {
+
+    showMessage("লগআউট ব্যর্থ: " + error.message);
+
+    logoutBtn.disabled = false;
+
+    logoutBtn.innerHTML =
+      '<i class="fas fa-sign-out-alt"></i> লগআউট';
+
+  }
+
+});
+
+// ======================================
+// AUTH STATE LISTENER
+// ======================================
+
+sb.auth.onAuthStateChange(() => {
+  refreshSession();
+});
+
+// ======================================
+// INITIAL SESSION CHECK
+// ======================================
+
+refreshSession();
+
+</script>
+
+</body>
+</html>
