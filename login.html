@@ -256,14 +256,14 @@ input:focus, select:focus {
       <div class="form-group">
 
         <label id="identifierLabel" for="identifier">
-          <i class="fas fa-envelope"></i>
-          নিবন্ধিত ইমেইল
+          <i class="fas fa-mobile-alt"></i>
+          মোবাইল নম্বর
         </label>
 
         <input
-          type="email"
+          type="text"
           id="identifier"
-          placeholder="আপনার নিবন্ধিত ইমেইল"
+          placeholder="01XXXXXXXXX"
           autocomplete="username"
           required
         >
@@ -315,7 +315,7 @@ input:focus, select:focus {
 
       <div class="note">
         <i class="fas fa-info-circle"></i>
-        নিবন্ধনের সময় দেওয়া ইমেইল ও পাসওয়ার্ড ব্যবহার করে লগইন করুন।
+        নিবন্ধনের সময় দেওয়া মোবাইল নম্বর ও পাসওয়ার্ড দিয়ে লগইন করুন। এখানে OTP প্রয়োজন নেই।
       </div>
 
     </div>
@@ -382,86 +382,237 @@ input:focus, select:focus {
 <script>
 "use strict";
 
+// ======================================
+// SUPABASE CLIENT CHECK
+// ======================================
+
 if (typeof sb === "undefined") {
-  document.body.innerHTML = '<div style="padding:30px;color:#b42318;font-family:sans-serif">config.js থেকে Supabase Client পাওয়া যায়নি।</div>';
+  document.body.innerHTML =
+    '<div style="padding:30px;color:#b42318;font-family:sans-serif">' +
+    'সমস্যা: config.js থেকে Supabase Client পাওয়া যায়নি।' +
+    '</div>';
+
   throw new Error("Supabase client (sb) not found.");
 }
 
+// ======================================
+// ELEMENTS
+// ======================================
+
 const identifier = document.getElementById("identifier");
 const password = document.getElementById("password");
+
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
+
 const msg = document.getElementById("msg");
 const togglePassword = document.getElementById("togglePassword");
 
+// ======================================
+// MESSAGE
+// ======================================
+
 function showMessage(message, type = "error") {
-  msg.className = "alert " + (type === "success" ? "alert-success" : "alert-error");
+  msg.className = "alert " +
+    (type === "success" ? "alert-success" : "alert-error");
+
   msg.textContent = message;
   msg.classList.remove("hidden");
 }
+
 function hideMessage() {
   msg.classList.add("hidden");
   msg.textContent = "";
 }
 
+// ======================================
+// SHOW / HIDE PASSWORD
+// ======================================
+
 togglePassword.addEventListener("click", () => {
-  const show = password.type === "password";
-  password.type = show ? "text" : "password";
-  togglePassword.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+
+  const isPassword = password.type === "password";
+
+  password.type = isPassword ? "text" : "password";
+
+  togglePassword.innerHTML = isPassword
+    ? '<i class="fas fa-eye-slash"></i>'
+    : '<i class="fas fa-eye"></i>';
+
 });
 
+// ======================================
+// LOGIN FUNCTION
+// ======================================
+
 loginBtn.addEventListener("click", async () => {
-  const email = identifier.value.trim().toLowerCase();
+
+  // Convert Bangla and Arabic numerals to English digits.
+  const toEnglishDigits = (value) => value
+    .replace(/[০-৯]/g, digit => "০১২৩৪৫৬৭৮৯".indexOf(digit))
+    .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
+
+  const rawPhone = toEnglishDigits(identifier.value.trim());
+  const phone = rawPhone.replace(/[\s()-]/g, "");
   const userPassword = password.value;
+
   hideMessage();
 
-  if (!email || !userPassword) return showMessage("নিবন্ধিত ইমেইল ও পাসওয়ার্ড লিখুন।");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMessage("সঠিক ইমেইল ঠিকানা লিখুন।");
+  if (!phone || !userPassword) {
+    showMessage("মোবাইল নম্বর ও পাসওয়ার্ড লিখুন।");
+    return;
+  }
+
+  // Accept 01XXXXXXXXX, 8801XXXXXXXXX, and +8801XXXXXXXXX.
+  if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(phone)) {
+    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন। যেমন: 01XXXXXXXXX");
+    return;
+  }
 
   loginBtn.disabled = true;
-  loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
+  loginBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
+
   try {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password: userPassword });
-    if (error) throw error;
-    if (!data.session) throw new Error("লগইন সেশন তৈরি হয়নি।");
+    // Existing Auth accounts use email internally. bright-api securely
+    // resolves the member's registered phone to that Auth account.
+    const { data, error } = await sb.functions.invoke("bright-api", {
+      body: {
+        kind: "member",
+        identifier: phone,
+        password: userPassword
+      }
+    });
+
+    if (error) {
+      console.error("bright-api error:", error);
+      let message = data?.error || error.message || "লগইন অনুরোধ ব্যর্থ হয়েছে।";
+
+      // Supabase FunctionsHttpError may expose the response body here.
+      if (!data?.error && error.context && typeof error.context.json === "function") {
+        try {
+          const responseBody = await error.context.json();
+          if (responseBody?.error) message = responseBody.error;
+        } catch (_) {}
+      }
+      throw new Error(message);
+    }
+
+    if (!data?.session?.access_token || !data?.session?.refresh_token) {
+      throw new Error(data?.error || "সার্ভার থেকে বৈধ লগইন সেশন পাওয়া যায়নি।");
+    }
+
+    const { data: sessionData, error: sessionError } =
+      await sb.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
+      });
+
+    if (sessionError) throw sessionError;
+    if (!sessionData?.session) {
+      throw new Error("লগইন সেশন সংরক্ষণ করা যায়নি।");
+    }
+
     showMessage("লগইন সফল হয়েছে।", "success");
     location.replace("dashboard.html");
+
   } catch (error) {
     console.error("Member login error:", error);
     showMessage(error.message || "লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
   } finally {
     loginBtn.disabled = false;
-    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
+    loginBtn.innerHTML =
+      '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
   }
 });
+
+// ======================================
+// SESSION CHECK
+// ======================================
 
 async function refreshSession() {
+
   try {
+
     const { data, error } = await sb.auth.getSession();
+
     if (error) throw error;
+
     const session = data.session;
-    document.getElementById("signedOut").classList.toggle("hidden", !!session);
-    document.getElementById("signedIn").classList.toggle("hidden", !session);
-    if (session) document.getElementById("userIdentity").textContent = session.user.email || "লগইন করা ব্যবহারকারী";
+
+    const signedOut = document.getElementById("signedOut");
+    const signedIn = document.getElementById("signedIn");
+
+    signedOut.classList.toggle("hidden", !!session);
+    signedIn.classList.toggle("hidden", !session);
+
+    if (session) {
+
+      const user = session.user;
+
+      document.getElementById("userIdentity").textContent =
+        user.email || user.phone || "লগইন করা ব্যবহারকারী";
+
+      // পূর্ববর্তী সেশন থাকলে সাধারণ ড্যাশবোর্ডে লিংক
+      document.getElementById("dashboardLink").href =
+        "dashboard.html";
+
+    }
+
   } catch (error) {
+
     console.error("Session check error:", error);
+
   }
+
 }
 
+// ======================================
+// LOGOUT
+// ======================================
+
 logoutBtn.addEventListener("click", async () => {
+
   logoutBtn.disabled = true;
+
+  logoutBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> লগআউট হচ্ছে...';
+
   try {
+
     const { error } = await sb.auth.signOut();
+
     if (error) throw error;
+
     location.replace("login.html");
+
   } catch (error) {
+
     showMessage("লগআউট ব্যর্থ: " + error.message);
+
     logoutBtn.disabled = false;
+
+    logoutBtn.innerHTML =
+      '<i class="fas fa-sign-out-alt"></i> লগআউট';
+
   }
+
 });
 
-sb.auth.onAuthStateChange(() => { setTimeout(refreshSession, 0); });
+// ======================================
+// AUTH STATE LISTENER
+// ======================================
+
+sb.auth.onAuthStateChange(() => {
+  refreshSession();
+});
+
+// ======================================
+// INITIAL SESSION CHECK
+// ======================================
+
 refreshSession();
+
 </script>
 
 </body>
