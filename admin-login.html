@@ -26,9 +26,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.mi
   --shadow: 0 14px 36px rgba(12,45,62,.09);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -54,21 +52,13 @@ body {
   box-shadow: var(--shadow);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 22px;
-}
-
+.header { text-align: center; margin-bottom: 22px; }
 .header h1 {
   color: var(--primary);
   font-size: clamp(1.5rem, 5vw, 2rem);
   margin: 0;
 }
-
-.header p {
-  color: var(--muted);
-  margin-top: 5px;
-}
+.header p { color: var(--muted); margin-top: 5px; }
 
 .card {
   border: 1px solid var(--line);
@@ -77,9 +67,7 @@ body {
   box-shadow: 0 5px 18px rgba(15,55,75,.045);
 }
 
-.form-group {
-  margin-bottom: 17px;
-}
+.form-group { margin-bottom: 17px; }
 
 label {
   display: block;
@@ -107,13 +95,8 @@ input:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(30,126,94,.12);
 }
 
-.password-wrap {
-  position: relative;
-}
-
-.password-wrap input {
-  padding-right: 48px;
-}
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 48px; }
 
 .toggle-password {
   position: absolute;
@@ -156,18 +139,10 @@ input:focus, select:focus {
   transform: none;
 }
 
-.btn-block {
-  width: 100%;
-}
+.btn-block { width: 100%; }
 
-.btn-secondary {
-  background: #eaf1f5;
-  color: var(--primary);
-}
-
-.btn-secondary:hover {
-  background: #dce9ef;
-}
+.btn-secondary { background: #eaf1f5; color: var(--primary); }
+.btn-secondary:hover { background: #dce9ef; }
 
 .alert {
   padding: 12px 14px;
@@ -201,9 +176,7 @@ input:focus, select:focus {
   margin-top: 15px;
 }
 
-.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
 
 .footer {
   text-align: center;
@@ -219,19 +192,11 @@ input:focus, select:focus {
   margin: 0 4px;
 }
 
-.footer a:hover {
-  text-decoration: underline;
-}
+.footer a:hover { text-decoration: underline; }
 
 @media(max-width:480px) {
-  body {
-    padding: 12px;
-    padding-top: 25px;
-  }
-
-  .container {
-    border-radius: 14px;
-  }
+  body { padding: 12px; padding-top: 25px; }
+  .container { border-radius: 14px; }
 }
 </style>
 </head>
@@ -250,35 +215,32 @@ input:focus, select:focus {
 
   <div class="card">
 
-    <!-- লগইন ফর্ম -->
     <div id="signedOut">
 
       <div class="form-group">
-
         <label id="identifierLabel" for="identifier">
-          <i class="fas fa-envelope"></i>
-          অ্যাডমিনের নিবন্ধিত মোবাইল নম্বর অথবা ইমেইল
+          <i class="fas fa-user-shield"></i>
+          মোবাইল নম্বর, ইমেইল অথবা ইউজারনেম
         </label>
 
         <input
           type="text"
           id="identifier"
-          placeholder="01XXXXXXXXX অথবা admin@example.com"
+          placeholder="মোবাইল / ইমেইল / Nurul_Anwar"
           autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
           required
         >
-
       </div>
 
       <div class="form-group">
-
         <label for="password">
           <i class="fas fa-lock"></i>
           পাসওয়ার্ড
         </label>
 
         <div class="password-wrap">
-
           <input
             type="password"
             id="password"
@@ -295,9 +257,7 @@ input:focus, select:focus {
           >
             <i class="fas fa-eye"></i>
           </button>
-
         </div>
-
       </div>
 
       <button class="btn btn-block" id="loginBtn" type="button">
@@ -315,15 +275,14 @@ input:focus, select:focus {
 
       <div class="note">
         <i class="fas fa-info-circle"></i>
-        অ্যাডমিন Auth অ্যাকাউন্টে নিবন্ধিত মোবাইল নম্বর অথবা ইমেইল ও পাসওয়ার্ড ব্যবহার করুন। মোবাইল দিয়ে লগইনের জন্য নম্বরটি Supabase Auth-এ আগে থেকে যুক্ত ও Confirmed থাকতে হবে।
+        মোবাইল নম্বর, ইমেইল অথবা ইউজারনেম এবং পাসওয়ার্ড দিয়ে লগইন করুন। OTP বা Twilio প্রয়োজন নেই।
       </div>
 
     </div>
 
-    <!-- লগইন সফল হলে -->
     <div id="signedIn" class="hidden">
 
-      <div class="alert alert-success text-center">
+      <div class="alert alert-success" style="text-align:center">
         <i class="fas fa-check-circle"></i>
         লগইন সফল হয়েছে!
         <div style="margin-top:8px">
@@ -331,11 +290,7 @@ input:focus, select:focus {
         </div>
       </div>
 
-      <a
-        href="dashboard.html"
-        id="dashboardLink"
-        class="btn btn-block"
-      >
+      <a href="dashboard.html" id="dashboardLink" class="btn btn-block">
         <i class="fas fa-tachometer-alt"></i>
         ড্যাশবোর্ডে যান
       </a>
@@ -355,26 +310,15 @@ input:focus, select:focus {
   </div>
 
   <div class="footer">
-
     <a href="index.html">
       <i class="fas fa-home"></i>
       মূল পেজ
     </a>
-
     |
-
-    <a href="index.html">
-      <i class="fas fa-user-plus"></i>
-      মূল পেজ
-    </a>
-
-    |
-
     <a href="login.html">
       <i class="fas fa-shield-alt"></i>
       সদস্য লগইন
     </a>
-
   </div>
 
 </div>
@@ -383,7 +327,10 @@ input:focus, select:focus {
 "use strict";
 
 if (typeof sb === "undefined") {
-  document.body.innerHTML = '<div style="padding:30px;color:#b42318;font-family:sans-serif">config.js থেকে Supabase Client পাওয়া যায়নি।</div>';
+  document.body.innerHTML =
+    '<div style="padding:30px;color:#b42318;font-family:sans-serif">' +
+    'config.js থেকে Supabase Client পাওয়া যায়নি।' +
+    '</div>';
   throw new Error("Supabase client (sb) not found.");
 }
 
@@ -395,124 +342,176 @@ const msg = document.getElementById("msg");
 const togglePassword = document.getElementById("togglePassword");
 
 function showMessage(message, type = "error") {
-  msg.className = "alert " + (type === "success" ? "alert-success" : "alert-error");
+  msg.className = "alert " +
+    (type === "success" ? "alert-success" : "alert-error");
   msg.textContent = message;
   msg.classList.remove("hidden");
 }
-function hideMessage() { msg.classList.add("hidden"); msg.textContent = ""; }
+
+function hideMessage() {
+  msg.classList.add("hidden");
+  msg.textContent = "";
+}
 
 togglePassword.addEventListener("click", () => {
   const show = password.type === "password";
   password.type = show ? "text" : "password";
-  togglePassword.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+  togglePassword.innerHTML = show
+    ? '<i class="fas fa-eye-slash"></i>'
+    : '<i class="fas fa-eye"></i>';
+  togglePassword.setAttribute(
+    "aria-label",
+    show ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"
+  );
 });
 
-async function verifyAdminSession(session) {
-  if (!session?.user?.id) return false;
-  const { data, error } = await sb.from("admin_users")
-    .select("user_id,role,is_active,username")
-    .eq("user_id", session.user.id)
-    .maybeSingle();
-  if (error) throw new Error("অ্যাডমিন পরিচয় যাচাই করা যায়নি: " + error.message);
-  if (!data) return false;
-  if (!data.is_active) throw new Error("আপনার অ্যাডমিন অ্যাকাউন্ট নিষ্ক্রিয়। Super Admin-এর সঙ্গে যোগাযোগ করুন।");
-  if (!['admin', 'super_admin'].includes(data.role)) throw new Error("এই অ্যাকাউন্টের অ্যাডমিন অনুমতি নেই।");
-  return true;
+// Edge Function দিয়ে বর্তমান লগইন সেশন ও অ্যাডমিন পরিচয় যাচাই
+async function verifyAdminSession() {
+  const { data: sessionData, error: sessionError } =
+    await sb.auth.getSession();
+
+  if (sessionError) throw sessionError;
+  if (!sessionData.session) return false;
+
+  const { data, error } = await sb.functions.invoke("admin-login", {
+    body: { action: "verify" }
+  });
+
+  if (error) throw error;
+
+  return data?.allowed === true;
 }
 
+// মোবাইল / ইমেইল / ইউজারনেম দিয়ে লগইন
 loginBtn.addEventListener("click", async () => {
   const rawIdentifier = identifier.value.trim();
   const userPassword = password.value;
+
   hideMessage();
-  if (!rawIdentifier || !userPassword) return showMessage("অ্যাডমিনের মোবাইল নম্বর অথবা ইমেইল এবং পাসওয়ার্ড লিখুন।");
 
-  const toEnglishDigits = value => value
-    .replace(/[০-৯]/g, digit => "০১২৩৪৫৬৭৮৯".indexOf(digit))
-    .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
-  const cleanIdentifier = toEnglishDigits(rawIdentifier).replace(/[\s()-]/g, "");
-  const isPhone = /^(?:\+?88)?01[3-9]\d{8}$/.test(cleanIdentifier);
-  let authCredentials;
-
-  if (isPhone) {
-    let e164Phone = cleanIdentifier;
-    if (/^01[3-9]\d{8}$/.test(cleanIdentifier)) e164Phone = "+88" + cleanIdentifier;
-    else if (/^8801[3-9]\d{8}$/.test(cleanIdentifier)) e164Phone = "+" + cleanIdentifier;
-    authCredentials = { phone: e164Phone, password: userPassword };
-  } else {
-    const email = rawIdentifier.toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর অথবা ইমেইল লিখুন।");
-    }
-    authCredentials = { email, password: userPassword };
+  if (!rawIdentifier || !userPassword) {
+    showMessage("মোবাইল নম্বর, ইমেইল অথবা ইউজারনেম এবং পাসওয়ার্ড লিখুন।");
+    return;
   }
 
   loginBtn.disabled = true;
-  loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
-  try {
-    const { data, error } = await sb.auth.signInWithPassword(authCredentials);
-    if (error) throw error;
-    if (!data.session) throw new Error("লগইন সেশন তৈরি হয়নি।");
+  loginBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
 
-    let allowed = false;
-    try { allowed = await verifyAdminSession(data.session); }
-    catch (verifyError) { await sb.auth.signOut(); throw verifyError; }
-    if (!allowed) {
-      await sb.auth.signOut();
-      throw new Error("এই মোবাইল/ইমেইলটি অনুমোদিত অ্যাডমিন অ্যাকাউন্ট নয়।");
+  try {
+    const { data, error } = await sb.functions.invoke("admin-login", {
+      body: {
+        action: "login",
+        identifier: rawIdentifier,
+        password: userPassword
+      }
+    });
+
+    if (error) {
+      let message = error.message || "Edge Function চালানো যায়নি।";
+      if (error.context && typeof error.context.json === "function") {
+        try {
+          const details = await error.context.json();
+          if (details?.message) message = details.message;
+        } catch (_) {}
+      }
+      throw new Error(message);
     }
+
+    if (!data?.success || !data.session) {
+      throw new Error(data?.message || "লগইন ব্যর্থ হয়েছে।");
+    }
+
+    const { error: setSessionError } = await sb.auth.setSession({
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token
+    });
+
+    if (setSessionError) throw setSessionError;
+
     showMessage("অ্যাডমিন লগইন সফল হয়েছে।", "success");
     location.replace("dashboard.html");
+
   } catch (error) {
     console.error("Admin login error:", error);
-    showMessage(error.message || "অ্যাডমিন লগইন ব্যর্থ হয়েছে।");
+    showMessage(error.message || "লগইন ব্যর্থ হয়েছে।");
   } finally {
     loginBtn.disabled = false;
-    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
+    loginBtn.innerHTML =
+      '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
   }
 });
 
+// Enter চাপলেও লগইন হবে
+[identifier, password].forEach((field) => {
+  field.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      loginBtn.click();
+    }
+  });
+});
+
+// আগে থেকে লগইন করা থাকলে অ্যাডমিন সেশন যাচাই
 async function refreshSession() {
   try {
     const { data, error } = await sb.auth.getSession();
     if (error) throw error;
-    const session = data.session;
-    if (!session) {
+
+    if (!data.session) {
       document.getElementById("signedOut").classList.remove("hidden");
       document.getElementById("signedIn").classList.add("hidden");
       return;
     }
-    const allowed = await verifyAdminSession(session);
+
+    const allowed = await verifyAdminSession();
+
     if (!allowed) {
       await sb.auth.signOut();
+
       document.getElementById("signedOut").classList.remove("hidden");
       document.getElementById("signedIn").classList.add("hidden");
+
       showMessage("এই অ্যাকাউন্টটি অ্যাডমিন হিসেবে অনুমোদিত নয়।");
       return;
     }
+
     document.getElementById("signedOut").classList.add("hidden");
     document.getElementById("signedIn").classList.remove("hidden");
-    document.getElementById("userIdentity").textContent = session.user.email || session.user.phone || "অনুমোদিত অ্যাডমিন";
+
+    document.getElementById("userIdentity").textContent =
+      data.session.user.email || "অনুমোদিত অ্যাডমিন";
+
   } catch (error) {
-    console.error("Admin session check:", error);
+    console.error("Session verification error:", error);
+
     document.getElementById("signedOut").classList.remove("hidden");
     document.getElementById("signedIn").classList.add("hidden");
+
     if (error.message) showMessage(error.message);
   }
 }
 
+// লগআউট
 logoutBtn.addEventListener("click", async () => {
   logoutBtn.disabled = true;
+
   try {
     const { error } = await sb.auth.signOut();
     if (error) throw error;
+
     location.replace("admin-login.html");
+
   } catch (error) {
     showMessage("লগআউট ব্যর্থ: " + error.message);
     logoutBtn.disabled = false;
   }
 });
 
-sb.auth.onAuthStateChange(() => { setTimeout(refreshSession, 0); });
+sb.auth.onAuthStateChange(() => {
+  setTimeout(refreshSession, 0);
+});
+
 refreshSession();
 </script>
 
