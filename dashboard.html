@@ -164,11 +164,12 @@
     <div class="section-title"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</div>
     <div class="card">
       <h3 style="color:#0e4d64;margin-top:0">নতুন অ্যাডমিন যুক্ত করুন</h3>
-      <p class="text-muted">প্রথমে ব্যক্তির Auth অ্যাকাউন্ট তৈরি থাকতে হবে। এরপর তার Auth User ID (UUID) দিন।</p>
+      <p class="text-muted">সদস্যের মোবাইল নম্বর অথবা বায়োডাটা কোড লিখুন। সদস্যের Auth অ্যাকাউন্ট আগে থেকে থাকতে হবে।</p>
       <div class="grid-2">
-        <div class="form-group"><label for="newAdminUserId">Auth User ID (UUID)</label><input id="newAdminUserId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
-        <div class="form-group" style="display:flex;align-items:end"><button class="btn" onclick="addAdminUser()"><i class="fas fa-user-plus"></i> অ্যাডমিন যুক্ত করুন</button></div>
+        <div class="form-group"><label for="newAdminIdentifier">মোবাইল নম্বর / বায়োডাটা কোড</label><input id="newAdminIdentifier" placeholder="যেমন: 017XXXXXXXX অথবা বায়োডাটা কোড" autocomplete="off"></div>
+        <div class="form-group" style="display:flex;align-items:end"><button class="btn" id="addAdminButton" onclick="addAdminUser()"><i class="fas fa-user-plus"></i> অ্যাডমিন যুক্ত করুন</button></div>
       </div>
+      <div class="text-muted" style="font-size:.88rem">সদস্যকে শনাক্ত করে নিশ্চিত করার পরেই Admin করা হবে।</div>
     </div>
     <button class="btn btn-secondary mb-2" onclick="loadAdminMatrix()"><i class="fas fa-rotate"></i> Permission Matrix রিফ্রেশ</button>
     <div id="adminMatrix">লোড হচ্ছে...</div>
@@ -875,14 +876,31 @@ async function reviewBiodata(id,status) {
 // ================= SUPER ADMIN =================
 async function addAdminUser() {
   if(currentRole!=='super_admin')return RH.toast('শুধু Super Admin পারবেন।',false);
-  const input=document.getElementById('newAdminUserId'), id=input.value.trim();
-  const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  if(!uuid.test(id))return RH.toast('সঠিক Auth User UUID দিন।',false);
-  if(!confirm('এই ব্যবহারকারীকে সাধারণ Admin করবেন?'))return;
-  const {data,error}=await sb.rpc('add_admin_user',{p_user_id:id});
-  if(error)return RH.toast('অ্যাডমিন যুক্ত হয়নি: '+error.message,false);
-  if(!data)return RH.toast('অ্যাডমিন যুক্ত করা যায়নি।',false);
-  input.value='';RH.toast('অ্যাডমিন যুক্ত হয়েছে।');await loadAdminMatrix();
+  const input=document.getElementById('newAdminIdentifier');
+  const identifier=input.value.trim();
+  if(!identifier)return RH.toast('মোবাইল নম্বর অথবা বায়োডাটা কোড লিখুন।',false);
+
+  const button=document.getElementById('addAdminButton');
+  button.disabled=true;
+  try {
+    const {data:members,error:lookupError}=await sb.rpc('admin_lookup_member_for_admin',{p_identifier:identifier});
+    if(lookupError)return RH.toast('সদস্য খুঁজে পাওয়া যায়নি: '+lookupError.message,false);
+    if(!members?.length)return RH.toast('এই মোবাইল নম্বর/বায়োডাটা কোডে কোনো সদস্য পাওয়া যায়নি।',false);
+    if(members.length>1)return RH.toast('একাধিক সদস্য পাওয়া গেছে। মোবাইল নম্বরের বদলে নির্দিষ্ট বায়োডাটা কোড ব্যবহার করুন।',false);
+
+    const member=members[0];
+    const details='নাম: '+(member.full_name||'নাম পাওয়া যায়নি')+
+      '\nমোবাইল: '+(member.phone||'পাওয়া যায়নি')+
+      '\nবায়োডাটা কোড: '+(member.biodata_code||'পাওয়া যায়নি');
+    if(!confirm(details+'\n\nএই সদস্যকে সাধারণ Admin হিসেবে যুক্ত করবেন?'))return;
+
+    const {data,error}=await sb.rpc('add_admin_user',{p_user_id:member.user_id});
+    if(error)return RH.toast('অ্যাডমিন যুক্ত হয়নি: '+error.message,false);
+    if(!data)return RH.toast('অ্যাডমিন যুক্ত করা যায়নি।',false);
+    input.value='';RH.toast('অ্যাডমিন যুক্ত হয়েছে।');await loadAdminMatrix();
+  } finally {
+    button.disabled=false;
+  }
 }
 
 async function loadAdminMatrix() {
