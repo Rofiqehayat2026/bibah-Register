@@ -256,14 +256,14 @@ input:focus, select:focus {
       <div class="form-group">
 
         <label id="identifierLabel" for="identifier">
-          <i class="fas fa-mobile-alt"></i>
-          মোবাইল নম্বর
+          <i class="fas fa-envelope"></i>
+          নিবন্ধিত ইমেইল
         </label>
 
         <input
-          type="text"
+          type="email"
           id="identifier"
-          placeholder="01XXXXXXXXX"
+          placeholder="আপনার নিবন্ধিত ইমেইল"
           autocomplete="username"
           required
         >
@@ -315,7 +315,7 @@ input:focus, select:focus {
 
       <div class="note">
         <i class="fas fa-info-circle"></i>
-        আপনার নিবন্ধিত মোবাইল নম্বর অথবা নিবন্ধিত মোবাইল নম্বর এবং পাসওয়ার্ড ব্যবহার করে লগইন করুন।
+        নিবন্ধনের সময় দেওয়া ইমেইল ও পাসওয়ার্ড ব্যবহার করে লগইন করুন।
       </div>
 
     </div>
@@ -382,276 +382,86 @@ input:focus, select:focus {
 <script>
 "use strict";
 
-// ======================================
-// SUPABASE CLIENT CHECK
-// ======================================
-
 if (typeof sb === "undefined") {
-  document.body.innerHTML =
-    '<div style="padding:30px;color:#b42318;font-family:sans-serif">' +
-    'সমস্যা: config.js থেকে Supabase Client পাওয়া যায়নি।' +
-    '</div>';
-
+  document.body.innerHTML = '<div style="padding:30px;color:#b42318;font-family:sans-serif">config.js থেকে Supabase Client পাওয়া যায়নি।</div>';
   throw new Error("Supabase client (sb) not found.");
 }
 
-// ======================================
-// ELEMENTS
-// ======================================
-
-const loginType = { value: "member" };
 const identifier = document.getElementById("identifier");
 const password = document.getElementById("password");
-
-const identifierLabel = document.getElementById("identifierLabel");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-
 const msg = document.getElementById("msg");
 const togglePassword = document.getElementById("togglePassword");
 
-// ======================================
-// MESSAGE
-// ======================================
-
 function showMessage(message, type = "error") {
-  msg.className = "alert " +
-    (type === "success" ? "alert-success" : "alert-error");
-
+  msg.className = "alert " + (type === "success" ? "alert-success" : "alert-error");
   msg.textContent = message;
   msg.classList.remove("hidden");
 }
-
 function hideMessage() {
   msg.classList.add("hidden");
   msg.textContent = "";
 }
 
-// ======================================
-// SHOW / HIDE PASSWORD
-// ======================================
-
 togglePassword.addEventListener("click", () => {
-
-  const isPassword = password.type === "password";
-
-  password.type = isPassword ? "text" : "password";
-
-  togglePassword.innerHTML = isPassword
-    ? '<i class="fas fa-eye-slash"></i>'
-    : '<i class="fas fa-eye"></i>';
-
+  const show = password.type === "password";
+  password.type = show ? "text" : "password";
+  togglePassword.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
 });
-
-// ======================================
-// LOGIN FUNCTION
-// ======================================
 
 loginBtn.addEventListener("click", async () => {
-
-  const kind = loginType.value;
-  const userIdentifier = identifier.value.trim();
+  const email = identifier.value.trim().toLowerCase();
   const userPassword = password.value;
-
   hideMessage();
 
-  if (!userIdentifier || !userPassword) {
-    showMessage("মোবাইল নম্বর/ইউজারনেম এবং পাসওয়ার্ড লিখুন।");
-    return;
-  }
-
-  if (kind === "member" &&
-      !/^(?:\+?88)?01[3-9]\d{8}$/.test(
-        userIdentifier.replace(/[\s-]/g, "")
-      )) {
-
-    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন।");
-    return;
-  }
-
-  if (kind === "admin" &&
-      !/^[a-zA-Z0-9_]{3,50}$/.test(userIdentifier)) {
-
-    showMessage("সঠিক অ্যাডমিন ইউজারনেম লিখুন।");
-    return;
-  }
+  if (!email || !userPassword) return showMessage("নিবন্ধিত ইমেইল ও পাসওয়ার্ড লিখুন।");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMessage("সঠিক ইমেইল ঠিকানা লিখুন।");
 
   loginBtn.disabled = true;
-
-  loginBtn.innerHTML =
-    '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
-
+  loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
   try {
-
-    // ==================================
-    // EDGE FUNCTION LOGIN
-    // Function name: bright-api
-    // ==================================
-
-    const { data, error } = await sb.functions.invoke(
-      "bright-api",
-      {
-        body: {
-          kind: kind,
-          identifier: userIdentifier,
-          password: userPassword
-        }
-      }
-    );
-
-    if (error) {
-
-      console.error("Edge Function error:", error);
-
-      let errorMessage = "লগইন অনুরোধ ব্যর্থ হয়েছে।";
-
-      if (data && data.error) {
-        errorMessage = data.error;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      throw new Error(errorMessage);
-    }
-
-    if (!data || !data.session) {
-      throw new Error(
-        data?.error || "সার্ভার থেকে লগইন সেশন পাওয়া যায়নি।"
-      );
-    }
-
-    // ==================================
-    // SET SUPABASE AUTH SESSION
-    // ==================================
-
-    const { data: sessionData, error: sessionError } =
-      await sb.auth.setSession({
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token
-      });
-
-    if (sessionError) {
-      throw sessionError;
-    }
-
-    if (!sessionData.session) {
-      throw new Error("লগইন সেশন সংরক্ষণ করা যায়নি।");
-    }
-
-    // ==================================
-    // REDIRECT
-    // ==================================
-    
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: userPassword });
+    if (error) throw error;
+    if (!data.session) throw new Error("লগইন সেশন তৈরি হয়নি।");
     showMessage("লগইন সফল হয়েছে।", "success");
-    
     location.replace("dashboard.html");
-    
-      } catch (error) {
-
-    console.error("Login error:", error);
-
-    showMessage(
-      error.message || "লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"
-    );
-
+  } catch (error) {
+    console.error("Member login error:", error);
+    showMessage(error.message || "লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
   } finally {
-
     loginBtn.disabled = false;
-
-    loginBtn.innerHTML =
-      '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
-
+    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
   }
-
 });
-
-// ======================================
-// SESSION CHECK
-// ======================================
 
 async function refreshSession() {
-
   try {
-
     const { data, error } = await sb.auth.getSession();
-
     if (error) throw error;
-
     const session = data.session;
-
-    const signedOut = document.getElementById("signedOut");
-    const signedIn = document.getElementById("signedIn");
-
-    signedOut.classList.toggle("hidden", !!session);
-    signedIn.classList.toggle("hidden", !session);
-
-    if (session) {
-
-      const user = session.user;
-
-      document.getElementById("userIdentity").textContent =
-        user.email || user.phone || "লগইন করা ব্যবহারকারী";
-
-      // পূর্ববর্তী সেশন থাকলে সাধারণ ড্যাশবোর্ডে লিংক
-      document.getElementById("dashboardLink").href =
-        "dashboard.html";
-
-    }
-
+    document.getElementById("signedOut").classList.toggle("hidden", !!session);
+    document.getElementById("signedIn").classList.toggle("hidden", !session);
+    if (session) document.getElementById("userIdentity").textContent = session.user.email || "লগইন করা ব্যবহারকারী";
   } catch (error) {
-
     console.error("Session check error:", error);
-
   }
-
 }
 
-// ======================================
-// LOGOUT
-// ======================================
-
 logoutBtn.addEventListener("click", async () => {
-
   logoutBtn.disabled = true;
-
-  logoutBtn.innerHTML =
-    '<i class="fas fa-spinner fa-spin"></i> লগআউট হচ্ছে...';
-
   try {
-
     const { error } = await sb.auth.signOut();
-
     if (error) throw error;
-
     location.replace("login.html");
-
   } catch (error) {
-
     showMessage("লগআউট ব্যর্থ: " + error.message);
-
     logoutBtn.disabled = false;
-
-    logoutBtn.innerHTML =
-      '<i class="fas fa-sign-out-alt"></i> লগআউট';
-
   }
-
 });
 
-// ======================================
-// AUTH STATE LISTENER
-// ======================================
-
-sb.auth.onAuthStateChange(() => {
-  refreshSession();
-});
-
-// ======================================
-// INITIAL SESSION CHECK
-// ======================================
-
+sb.auth.onAuthStateChange(() => { setTimeout(refreshSession, 0); });
 refreshSession();
-
 </script>
 
 </body>
