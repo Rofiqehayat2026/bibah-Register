@@ -931,16 +931,48 @@ async function loadPasswordResetRequests(){
  if(!el || currentRole==='member') return;
  el.innerHTML='লোড হচ্ছে...';
  const {data,error}=await sb.rpc('admin_list_password_reset_requests');
- if(error){el.innerHTML=`<div class="alert alert-error">অনুরোধ লোড হয়নি: ${RH.esc(error.message)}। SQL সেটআপ সম্পন্ন হয়েছে কি না দেখুন।</div>`;return;}
+ if(error){el.innerHTML=`<div class="alert alert-error">অনুরোধ লোড হয়নি: ${RH.esc(error.message)}</div>`;return;}
  if(!data?.length){el.innerHTML='<div class="alert alert-info">কোনো অপেক্ষমাণ অনুরোধ নেই।</div>';return;}
- el.innerHTML=data.map(r=>`<div class="card">
-  <strong>${RH.esc(r.phone)}</strong> <span class="badge badge-pending">${RH.esc(r.status)}</span>
-  <div>${RH.esc(r.note||'অতিরিক্ত তথ্য নেই')}</div>
-  <div class="muted-small">অনুরোধ: ${RH.fmtDate(r.created_at)}</div>
-  <div class="admin-actions mt-1">
-   <button class="btn btn-small" onclick="contactResetRequester('${r.id}','${RH.esc(r.phone)}')">যোগাযোগ / সম্পন্ন চিহ্নিত</button>
-  </div>
- </div>`).join('');
+ const showValue = value => {
+   if(value === null || value === undefined || value === '') return '—';
+   if(typeof value === 'object') return JSON.stringify(value, null, 2);
+   return String(value);
+ };
+ el.innerHTML=data.map(r=>{
+   const biodata = Array.isArray(r.biodata) ? r.biodata : [];
+   const biodataHtml = biodata.length ? biodata.map((b,index)=>{
+     const formData = b.form_data && typeof b.form_data === 'object' ? b.form_data : {};
+     const formRows = Object.entries(formData).map(([key,value])=>
+       `<div class="preview-row"><div class="lbl">${RH.esc(key)}</div><div class="val" style="white-space:pre-wrap">${RH.esc(showValue(value))}</div></div>`
+     ).join('');
+     return `<div class="card" style="background:#f8fbfd;margin-top:12px">
+       <strong>বায়োডাটা ${index+1}: ${RH.esc(b.full_name||'নাম দেওয়া নেই')}</strong>
+       <div class="preview-row"><div class="lbl">বায়োডাটা কোড</div><div class="val">${RH.esc(b.biodata_code||'—')}</div></div>
+       <div class="preview-row"><div class="lbl">আবেদনকারীর ধরন</div><div class="val">${RH.esc(b.applicant_type||'—')}</div></div>
+       <div class="preview-row"><div class="lbl">জন্মতারিখ</div><div class="val">${RH.esc(b.dob||'—')}</div></div>
+       <div class="preview-row"><div class="lbl">বৈবাহিক অবস্থা</div><div class="val">${RH.esc(b.marital_status||'—')}</div></div>
+       <div class="preview-row"><div class="lbl">বর্তমান জেলা / বিভাগ</div><div class="val">${RH.esc([b.current_district,b.current_division].filter(Boolean).join(' / ')||'—')}</div></div>
+       <div class="preview-row"><div class="lbl">স্থায়ী জেলা</div><div class="val">${RH.esc(b.permanent_district||'—')}</div></div>
+       <div class="preview-row"><div class="lbl">বায়োডাটা স্ট্যাটাস</div><div class="val">${RH.esc(b.status||'—')}</div></div>
+       ${Object.keys(formData).length ? `<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;color:#0e4d64">ফরমে পূরণ করা সম্পূর্ণ তথ্য দেখুন</summary><div style="margin-top:8px">${formRows}</div></details>` : '<div class="muted-small">অতিরিক্ত ফরমের তথ্য পাওয়া যায়নি।</div>'}
+     </div>`;
+   }).join('') : '<div class="alert alert-info">এই সদস্যের নামে কোনো বায়োডাটা পাওয়া যায়নি।</div>';
+   return `<div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+      <strong style="font-size:1.05rem">${RH.esc(r.member_name||'নাম পাওয়া যায়নি')}</strong>
+      <span class="badge badge-pending">${RH.esc(r.status)}</span>
+    </div>
+    <div class="preview-row"><div class="lbl">অনুরোধের মোবাইল</div><div class="val">${RH.esc(r.phone||'—')}</div></div>
+    <div class="preview-row"><div class="lbl">প্রোফাইলে থাকা মোবাইল</div><div class="val">${RH.esc(r.member_phone||'—')}</div></div>
+    <div class="preview-row"><div class="lbl">সদস্য ID</div><div class="val id-short">${RH.esc(r.requester_user_id||'—')}</div></div>
+    <div class="preview-row"><div class="lbl">অনুরোধের নোট</div><div class="val">${RH.esc(r.note||'অতিরিক্ত তথ্য নেই')}</div></div>
+    <div class="muted-small">অনুরোধ: ${RH.fmtDate(r.created_at)}</div>
+    <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;color:#0e4d64">সদস্যের বায়োডাটা ও ফরমের তথ্য দেখুন (${biodata.length})</summary><div style="margin-top:8px">${biodataHtml}</div></details>
+    <div class="admin-actions mt-1">
+     <button class="btn btn-small" onclick="contactResetRequester('${r.id}','${RH.esc(r.phone||'')}')">যোগাযোগ / পাসওয়ার্ড রিসেট</button>
+    </div>
+   </div>`;
+ }).join('');
 }
 async function contactResetRequester(id,phone){
  if(currentRole==='member') return RH.toast('অনুমতি নেই।',false);
