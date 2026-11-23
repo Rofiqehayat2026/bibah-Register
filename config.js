@@ -17,7 +17,6 @@ const RH = {
     return data?.session || null;
   },
 
- 
 async getProfile() {
   const s = await RH.getSession();
 
@@ -30,23 +29,12 @@ async getProfile() {
     .maybeSingle();
 
   if (error) {
-    console.error('Profile Load Error:', {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint
-    });
+    console.error('Profile Load Error:', error);
     return null;
   }
 
-  if (!data) {
-    console.warn('এই সদস্যের profiles টেবিলে কোনো রেকর্ড নেই:', s.user.id);
-    return null;
-  }
-
-  return data;
+  return data || null;
 },
-
 
   async requireAuth(roles = null, redirect = 'login.html') {
     const s = await RH.getSession();
