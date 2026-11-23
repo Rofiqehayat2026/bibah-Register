@@ -483,6 +483,17 @@ togglePassword.addEventListener("click", () => {
 
 });
 
+// Convert Bangladesh mobile numbers to the canonical 11-digit format.
+function normalizeBDPhone(value) {
+  const bnDigits = '০১২৩৪৫৬৭৮৯';
+  const converted = String(value || '').replace(/[০-৯]/g, d => String(bnDigits.indexOf(d)));
+  const digits = converted.replace(/\D/g, '');
+  if (/^01[3-9]\d{8}$/.test(digits)) return digits;
+  if (/^8801[3-9]\d{8}$/.test(digits)) return digits.slice(2);
+  if (/^008801[3-9]\d{8}$/.test(digits)) return digits.slice(4);
+  return '';
+}
+
 // ======================================
 // LOGIN FUNCTION
 // ======================================
@@ -490,22 +501,24 @@ togglePassword.addEventListener("click", () => {
 loginBtn.addEventListener("click", async () => {
 
   const kind = loginType.value;
-  const userIdentifier = identifier.value.trim();
+  const rawIdentifier = identifier.value.trim();
+  const userIdentifier = kind === 'member' ? normalizeBDPhone(rawIdentifier) : rawIdentifier;
   const userPassword = password.value;
 
   hideMessage();
 
-  if (!userIdentifier || !userPassword) {
-    showMessage("মোবাইল নম্বর ও পাসওয়ার্ড লিখুন।");
+  if (!userPassword) {
+    showMessage("পাসওয়ার্ড লিখুন।");
     return;
   }
 
-  if (kind === "member" &&
-      !/^(?:\+?88)?01[3-9]\d{8}$/.test(
-        userIdentifier.replace(/[\s-]/g, "")
-      )) {
+  if (kind === "member" && !userIdentifier) {
+    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন (01XXXXXXXXX)।");
+    return;
+  }
 
-    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন।");
+  if (kind === "admin" && !userIdentifier) {
+    showMessage("অ্যাডমিন ইউজারনেম লিখুন।");
     return;
   }
 
