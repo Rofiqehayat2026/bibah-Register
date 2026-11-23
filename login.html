@@ -254,17 +254,6 @@ input:focus, select:focus {
     <div id="signedOut">
 
       <div class="form-group">
-        <label for="loginType">
-          <i class="fas fa-user-shield"></i>
-          লগইনের ধরন
-        </label>
-
-        <select id="loginType">
-          <option value="member">সাধারণ সদস্য</option>
-        </select>
-      </div>
-
-      <div class="form-group">
 
         <label id="identifierLabel" for="identifier">
           <i class="fas fa-mobile-alt"></i>
@@ -410,7 +399,7 @@ if (typeof sb === "undefined") {
 // ELEMENTS
 // ======================================
 
-const loginType = document.getElementById("loginType");
+const loginType = { value: "member" };
 const identifier = document.getElementById("identifier");
 const password = document.getElementById("password");
 
@@ -437,34 +426,6 @@ function hideMessage() {
   msg.classList.add("hidden");
   msg.textContent = "";
 }
-
-// ======================================
-// LOGIN TYPE CHANGE
-// ======================================
-
-loginType.addEventListener("change", () => {
-
-  hideMessage();
-
-  if (loginType.value === "admin") {
-
-    identifierLabel.innerHTML =
-      '<i class="fas fa-user-shield"></i> অ্যাডমিন ইউজারনেম';
-
-    identifier.placeholder = "যেমন: A_Hasan";
-
-  } else {
-
-    identifierLabel.innerHTML =
-      '<i class="fas fa-mobile-alt"></i> মোবাইল নম্বর';
-
-    identifier.placeholder = "01XXXXXXXXX";
-
-  }
-
-  identifier.value = "";
-  password.value = "";
-});
 
 // ======================================
 // SHOW / HIDE PASSWORD
