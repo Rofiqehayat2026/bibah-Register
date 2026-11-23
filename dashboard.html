@@ -153,6 +153,13 @@
     <div id="adminBiodataList">লোড হচ্ছে...</div>
   </div>
 
+  <div class="tab-panel" id="panel-password-resets">
+    <div class="section-title"><i class="fas fa-key"></i> পাসওয়ার্ড সহায়তার অনুরোধ</div>
+    <div class="alert alert-info">সদস্যের পাসওয়ার্ড-সংক্রান্ত অনুরোধ এখানে দেখা যাবে। পাসওয়ার্ড পরিবর্তনের পর নতুন তথ্য সদস্যকে নিরাপদ মাধ্যমে জানান।</div>
+    <button class="btn btn-secondary mb-2" onclick="loadPasswordResetRequests()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
+    <div id="passwordResetRequests">লোড হচ্ছে...</div>
+  </div>
+
   <div class="tab-panel" id="panel-super-admin">
     <div class="section-title"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</div>
     <div class="card">
@@ -235,10 +242,16 @@ let currentProfile = null;
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
+    const targetPanel = document.getElementById('panel-' + btn.dataset.tab);
+    if (!targetPanel) {
+      console.error('Tab panel পাওয়া যায়নি:', btn.dataset.tab);
+      return;
+    }
+
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    const targetPanel = document.getElementById('panel-' + btn.dataset.tab);  if (!targetPanel) {   console.error('Tab panel পাওয়া যায়নি:', btn.dataset.tab);   return; }  targetPanel.classList.add('active');
+    targetPanel.classList.add('active');
 
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
@@ -747,7 +760,7 @@ function applyRoleUI() {
   document.querySelectorAll('.role-member').forEach(x => x.classList.toggle('hidden', currentRole !== 'member'));
   document.querySelectorAll('.role-admin').forEach(x => x.classList.toggle('hidden', currentRole === 'member'));
   document.getElementById('tabAdminRequests')?.classList.toggle('hidden', !can('access_requests.view'));
-  document.getElementById('tabPasswordResets').classList.toggle('hidden', currentRole === 'member');
+  document.getElementById('tabPasswordResets')?.classList.toggle('hidden', currentRole === 'member');
   document.getElementById('tabAdminBiodata')?.classList.toggle('hidden', !can('biodata.verify'));
   document.getElementById('tabSuperAdmin')?.classList.toggle('hidden', currentRole !== 'super_admin');
   document.getElementById('tabAudit')?.classList.toggle('hidden', !can('audit_logs.view'));
@@ -757,7 +770,7 @@ function applyRoleUI() {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     const first = document.querySelector('.tab-btn:not(.hidden)');
     if (first) first.click();
-    else document.getElementById('panel-admin-requests').innerHTML = '<div class="alert alert-info">এই অ্যাকাউন্টে ড্যাশবোর্ডের কোনো মেনু অনুমোদিত নেই। Super Admin-এর সঙ্গে যোগাযোগ করুন।</div>';
+    else { const fallbackPanel = document.getElementById('panel-admin-requests'); if (fallbackPanel) fallbackPanel.innerHTML = '<div class="alert alert-info">এই অ্যাকাউন্টে ড্যাশবোর্ডের কোনো মেনু অনুমোদিত নেই। Super Admin-এর সঙ্গে যোগাযোগ করুন।</div>'; }
   }
 }
 
