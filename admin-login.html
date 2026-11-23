@@ -257,13 +257,13 @@ input:focus, select:focus {
 
         <label id="identifierLabel" for="identifier">
           <i class="fas fa-envelope"></i>
-          অ্যাডমিনের নিবন্ধিত ইমেইল
+          অ্যাডমিনের নিবন্ধিত মোবাইল নম্বর অথবা ইমেইল
         </label>
 
         <input
-          type="email"
+          type="text"
           id="identifier"
-          placeholder="admin@example.com"
+          placeholder="01XXXXXXXXX অথবা admin@example.com"
           autocomplete="username"
           required
         >
@@ -315,7 +315,7 @@ input:focus, select:focus {
 
       <div class="note">
         <i class="fas fa-info-circle"></i>
-        অ্যাডমিন Auth অ্যাকাউন্টের ইমেইল ও পাসওয়ার্ড ব্যবহার করুন।
+        অ্যাডমিন Auth অ্যাকাউন্টে নিবন্ধিত মোবাইল নম্বর অথবা ইমেইল ও পাসওয়ার্ড ব্যবহার করুন। মোবাইল দিয়ে লগইনের জন্য নম্বরটি Supabase Auth-এ আগে থেকে যুক্ত ও Confirmed থাকতে হবে।
       </div>
 
     </div>
@@ -421,16 +421,35 @@ async function verifyAdminSession(session) {
 }
 
 loginBtn.addEventListener("click", async () => {
-  const email = identifier.value.trim().toLowerCase();
+  const rawIdentifier = identifier.value.trim();
   const userPassword = password.value;
   hideMessage();
-  if (!email || !userPassword) return showMessage("অ্যাডমিনের নিবন্ধিত ইমেইল ও পাসওয়ার্ড লিখুন।");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMessage("সঠিক অ্যাডমিন ইমেইল লিখুন।");
+  if (!rawIdentifier || !userPassword) return showMessage("অ্যাডমিনের মোবাইল নম্বর অথবা ইমেইল এবং পাসওয়ার্ড লিখুন।");
+
+  const toEnglishDigits = value => value
+    .replace(/[০-৯]/g, digit => "০১২৩৪৫৬৭৮৯".indexOf(digit))
+    .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit));
+  const cleanIdentifier = toEnglishDigits(rawIdentifier).replace(/[\s()-]/g, "");
+  const isPhone = /^(?:\+?88)?01[3-9]\d{8}$/.test(cleanIdentifier);
+  let authCredentials;
+
+  if (isPhone) {
+    let e164Phone = cleanIdentifier;
+    if (/^01[3-9]\d{8}$/.test(cleanIdentifier)) e164Phone = "+88" + cleanIdentifier;
+    else if (/^8801[3-9]\d{8}$/.test(cleanIdentifier)) e164Phone = "+" + cleanIdentifier;
+    authCredentials = { phone: e164Phone, password: userPassword };
+  } else {
+    const email = rawIdentifier.toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর অথবা ইমেইল লিখুন।");
+    }
+    authCredentials = { email, password: userPassword };
+  }
 
   loginBtn.disabled = true;
   loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
   try {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password: userPassword });
+    const { data, error } = await sb.auth.signInWithPassword(authCredentials);
     if (error) throw error;
     if (!data.session) throw new Error("লগইন সেশন তৈরি হয়নি।");
 
@@ -439,7 +458,7 @@ loginBtn.addEventListener("click", async () => {
     catch (verifyError) { await sb.auth.signOut(); throw verifyError; }
     if (!allowed) {
       await sb.auth.signOut();
-      throw new Error("এই ইমেইলটি অনুমোদিত অ্যাডমিন অ্যাকাউন্ট নয়।");
+      throw new Error("এই মোবাইল/ইমেইলটি অনুমোদিত অ্যাডমিন অ্যাকাউন্ট নয়।");
     }
     showMessage("অ্যাডমিন লগইন সফল হয়েছে।", "success");
     location.replace("dashboard.html");
@@ -472,7 +491,7 @@ async function refreshSession() {
     }
     document.getElementById("signedOut").classList.add("hidden");
     document.getElementById("signedIn").classList.remove("hidden");
-    document.getElementById("userIdentity").textContent = session.user.email || "অনুমোদিত অ্যাডমিন";
+    document.getElementById("userIdentity").textContent = session.user.email || session.user.phone || "অনুমোদিত অ্যাডমিন";
   } catch (error) {
     console.error("Admin session check:", error);
     document.getElementById("signedOut").classList.remove("hidden");
