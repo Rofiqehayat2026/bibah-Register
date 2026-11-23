@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>বায়োডাটা প্রিভিউ | রফিকে হায়াত</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+:root{--ink:#173344;--muted:#607783;--green:#176b51;--gold:#c69a43;--line:#dce7e7;--soft:#f3f8f6}
+*{box-sizing:border-box}body{margin:0;background:#edf2f3;color:var(--ink);font-family:'Noto Sans Bengali',sans-serif;line-height:1.45}
+.toolbar{max-width:920px;margin:18px auto 10px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 12px}.toolbar a,.toolbar button{border:0;border-radius:9px;padding:10px 16px;text-decoration:none;font:600 14px inherit;cursor:pointer}.toolbar a{background:#fff;color:var(--ink);border:1px solid var(--line)}.toolbar button{background:var(--green);color:#fff}
+.sheet{width:210mm;min-height:297mm;margin:0 auto 24px;background:white;padding:10mm 11mm 9mm;box-shadow:0 8px 35px #18354420;position:relative;overflow:hidden}
+.topline{height:4px;background:linear-gradient(90deg,var(--green),#7cae91,var(--gold));margin:-10mm -11mm 7mm}
+.brand{text-align:center;border-bottom:1px solid var(--line);padding-bottom:5mm;margin-bottom:4mm}.brand .small{font-size:8pt;color:var(--gold);font-weight:700;letter-spacing:.5px}.brand h1{font-size:21pt;line-height:1.25;margin:1mm 0;color:var(--green);font-weight:800}.brand .slogan{font-size:9pt;color:var(--muted)}
+.identity{display:flex;align-items:center;justify-content:space-between;gap:8mm;background:var(--soft);border:1px solid #d8e9e0;border-radius:9px;padding:3mm 4mm;margin-bottom:4mm}.identity .name{font-size:14pt;font-weight:800;color:var(--ink)}.identity .type{font-size:9pt;color:var(--green);font-weight:700}.code{text-align:right;font-size:8pt;color:var(--muted)}.code strong{display:block;color:var(--green);font-size:11pt;letter-spacing:.5px}
+.sections{display:grid;grid-template-columns:1fr 1fr;gap:3mm 4mm;align-items:start}.section{border:1px solid var(--line);border-radius:7px;overflow:hidden;break-inside:avoid}.section h2{font-size:9pt;margin:0;padding:1.6mm 2.5mm;background:#edf5f1;color:var(--green);font-weight:800;border-bottom:1px solid var(--line)}.items{padding:1.6mm 2.5mm;display:grid;grid-template-columns:1fr 1fr;gap:1.4mm 3mm}.item{min-width:0;font-size:7.4pt;display:flex;gap:1.5mm;align-items:flex-start;border-bottom:1px dotted #e8eeee;padding-bottom:.7mm}.item.wide{grid-column:1/-1}.label{color:var(--muted);white-space:nowrap;font-weight:500}.value{color:#203d4a;font-weight:600;overflow-wrap:anywhere}.empty{color:#9aa9ad;font-weight:400}
+.footer{margin-top:4mm;border-top:1px solid var(--line);padding-top:2mm;display:flex;justify-content:space-between;gap:5mm;font-size:7pt;color:var(--muted)}.footer strong{color:var(--green)}
+.state{max-width:700px;margin:50px auto;background:#fff;padding:28px;border-radius:14px;text-align:center;color:var(--ink);box-shadow:0 5px 25px #0001}.state h2{color:var(--green)}
+@page{size:A4 portrait;margin:0}
+@media print{body{background:#fff}.toolbar,.state{display:none!important}.sheet{margin:0;width:210mm;min-height:0;height:297mm;padding:8mm 9mm 7mm;box-shadow:none;overflow:hidden}.topline{margin:-8mm -9mm 5mm}.brand{padding-bottom:3mm;margin-bottom:3mm}.brand h1{font-size:18pt}.identity{padding:2mm 3mm;margin-bottom:3mm}.sections{gap:2mm 3mm}.section h2{font-size:8pt;padding:1.2mm 2mm}.items{padding:1.2mm 2mm;gap:1mm 2mm}.item{font-size:6.6pt;padding-bottom:.4mm}.footer{margin-top:2.5mm;padding-top:1.5mm;font-size:6.3pt}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media(max-width:850px){.sheet{width:100%;min-height:0;padding:20px}.topline{margin:-20px -20px 16px}.sections{grid-template-columns:1fr}.toolbar{margin:12px auto}.identity{gap:10px}}
+</style>
+</head>
+<body>
+<div class="toolbar"><a href="javascript:history.back()">← ফিরে যান</a><button onclick="window.print()">▤ প্রিন্ট / PDF সংরক্ষণ</button></div>
+<div id="loading" class="state"><h2>বায়োডাটা লোড হচ্ছে…</h2><p>অনুগ্রহ করে অপেক্ষা করুন</p></div>
+<div id="error" class="state" hidden><h2>বায়োডাটা দেখানো যাচ্ছে না</h2><p id="errorText">তথ্য পাওয়া যায়নি।</p><a href="dashboard.html">ড্যাশবোর্ডে ফিরুন</a></div>
+<main id="sheet" class="sheet" hidden>
+  <div class="topline"></div>
+  <header class="brand"><div class="small">বিবাহের উদ্দেশ্যে পরিচিতি</div><h1>রফিকে হায়াত</h1><div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div></header>
+  <div class="identity"><div><div class="type" id="applicantType">বায়োডাটা</div><div class="name" id="fullName">—</div></div><div class="code">বায়োডাটা আইডি<strong id="biodataCode">—</strong></div></div>
+  <div class="sections" id="sections"></div>
+  <footer class="footer"><span>ব্যক্তিগত ও গোপনীয় তথ্য — অনুমতি ছাড়া প্রচার করবেন না</span><span><strong>রফিকে হায়াত</strong> · জান্নাতের পথে সাথীর সন্ধানে</span></footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const labels = {
+ fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',telegram:'Telegram',currentThana:'থানা / উপজেলা',currentDistrict:'বর্তমান জেলা',currentDivision:'বিভাগ',permanentDistrict:'স্থায়ী জেলা',guardianName:'অভিভাবকের নাম',guardianRelation:'সম্পর্ক',guardianPhone:'অভিভাবকের নম্বর',height:'উচ্চতা',weight:'ওজন',complexion:'গায়ের রং',physicalProblem:'শারীরিক সমস্যা',physicalProblemDetail:'সমস্যার বিবরণ',fatherName:'পিতার নাম',fatherJob:'পিতার পেশা',motherName:'মাতার নাম',motherJob:'মাতার পেশা',brothers:'ভাই',sisters:'বোন',salah:'৫ ওয়াক্ত সালাত',parda:'পর্দা / দাড়ি',mahram:'মাহরাম',avoidHaram:'হারাম বর্জন',ownDeeniDetail:'নিজের দ্বীনী অবস্থা',mazhab:'মাযহাব',educationType:'শিক্ষার ধরন',educationDetail:'শিক্ষাগত বিবরণ',economicStatus:'অর্থনৈতিক অবস্থা',incomeSource:'আয়ের উৎস',groomMaritalStatus:'পাত্রের বৈবাহিক অবস্থা',brideMaritalStatus:'পাত্রীর বৈবাহিক অবস্থা',prefAge:'প্রত্যাশিত বয়স',prefHeight:'প্রত্যাশিত উচ্চতা',prefArea:'পছন্দের এলাকা',prefEducation:'প্রত্যাশিত শিক্ষা',extraRequirements:'অতিরিক্ত চাহিদা'
+};
+const groups = [
+ {title:'ব্যক্তিগত পরিচিতি ও যোগাযোগ',keys:['dob','mobile','whatsapp','telegram','nid']},
+ {title:'ঠিকানা ও অভিভাবক',keys:['currentThana','currentDistrict','currentDivision','permanentDistrict','guardianName','guardianRelation','guardianPhone']},
+ {title:'শারীরিক তথ্য',keys:['height','weight','complexion','physicalProblem','physicalProblemDetail']},
+ {title:'পারিবারিক তথ্য',keys:['fatherName','fatherJob','motherName','motherJob','brothers','sisters']},
+ {title:'দ্বীনী অবস্থা',keys:['salah','parda','mahram','avoidHaram','ownDeeniDetail','mazhab']},
+ {title:'শিক্ষা ও অর্থনৈতিক অবস্থা',keys:['educationType','educationDetail','economicStatus','incomeSource']},
+ {title:'বৈবাহিক অবস্থা ও জীবনসঙ্গীর চাহিদা',keys:['groomMaritalStatus','brideMaritalStatus','prefAge','prefHeight','prefArea','prefEducation','extraRequirements']}
+];
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function prettyDate(v){if(!v)return '';const m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}-${m[2]}-${m[1]}`:v;}
+function showValue(v){if(Array.isArray(v))return v.filter(Boolean).join(', ');if(typeof v==='boolean')return v?'হ্যাঁ':'না';return String(v??'').trim();}
+function render(record){const d=record.form_data||{};const typeMap={male:'পাত্র',female:'পাত্রী',boy_khunsha:'ছেলে খুনসা',girl_khunsha:'মেয়ে খুনসা'};$('applicantType').textContent=typeMap[record.applicant_type]||record.applicant_type||'বায়োডাটা';$('fullName').textContent=record.full_name||d.fullName||'নাম উল্লেখ নেই';$('biodataCode').textContent=record.biodata_code||'—';
+ const root=$('sections');root.innerHTML='';groups.forEach(g=>{const entries=g.keys.map(k=>{let val=d[k];if(k==='dob')val=val||record.dob||record.date_of_birth;if(k==='currentDistrict')val=val||record.current_district;if(k==='currentDivision')val=val||record.current_division;if(k==='permanentDistrict')val=val||record.permanent_district;if(k==='groomMaritalStatus'||k==='brideMaritalStatus')val=val||record.marital_status;val=showValue(val);if(!val)return '';const wide=['ownDeeniDetail','educationDetail','incomeSource','physicalProblemDetail','extraRequirements'].includes(k);return `<div class="item ${wide?'wide':''}"><span class="label">${esc(labels[k]||k)}:</span><span class="value">${esc(k==='dob'?prettyDate(val):val)}</span></div>`;}).filter(Boolean).join('');if(!entries)return;const section=document.createElement('section');section.className='section';section.innerHTML=`<h2>${esc(g.title)}</h2><div class="items">${entries}</div>`;root.appendChild(section);});$('loading').hidden=true;$('sheet').hidden=false;}
+async function init(){try{if(typeof sb==='undefined')throw new Error('config.js থেকে Supabase সংযোগ পাওয়া যায়নি।');const session=await RH.getSession();if(!session?.user)throw new Error('বায়োডাটা দেখতে প্রথমে সদস্য হিসেবে লগইন করুন।');const p=new URLSearchParams(location.search);const id=p.get('id'),code=p.get('code');let q=sb.from('biodata_records').select('*');if(id)q=q.eq('id',id);else if(code)q=q.eq('biodata_code',code);else q=q.eq('user_id',session.user.id);const {data,error}=await q.maybeSingle();if(error)throw error;if(!data)throw new Error('এই লিংকে কোনো বায়োডাটা পাওয়া যায়নি অথবা দেখার অনুমতি নেই।');render(data);}catch(e){console.error(e);$('loading').hidden=true;$('error').hidden=false;$('errorText').textContent=e.message||'তথ্য লোড করতে সমস্যা হয়েছে।';}}
+init();
+</script>
+</body>
+</html>
