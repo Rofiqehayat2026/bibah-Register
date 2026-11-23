@@ -1506,11 +1506,10 @@
                     current_district: formData.currentDistrict || null,
                     marital_status: maritalStatus,
                     form_data: formData,
-                    consent: {
-                        accepted: consentValues,
-                        consented_at: new Date().toISOString(),
-                        consent_version: '2026-11-19'
-                    },
+                    // সম্মতির তথ্য biodata_records টেবিলের বিদ্যমান Boolean কলামে সংরক্ষণ
+                    consent_truth: consentValues.includes('truth'),
+                    consent_cancel: consentValues.includes('cancel'),
+                    consent_storage: consentValues.includes('store'),
                     status: 'pending'
                 };
 
