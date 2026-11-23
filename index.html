@@ -305,6 +305,29 @@
             .feature-grid { grid-template-columns:1fr; }
         }
 
+
+        body { background: radial-gradient(circle at top left, #e6f3ef 0, #f3f6fa 42%, #edf2f7 100%); }
+        .container { max-width: 1120px; padding: 2.2rem; }
+        .header { border: 0; padding: 2rem 1rem 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg,#0d4655,#16745d); border-radius: 24px; color: #fff; box-shadow: 0 16px 35px rgba(13,70,85,.18); }
+        .header h1, .header .slogan { color: #fff; }
+        .header h1 i { color: #f3d78b; }
+        .header .slogan { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.24); }
+        .hero-intro { text-align:center; padding: 1.4rem 1rem 1.8rem; }
+        .hero-kicker { display:inline-block; color:#16745d; background:#e5f3ed; border:1px solid #c8e4d8; border-radius:30px; padding:.35rem .9rem; font-size:.9rem; font-weight:600; }
+        .hero-intro h2 { color:#123f4c; font-size:clamp(1.65rem,4vw,2.35rem); line-height:1.35; margin:.85rem 0 .5rem; }
+        .hero-intro h2 span { color:#188064; }
+        .hero-intro p { max-width:680px; margin:0 auto; color:#607583; }
+        .feature-hub { margin-bottom:2rem; }
+        .feature-grid { grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1rem; }
+        .feature-card { border:1px solid #e1e9ed; border-radius:18px; padding:1.25rem 1rem; box-shadow:0 8px 22px rgba(17,55,67,.045); transition:transform .2s,box-shadow .2s; }
+        .feature-card:hover { transform:translateY(-4px); box-shadow:0 14px 28px rgba(17,55,67,.09); }
+        .feature-card .feature-icon { width:52px; height:52px; display:grid; place-items:center; margin:0 auto .7rem; border-radius:16px; background:#eaf5f0; font-size:1.35rem; }
+        .feature-card p { min-height:4.2em; }
+        .feature-link { min-height:44px; }
+        .auth-required { display:flex; align-items:flex-start; gap:1rem; background:#fffaf0; border:1px solid #f0dfb7; border-radius:16px; padding:1.1rem 1.25rem; margin:0 0 1.2rem; color:#76551b; }
+        .auth-required > i { font-size:1.35rem; margin-top:.2rem; }
+        .auth-required p { margin:.2rem 0 0; font-size:.92rem; }
+        @media(max-width:520px) { body { padding:.5rem; } .container { padding:1rem; border-radius:18px; } .header { padding:1.5rem .8rem; } .header h1 { font-size:1.8rem; } .feature-grid { grid-template-columns:1fr; } .feature-card p { min-height:0; } }
     </style>
 </head>
 <body>
@@ -314,51 +337,43 @@
             <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
         </div>
 
-        <nav class="main-nav" aria-label="প্রধান মেনু">
-            <a class="primary" href="#biodataForm"><i class="fas fa-file-signature"></i> বায়োডাটা জমা</a>
-            <a href="register.html"><i class="fas fa-user-plus"></i> রেজিস্ট্রেশন</a>
-            <a href="login.html"><i class="fas fa-sign-in-alt"></i> সদস্য লগইন</a>
-            <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ড</a>
-            <a href="admin-login.html"><i class="fas fa-user-shield"></i> অ্যাডমিন</a>
-        </nav>
+        <section class="hero-intro">
+            <span class="hero-kicker"><i class="fas fa-heart"></i> সম্মান, আস্থা ও দ্বীনদারির বন্ধনে</span>
+            <h2>জীবনসঙ্গী খুঁজুন <span>বিশ্বাসের সঙ্গে</span></h2>
+            <p>শরীয়তসম্মত বিবাহের উদ্দেশ্যে বায়োডাটা জমা দিন, সদস্য হিসেবে যুক্ত হোন এবং প্রয়োজনীয় কার্যক্রম পরিচালনা করুন।</p>
+        </section>
 
-        <section class="feature-hub" aria-label="ওয়েবসাইটের ফিচারসমূহ">
-            <h2 class="section-title"><i class="fas fa-th-large"></i> সকল ফিচার</h2>
+        <section class="feature-hub" aria-label="প্রধান সেবাসমূহ">
+            <h2 class="section-title"><i class="fas fa-th-large"></i> আমাদের সেবাসমূহ</h2>
             <div class="feature-grid">
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
                     <h3>বায়োডাটা জমা</h3>
-                    <p>নিরাপদে নিজের বিস্তারিত বায়োডাটা পূরণ ও জমা দিন।</p>
-                    <a class="feature-link primary" href="#biodataForm">ফরম পূরণ করুন</a>
+                    <p>বিবাহের উদ্দেশ্যে নিজের বিস্তারিত বায়োডাটা পূরণ ও জমা দিন।</p>
+                    <a class="feature-link primary" href="#biodataForm">ফরমে যান</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
                     <h3>নতুন সদস্য</h3>
-                    <p>নতুন অ্যাকাউন্ট তৈরি করে প্ল্যাটফর্মের সদস্য হন।</p>
+                    <p>নতুন অ্যাকাউন্ট তৈরি করে সদস্য হিসেবে যুক্ত হোন।</p>
                     <a class="feature-link" href="register.html">রেজিস্ট্রেশন</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-sign-in-alt"></i></div>
                     <h3>সদস্য লগইন</h3>
-                    <p>আগের অ্যাকাউন্টে প্রবেশ করে আপনার কার্যক্রম চালিয়ে যান।</p>
+                    <p>আপনার অ্যাকাউন্টে প্রবেশ করে সদস্য কার্যক্রম পরিচালনা করুন।</p>
                     <a class="feature-link" href="login.html">লগইন করুন</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-users"></i></div>
-                    <h3>প্রার্থী খুঁজুন</h3>
-                    <p>অনুমোদিত সদস্য হিসেবে প্রাথমিক বায়োডাটা অনুসন্ধান করুন।</p>
+                    <h3>সদস্য ড্যাশবোর্ড</h3>
+                    <p>প্রার্থী অনুসন্ধান, বিস্তারিত দেখার অনুরোধ ও নিজের কার্যক্রম দেখুন।</p>
                     <a class="feature-link" href="dashboard.html">ড্যাশবোর্ডে যান</a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-paper-plane"></i></div>
-                    <h3>অনুরোধ ও অনুমোদন</h3>
-                    <p>বিস্তারিত বায়োডাটা দেখার অনুরোধ এবং অনুমোদনের অবস্থা দেখুন।</p>
-                    <a class="feature-link" href="dashboard.html">আমার অনুরোধ</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
                     <h3>প্রশাসনিক প্যানেল</h3>
-                    <p>কর্তৃপক্ষের জন্য পৃথক অ্যাডমিন লগইন পেজ।</p>
+                    <p>অনুমোদিত কর্তৃপক্ষের জন্য প্রশাসনিক কার্যক্রম।</p>
                     <a class="feature-link" href="admin-login.html">অ্যাডমিন লগইন</a>
                 </div>
             </div>
@@ -397,21 +412,9 @@
             </ul>
         </div>
 
-        <div class="card" id="authPanel" style="background:#f3faf8;">
-            <h3 style="color:#0e4d64; margin-bottom:.7rem;"><i class="fas fa-user-shield"></i> নিরাপদ লগইন</h3>
-            <p style="margin-bottom:.8rem;">বায়োডাটা জমা দিতে প্রথমে আপনার ইমেইল দিয়ে লগইন করুন। আপনার ইমেইলে একটি নিরাপদ লগইন লিংক পাঠানো হবে।</p>
-            <div id="signedOutArea">
-                <div class="form-group">
-                    <label for="authEmail">ইমেইল ঠিকানা</label>
-                    <input type="email" id="authEmail" autocomplete="email" placeholder="আপনার ইমেইল লিখুন" required>
-                </div>
-                <button type="button" id="sendOtpBtn" class="btn-submit" style="margin-top:.5rem;">লগইন লিংক পাঠান</button>
-            </div>
-            <div id="signedInArea" style="display:none;">
-                <p>লগইন হয়েছে: <strong id="signedInEmail"></strong></p>
-                <button type="button" id="signOutBtn" class="btn-submit" style="margin-top:.5rem;">লগআউট</button>
-            </div>
-            <p id="authMessage" role="status" aria-live="polite" style="margin-top:.8rem;color:#146b4e;"></p>
+        <div class="auth-required" id="authRequired" role="status">
+            <i class="fas fa-lock"></i>
+            <div><strong>বায়োডাটা জমা দিতে সদস্য লগইন প্রয়োজন</strong><p>উপরের “সদস্য লগইন” সেবা থেকে আপনার অ্যাকাউন্টে প্রবেশ করার পর এই ফরমটি পূরণ করতে পারবেন।</p></div>
         </div>
         <div id="formMessage" role="status" aria-live="polite" class="note" style="display:none; margin:0 0 1rem;"></div>
 
@@ -805,10 +808,7 @@
     <script src="config.js"></script>
     <script>
         const form = document.getElementById('biodataForm');
-        const authMessage = document.getElementById('authMessage');
         const formMessage = document.getElementById('formMessage');
-        const sendOtpBtn = document.getElementById('sendOtpBtn');
-        const signOutBtn = document.getElementById('signOutBtn');
         let currentSession = null;
 
         function showMessage(el, msg, isError = false) {
@@ -820,13 +820,8 @@
         function setAuthUI(session) {
             currentSession = session;
             const signedIn = Boolean(session?.user);
-            document.getElementById('signedOutArea').style.display = signedIn ? 'none' : 'block';
-            document.getElementById('signedInArea').style.display = signedIn ? 'block' : 'none';
-            document.getElementById('signedInEmail').textContent = session?.user?.email || '';
+            document.getElementById('authRequired').style.display = signedIn ? 'none' : 'flex';
             form.style.display = signedIn ? 'block' : 'none';
-            showMessage(authMessage, signedIn
-                ? 'আপনি লগইন করেছেন। এখন বায়োডাটা ফরম পূরণ করতে পারবেন।'
-                : 'বায়োডাটা জমা দেওয়ার আগে ইমেইল দিয়ে লগইন করুন।');
         }
 
         function initializeForm() {
@@ -889,44 +884,6 @@
             const sel = document.querySelector('input[name="hasChildren"]:checked');
             document.getElementById('childrenDetail').classList.toggle('active', sel?.value === 'হ্যাঁ');
         }
-
-        sendOtpBtn.addEventListener('click', async () => {
-            const emailInput = document.getElementById('authEmail');
-            const email = emailInput.value.trim();
-            if (!email || !emailInput.checkValidity()) {
-                showMessage(authMessage, 'সঠিক ইমেইল ঠিকানা লিখুন।', true);
-                return;
-            }
-            sendOtpBtn.disabled = true;
-            sendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
-            try {
-                const { error } = await sb.auth.signInWithOtp({
-                    email,
-                    options: { emailRedirectTo: location.origin + '/dashboard.html' }
-                });
-                if (error) throw error;
-                showMessage(authMessage, 'আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। ইনবক্স/স্প্যাম ফোল্ডার চেক করুন।');
-            } catch (err) {
-                console.error(err);
-                showMessage(authMessage, 'লগইন লিংক পাঠানো যায়নি: ' + (err.message || 'নেটওয়ার্ক সমস্যা'), true);
-            } finally {
-                sendOtpBtn.disabled = false;
-                sendOtpBtn.textContent = 'লগইন লিংক পাঠান';
-            }
-        });
-
-        signOutBtn.addEventListener('click', async () => {
-            signOutBtn.disabled = true;
-            try {
-                const { error } = await sb.auth.signOut();
-                if (error) throw error;
-                showMessage(authMessage, 'আপনি লগআউট করেছেন।');
-            } catch (err) {
-                showMessage(authMessage, 'লগআউট ব্যর্থ: ' + (err.message || 'অজানা সমস্যা'), true);
-            } finally {
-                signOutBtn.disabled = false;
-            }
-        });
 
         function collectFormData() {
             const data = {};
