@@ -238,7 +238,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    const targetPanel = document.getElementById('panel-' + btn.dataset.tab);  if (!targetPanel) {   console.error('Tab panel পাওয়া যায়নি:', btn.dataset.tab);   return; }  targetPanel.classList.add('active');
 
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
@@ -746,11 +746,11 @@ function applyRoleUI() {
 
   document.querySelectorAll('.role-member').forEach(x => x.classList.toggle('hidden', currentRole !== 'member'));
   document.querySelectorAll('.role-admin').forEach(x => x.classList.toggle('hidden', currentRole === 'member'));
-  document.getElementById('tabAdminRequests').classList.toggle('hidden', !can('access_requests.view'));
+  document.getElementById('tabAdminRequests')?.classList.toggle('hidden', !can('access_requests.view'));
   document.getElementById('tabPasswordResets').classList.toggle('hidden', currentRole === 'member');
-  document.getElementById('tabAdminBiodata').classList.toggle('hidden', !can('biodata.verify'));
-  document.getElementById('tabSuperAdmin').classList.toggle('hidden', currentRole !== 'super_admin');
-  document.getElementById('tabAudit').classList.toggle('hidden', !can('audit_logs.view'));
+  document.getElementById('tabAdminBiodata')?.classList.toggle('hidden', !can('biodata.verify'));
+  document.getElementById('tabSuperAdmin')?.classList.toggle('hidden', currentRole !== 'super_admin');
+  document.getElementById('tabAudit')?.classList.toggle('hidden', !can('audit_logs.view'));
 
   if (currentRole !== 'member') {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
