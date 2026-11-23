@@ -1007,5 +1007,31 @@
             el.addEventListener('change', toggleChildrenDetail));
         document.querySelector('[name="dob"]').addEventListener('change', calculateAge);
     </script>
+
+<footer class="site-footer" aria-label="যোগাযোগ">
+  <style>
+    .site-footer{margin:2.2rem -0.2rem -0.2rem;padding:2rem 1.2rem 1.3rem;border-radius:20px;background:#103f4c;color:#eaf4f2;text-align:center}
+    .site-footer h2{font-size:1.25rem;color:#fff;margin-bottom:.35rem}
+    .site-footer p{color:#c9ddda;margin-bottom:1rem;font-size:.92rem}
+    .footer-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem}
+    .footer-actions a{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.65rem 1rem;border:1px solid rgba(255,255,255,.25);border-radius:11px;color:#fff;text-decoration:none;font-weight:600;background:rgba(255,255,255,.08);transition:.2s}
+    .footer-actions a:hover{background:#1e7e5e;transform:translateY(-2px)}
+    .footer-copy{margin-top:1.35rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.16);font-size:.82rem;color:#b9d0cc}
+    @media(max-width:520px){.site-footer{padding:1.5rem .8rem}.footer-actions a{flex:1 1 42%;font-size:.88rem}}
+  </style>
+  <h2>রফিকে হায়াত</h2>
+  <p>যোগাযোগ ও সহায়তার জন্য আমাদের সঙ্গে যোগাযোগ করুন</p>
+  <div class="footer-actions">
+    <a href="tel:01957939495"><i class="fas fa-phone"></i> মোবাইল: 01957939495</a>
+    <a href="https://wa.me/8801957939495" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    <a href="mailto:rafiqehayat2026@gmail.com"><i class="fas fa-envelope"></i> ইমেইল: rafiqehayat2026@gmail.com</a>
+    <a href="#" aria-disabled="true" title="ফেসবুক পেজের লিংক পরে যুক্ত করা হবে" onclick="event.preventDefault();"><i class="fab fa-facebook"></i> Facebook (লিংক পরে যুক্ত হবে)</a>
+    <a href="login.html"><i class="fas fa-user"></i> সদস্য লগইন</a>
+    <a href="admin-login.html"><i class="fas fa-user-shield"></i> অ্যাডমিন লগইন</a>
+  </div>
+  <div class="footer-copy">© <span id="footerYear"></span> রফিকে হায়াত। সর্বস্বত্ব সংরক্ষিত।</div>
+  <script>document.getElementById('footerYear').textContent=new Date().getFullYear();</script>
+</footer>
+
 </body>
 </html>
