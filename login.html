@@ -245,7 +245,7 @@ input:focus, select:focus {
       রফিকে হায়াত
       <i class="fas fa-heart" style="color:#1e7e5e"></i>
     </h1>
-    <p>নিরাপদ সদস্য ও প্রশাসনিক লগইন</p>
+    <p>সদস্য অ্যাকাউন্টে প্রবেশ করুন</p>
   </div>
 
   <div class="card">
@@ -260,8 +260,7 @@ input:focus, select:focus {
         </label>
 
         <select id="loginType">
-          <option value="member">সদস্য</option>
-          <option value="admin">অ্যাডমিন / সুপার অ্যাডমিন</option>
+          <option value="member">সাধারণ সদস্য</option>
         </select>
       </div>
 
@@ -327,7 +326,7 @@ input:focus, select:focus {
 
       <div class="note">
         <i class="fas fa-info-circle"></i>
-        সদস্য: মোবাইল নম্বর ও পাসওয়ার্ড। অ্যাডমিন: নির্ধারিত অ্যাডমিন ইউজারনেম ও পাসওয়ার্ড।
+        আপনার নিবন্ধিত মোবাইল নম্বর অথবা নিবন্ধিত মোবাইল নম্বর এবং পাসওয়ার্ড ব্যবহার করে লগইন করুন।
       </div>
 
     </div>
@@ -483,17 +482,6 @@ togglePassword.addEventListener("click", () => {
 
 });
 
-// Convert Bangladesh mobile numbers to the canonical 11-digit format.
-function normalizeBDPhone(value) {
-  const bnDigits = '০১২৩৪৫৬৭৮৯';
-  const converted = String(value || '').replace(/[০-৯]/g, d => String(bnDigits.indexOf(d)));
-  const digits = converted.replace(/\D/g, '');
-  if (/^01[3-9]\d{8}$/.test(digits)) return digits;
-  if (/^8801[3-9]\d{8}$/.test(digits)) return digits.slice(2);
-  if (/^008801[3-9]\d{8}$/.test(digits)) return digits.slice(4);
-  return '';
-}
-
 // ======================================
 // LOGIN FUNCTION
 // ======================================
@@ -501,24 +489,22 @@ function normalizeBDPhone(value) {
 loginBtn.addEventListener("click", async () => {
 
   const kind = loginType.value;
-  const rawIdentifier = identifier.value.trim();
-  const userIdentifier = kind === 'member' ? normalizeBDPhone(rawIdentifier) : rawIdentifier;
+  const userIdentifier = identifier.value.trim();
   const userPassword = password.value;
 
   hideMessage();
 
-  if (!userPassword) {
-    showMessage("পাসওয়ার্ড লিখুন।");
+  if (!userIdentifier || !userPassword) {
+    showMessage("মোবাইল নম্বর/ইউজারনেম এবং পাসওয়ার্ড লিখুন।");
     return;
   }
 
-  if (kind === "member" && !userIdentifier) {
-    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন (01XXXXXXXXX)।");
-    return;
-  }
+  if (kind === "member" &&
+      !/^(?:\+?88)?01[3-9]\d{8}$/.test(
+        userIdentifier.replace(/[\s-]/g, "")
+      )) {
 
-  if (kind === "admin" && !userIdentifier) {
-    showMessage("অ্যাডমিন ইউজারনেম লিখুন।");
+    showMessage("সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন।");
     return;
   }
 
