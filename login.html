@@ -474,43 +474,23 @@ loginBtn.addEventListener("click", async () => {
     '<i class="fas fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
 
   try {
-    // Existing Auth accounts use email internally. bright-api securely
-    // resolves the member's registered phone to that Auth account.
-    const { data, error } = await sb.functions.invoke("bright-api", {
-      body: {
-        kind: "member",
-        identifier: phone,
-        password: userPassword
-      }
+    // Direct Supabase Phone Auth (no Edge Function).
+    // Convert Bangladeshi local numbers to E.164: +8801XXXXXXXXX.
+    let e164Phone = phone;
+    if (/^01[3-9]\d{8}$/.test(phone)) {
+      e164Phone = "+88" + phone;
+    } else if (/^8801[3-9]\d{8}$/.test(phone)) {
+      e164Phone = "+" + phone;
+    }
+
+    const { data, error } = await sb.auth.signInWithPassword({
+      phone: e164Phone,
+      password: userPassword
     });
 
-    if (error) {
-      console.error("bright-api error:", error);
-      let message = data?.error || error.message || "লগইন অনুরোধ ব্যর্থ হয়েছে।";
-
-      // Supabase FunctionsHttpError may expose the response body here.
-      if (!data?.error && error.context && typeof error.context.json === "function") {
-        try {
-          const responseBody = await error.context.json();
-          if (responseBody?.error) message = responseBody.error;
-        } catch (_) {}
-      }
-      throw new Error(message);
-    }
-
-    if (!data?.session?.access_token || !data?.session?.refresh_token) {
-      throw new Error(data?.error || "সার্ভার থেকে বৈধ লগইন সেশন পাওয়া যায়নি।");
-    }
-
-    const { data: sessionData, error: sessionError } =
-      await sb.auth.setSession({
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token
-      });
-
-    if (sessionError) throw sessionError;
-    if (!sessionData?.session) {
-      throw new Error("লগইন সেশন সংরক্ষণ করা যায়নি।");
+    if (error) throw error;
+    if (!data?.session) {
+      throw new Error("লগইন সেশন তৈরি হয়নি।");
     }
 
     showMessage("লগইন সফল হয়েছে।", "success");
