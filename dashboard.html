@@ -105,6 +105,24 @@ body{padding:0;background:#f3f7f6;font-family:'Hind Siliguri','Noto Sans Bengali
 @media(min-width:851px){.container{padding-left:300px}}
 @media(max-width:520px){.header-bar{align-items:center}.header-bar h1{font-size:1.2rem}.header-bar #userInfo{width:100%;order:4}.header-bar .btn{font-size:.82rem;padding:8px 10px}}
 
+/* প্রশাসনিক পেন্ডিং নোটিফিকেশন */
+.admin-notification-wrap{position:relative;display:inline-flex;align-items:center}
+.admin-notification-bell{position:relative;display:inline-flex;align-items:center;gap:8px;border:1px solid #d6e5dd;border-radius:11px;background:#fff;color:#145a45;padding:9px 12px;font:inherit;font-weight:700;box-shadow:0 3px 10px rgba(19,68,53,.05)}
+.admin-notification-bell:hover{background:#f1f8f4}
+.admin-notification-bell .bell-icon{font-size:1.05rem}
+.admin-notification-count{position:absolute;top:-7px;right:-7px;min-width:21px;height:21px;padding:0 5px;display:grid;place-items:center;border:2px solid #fff;border-radius:20px;background:#c62828;color:#fff;font-size:.72rem;font-weight:800;line-height:1}
+.admin-notification-count[hidden]{display:none!important}
+.admin-notification-panel{position:absolute;z-index:1400;right:0;top:calc(100% + 10px);width:min(370px,calc(100vw - 26px));padding:15px;background:#fff;border:1px solid #dce9e1;border-radius:15px;box-shadow:0 18px 48px rgba(10,45,35,.2)}
+.admin-notification-panel[hidden]{display:none!important}
+.admin-notification-panel h3{margin:0 0 10px;color:#145a45;font-size:1.05rem}
+.admin-notification-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid #edf2ee}
+.admin-notification-row strong{display:block;color:#263e35;font-size:.92rem}
+.admin-notification-row small{display:block;color:#6b8177;font-size:.8rem;margin-top:2px}
+.admin-notification-row .btn{white-space:nowrap;padding:7px 10px;font-size:.82rem}
+.admin-notification-empty{padding:14px 10px;text-align:center;color:#587b69;background:#f3f8f4;border-radius:10px}
+.admin-notification-foot{font-size:.75rem;color:#81948a;margin-top:9px;text-align:right}
+@media(max-width:520px){.admin-notification-panel{right:-88px}}
+
 </style>
 </head>
 <body>
@@ -116,6 +134,16 @@ body{padding:0;background:#f3f7f6;font-family:'Hind Siliguri','Noto Sans Bengali
       <i class="fas fa-home"></i> মূল পেজ
     </a>
     <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
+      <div id="adminNotificationWrap" class="admin-notification-wrap hidden">
+        <button id="adminNotificationBell" class="admin-notification-bell" type="button" onclick="toggleAdminNotificationPanel()" aria-haspopup="true" aria-expanded="false" aria-controls="adminNotificationPanel" title="পেন্ডিং নোটিফিকেশন">
+          <i class="fas fa-bell bell-icon"></i><span>নোটিফিকেশন</span><span id="adminNotificationCount" class="admin-notification-count" hidden>0</span>
+        </button>
+        <div id="adminNotificationPanel" class="admin-notification-panel" hidden role="dialog" aria-label="পেন্ডিং নোটিফিকেশন">
+          <h3><i class="fas fa-bell"></i> পেন্ডিং নোটিফিকেশন</h3>
+          <div id="adminNotificationItems"><div class="admin-notification-empty">নোটিফিকেশন লোড হচ্ছে...</div></div>
+          <div id="adminNotificationUpdated" class="admin-notification-foot"></div>
+        </div>
+      </div>
       <span id="roleChip" class="role-chip hidden"></span><span id="userInfo" style="font-size:.9rem;color:#45748a"></span>
       <button class="btn btn-secondary" onclick="RH.logout()" style="padding:.5rem 1rem;font-size:.9rem">
         <i class="fas fa-sign-out-alt"></i> লগআউট
@@ -321,8 +349,85 @@ let currentProfile = null;
     if (can('biodata.verify')) await loadAdminBiodata('pending');
     if (currentRole === 'super_admin') { await loadAdminMatrix(); await loadSiteContentAdmin(); }
     if (can('audit_logs.view')) await loadAuditLogs();
+    await refreshAdminPendingNotifications();
+    // নতুন আবেদন এলে ড্যাশবোর্ড খোলা অবস্থাতেই নোটিফিকেশন কাউন্ট আপডেট হবে।
+    setInterval(() => {
+      if (document.visibilityState === 'visible') refreshAdminPendingNotifications().catch(console.warn);
+    }, 60000);
   }
 })();
+
+function toggleAdminNotificationPanel(){
+  const panel=document.getElementById('adminNotificationPanel');
+  const bell=document.getElementById('adminNotificationBell');
+  if(!panel||!bell)return;
+  panel.hidden=!panel.hidden;
+  bell.setAttribute('aria-expanded',String(!panel.hidden));
+  if(!panel.hidden) refreshAdminPendingNotifications().catch(console.warn);
+}
+function closeAdminNotificationPanel(){
+  const panel=document.getElementById('adminNotificationPanel');
+  const bell=document.getElementById('adminNotificationBell');
+  if(panel)panel.hidden=true;
+  if(bell)bell.setAttribute('aria-expanded','false');
+}
+async function openAdminPendingTab(tab,status){
+  const btn=document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+  if(!btn||btn.classList.contains('hidden'))return;
+  if(status)btn.dataset.pendingStatus=status;
+  btn.click();
+  if(status)delete btn.dataset.pendingStatus;
+  closeAdminNotificationPanel();
+}
+async function refreshAdminPendingNotifications(){
+  const wrap=document.getElementById('adminNotificationWrap');
+  const badge=document.getElementById('adminNotificationCount');
+  const items=document.getElementById('adminNotificationItems');
+  const updated=document.getElementById('adminNotificationUpdated');
+  if(!wrap||!badge||!items||currentRole==='member'||!currentRole)return;
+  if(!can('biodata.verify')&&!can('access_requests.view')){wrap.classList.add('hidden');return;}
+  wrap.classList.remove('hidden');
+  const counts={biodata:0,revision:0,requests:0};
+  const jobs=[];
+  if(can('biodata.verify')){
+    jobs.push((async()=>{
+      const [pending,revision]=await Promise.all([
+        sb.rpc('admin_list_biodata_for_review',{p_status:'pending'}),
+        sb.rpc('admin_list_biodata_for_review',{p_status:'revision_requested'})
+      ]);
+      if(pending.error)console.warn('Pending biodata notification:',pending.error);
+      else counts.biodata=Array.isArray(pending.data)?pending.data.length:0;
+      if(revision.error)console.warn('Revision notification:',revision.error);
+      else counts.revision=Array.isArray(revision.data)?revision.data.length:0;
+    })());
+  }
+  if(can('access_requests.view')){
+    jobs.push((async()=>{
+      const {data,error}=await sb.rpc('admin_list_access_requests');
+      if(error)console.warn('Access request notification:',error);
+      else counts.requests=Array.isArray(data)?data.filter(x=>x.status==='pending').length:0;
+    })());
+  }
+  await Promise.all(jobs);
+  const total=counts.biodata+counts.revision+counts.requests;
+  badge.textContent=total>99?'99+':String(total);
+  badge.hidden=total===0;
+  const rows=[];
+  if(counts.biodata)rows.push(`<div class="admin-notification-row"><div><strong>${counts.biodata}টি বায়োডাটা যাচাইয়ের অপেক্ষায়</strong><small>নতুন জমা দেওয়া বায়োডাটা পরীক্ষা করুন</small></div><button class="btn btn-small" onclick="openAdminPendingTab('admin-biodata','pending')">দেখুন</button></div>`);
+  if(counts.revision)rows.push(`<div class="admin-notification-row"><div><strong>${counts.revision}টি বায়োডাটায় সংশোধন বাকি</strong><small>সদস্যের সংশোধনের অপেক্ষায় রয়েছে</small></div><button class="btn btn-small btn-secondary" onclick="openAdminPendingTab('admin-biodata','revision_requested')">দেখুন</button></div>`);
+  if(counts.requests)rows.push(`<div class="admin-notification-row"><div><strong>${counts.requests}টি বিস্তারিত দেখার আবেদন অপেক্ষমাণ</strong><small>অনুমোদন বা বাতিলের জন্য দেখুন</small></div><button class="btn btn-small" onclick="openAdminPendingTab('admin-requests')">দেখুন</button></div>`);
+  items.innerHTML=rows.length?rows.join(''):'<div class="admin-notification-empty"><i class="fas fa-check-circle"></i><br>বর্তমানে কোনো পেন্ডিং আবেদন নেই।</div>';
+  if(updated)updated.textContent='সর্বশেষ হালনাগাদ: '+new Date().toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit'});
+}
+
+document.addEventListener('click',event=>{
+  const wrap=document.getElementById('adminNotificationWrap');
+  if(wrap&&!wrap.contains(event.target))closeAdminNotificationPanel();
+});
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&currentRole&&currentRole!=='member')refreshAdminPendingNotifications().catch(console.warn);
+});
 
 function toggleDashboardSidebar(){document.body.classList.toggle('sidebar-open');}
 function closeDashboardSidebar(){document.body.classList.remove('sidebar-open');}
@@ -339,7 +444,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
     if (btn.dataset.tab === 'admin-requests') { if (can('access_requests.view')) await loadAdminRequests(); await loadAdminViewPermissions(); }
-    if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata('pending');
+    if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata(btn.dataset.pendingStatus || 'pending');
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
     if (btn.dataset.tab === 'site-content') await loadSiteContentAdmin();
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
@@ -917,7 +1022,7 @@ async function approveAccessRequest(id) {
   const {data,error} = await sb.rpc('admin_approve_access_request',{p_request_id:id,p_hours:24});
   if (error) return RH.toast('অনুমোদন ব্যর্থ: '+error.message,false);
   if (!data) return RH.toast('আবেদনটি আর অপেক্ষমাণ নেই।',false);
-  RH.toast('আবেদন অনুমোদিত হয়েছে।'); await loadAdminRequests();
+  RH.toast('আবেদন অনুমোদিত হয়েছে।'); await loadAdminRequests(); await refreshAdminPendingNotifications();
 }
 
 async function rejectAccessRequest(id) {
@@ -927,7 +1032,7 @@ async function rejectAccessRequest(id) {
     status:'rejected',admin_note:note,updated_at:new Date().toISOString()
   }).eq('id',id).eq('status','pending');
   if (error) return RH.toast('বাতিল ব্যর্থ: '+error.message,false);
-  RH.toast('আবেদন বাতিল করা হয়েছে।'); await loadAdminRequests();
+  RH.toast('আবেদন বাতিল করা হয়েছে।'); await loadAdminRequests(); await refreshAdminPendingNotifications();
 }
 
 async function extendAccessRequest(id) {
@@ -965,6 +1070,9 @@ async function loadAdminBiodata(status = 'pending') {
     return String(value);
   };
   el.innerHTML=data.map(b=>{
+    // Keep the full record (including form_data) available for the A4 print action.
+    // printAdminBiodata() reads from this cache when the user clicks the print button.
+    if (b && b.id) adminBiodataCache[b.id] = b;
     const fd = b.form_data && typeof b.form_data === 'object' ? b.form_data : {};
     const details = Object.entries(fd).map(([key,value]) =>
       `<div class="preview-row"><div class="lbl">${RH.esc(key)}</div><div class="val" style="white-space:pre-wrap">${RH.esc(showValue(value))}</div></div>`
@@ -1017,6 +1125,7 @@ async function requestBiodataRevision(id) {
   if(error)return RH.toast('ফেরত পাঠানো যায়নি: '+error.message,false);
   RH.toast('সদস্যের কাছে সংশোধনের জন্য পাঠানো হয়েছে।');
   await loadAdminBiodata('revision_requested');
+  await refreshAdminPendingNotifications();
 }
 async function grantBiodataView() {
   if(!can('access_requests.approve'))return RH.toast('সাময়িক অনুমতি দেওয়ার অধিকার নেই।',false);
@@ -1075,6 +1184,7 @@ async function reviewBiodata(id,status) {
   if(!data)return RH.toast('বায়োডাটা পরিবর্তন করা যায়নি।',false);
   RH.toast(status==='approved'?'বায়োডাটা যাচাই ও অনুমোদন হয়েছে।':'বায়োডাটা বাতিল হয়েছে।');
   await loadAdminBiodata('pending');
+  await refreshAdminPendingNotifications();
 }
 
 // ================= SUPER ADMIN =================
@@ -1210,7 +1320,7 @@ async function toggleAdminActive(userId,active) {
 // ============ ADMIN BIODATA A4 PRINT ============
 function printAdminBiodata(id) {
   const record = adminBiodataCache[id];
-  if (!record) return RH.toast('বায়োডাটার তথ্য পাওয়া যায়নি। তালিকা রিফ্রেশ করে আবার চেষ্টা করুন।', false);
+  if (!record) return RH.toast('বায়োডাটার তথ্য তালিকায় পাওয়া যায়নি। সংশ্লিষ্ট বায়োডাটা তালিকা আবার খুলে প্রিন্ট করুন।', false);
   const d = record.form_data && typeof record.form_data === 'object' ? record.form_data : {};
   const labels = {
     fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',telegram:'Telegram',
