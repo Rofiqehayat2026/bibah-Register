@@ -81,6 +81,9 @@
 .admin-print-btn{background:#176b51;color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer;font:inherit;font-size:.86rem}
 @media(max-width:600px){.permission-item{align-items:flex-start}.permission-toggle{padding-top:2px}.permission-copy small{max-width:210px}}
 
+
+.notice-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:760px){.notice-admin-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -106,6 +109,7 @@
     <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
     <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
     <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
+    <button class="tab-btn role-super hidden" id="tabSiteContent" data-tab="site-content"><i class="fas fa-bullhorn"></i> নোটিশ ও লিংক</button>
     <button class="tab-btn role-audit hidden" id="tabAudit" data-tab="audit"><i class="fas fa-clipboard-list"></i> অডিট লগ</button>
   </div>
 
@@ -215,6 +219,21 @@
     <div id="adminMatrix">লোড হচ্ছে...</div>
   </div>
 
+
+  <div class="tab-panel" id="panel-site-content">
+    <div class="section-title"><i class="fas fa-bullhorn"></i> ওয়েবসাইট নোটিশ ও গুরুত্বপূর্ণ লিংক</div>
+    <div class="alert alert-info">এখানে প্রকাশিত নোটিশ মূল পেজে চলমান বার ও সাইডবারে দেখাবে। প্রকাশের পর ৭ দিন পর্যন্ত “নতুন” চিহ্ন থাকবে। এই ব্যবস্থাপনা শুধু সুপার অ্যাডমিনের জন্য।</div>
+    <div class="notice-admin-grid"><div class="card"><h3 style="margin-top:0;color:#0e4d64">নোটিশ তৈরি / সম্পাদনা</h3>
+      <input type="hidden" id="noticeEditId"><div class="form-group"><label>নোটিশের শিরোনাম</label><input id="noticeTitle" maxlength="180" placeholder="নোটিশের শিরোনাম"></div>
+      <div class="form-group"><label>বিস্তারিত</label><textarea id="noticeBody" maxlength="5000" placeholder="নোটিশের বিস্তারিত লিখুন"></textarea></div>
+      <div class="grid-2"><div class="form-group"><label>ধরন</label><select id="noticeType"><option value="normal">সাধারণ</option><option value="important">গুরুত্বপূর্ণ</option><option value="urgent">জরুরি</option></select></div><div class="form-group"><label>মেয়াদ শেষ (ঐচ্ছিক)</label><input id="noticeExpires" type="datetime-local"></div></div>
+      <div class="form-group"><label>বিস্তারিত লিংক URL (ঐচ্ছিক)</label><input id="noticeUrl" type="url" placeholder="https://..."></div><div class="form-group"><label>লিংকের লেখা</label><input id="noticeLinkLabel" placeholder="বিস্তারিত পড়ুন"></div>
+      <div class="grid-2"><label><input id="noticePinned" type="checkbox"> উপরে পিন করুন</label><label><input id="noticePublish" type="checkbox"> এখনই প্রকাশ করুন</label></div>
+      <div class="admin-actions mt-2"><button class="btn" onclick="saveSiteNotice()">সংরক্ষণ করুন</button><button class="btn btn-secondary" onclick="resetNoticeForm()">ফর্ম পরিষ্কার</button></div>
+    </div><div class="card"><h3 style="margin-top:0;color:#0e4d64">গুরুত্বপূর্ণ ওয়েবসাইট লিংক</h3><input type="hidden" id="siteLinkEditId"><div class="form-group"><label>লিংকের নাম</label><input id="siteLinkTitle" placeholder="যেমন: জাতীয় তথ্য বাতায়ন"></div><div class="form-group"><label>URL</label><input id="siteLinkUrl" type="url" placeholder="https://..."></div><div class="grid-2"><div class="form-group"><label>ক্রম</label><input id="siteLinkOrder" type="number" value="10"></div><label><input id="siteLinkActive" type="checkbox" checked> সক্রিয়</label></div><div class="admin-actions"><button class="btn" onclick="saveSiteLink()">লিংক সংরক্ষণ</button><button class="btn btn-secondary" onclick="resetSiteLinkForm()">পরিষ্কার</button></div><div id="siteLinksAdmin" class="mt-2"></div></div></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><h3 style="margin:0;color:#0e4d64">প্রকাশিত ও পুরোনো নোটিশ</h3><button class="btn btn-secondary btn-small" onclick="loadSiteContentAdmin()">রিফ্রেশ</button></div><div id="siteNoticesAdmin" class="mt-2">লোড হচ্ছে...</div></div>
+  </div>
+
   <div class="tab-panel" id="panel-audit">
     <div class="section-title"><i class="fas fa-clipboard-list"></i> অডিট লগ</div>
     <button class="btn btn-secondary mb-2" onclick="loadAuditLogs()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
@@ -276,7 +295,7 @@ let currentProfile = null;
     if (can('access_requests.view')) await loadAdminRequests();
     if (can('access_requests.view') || can('access_requests.approve') || can('access_requests.extend')) await loadAdminViewPermissions();
     if (can('biodata.verify')) await loadAdminBiodata('pending');
-    if (currentRole === 'super_admin') await loadAdminMatrix();
+    if (currentRole === 'super_admin') { await loadAdminMatrix(); await loadSiteContentAdmin(); }
     if (can('audit_logs.view')) await loadAuditLogs();
   }
 })();
@@ -294,6 +313,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'admin-requests') { if (can('access_requests.view')) await loadAdminRequests(); await loadAdminViewPermissions(); }
     if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata('pending');
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
+    if (btn.dataset.tab === 'site-content') await loadSiteContentAdmin();
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
   });
 });
@@ -805,6 +825,7 @@ function applyRoleUI() {
   document.getElementById('tabAdminRequests').classList.toggle('hidden', !(can('access_requests.view') || can('access_requests.approve') || can('access_requests.extend')));
   document.getElementById('tabAdminBiodata').classList.toggle('hidden', !can('biodata.verify'));
   document.getElementById('tabSuperAdmin').classList.toggle('hidden', currentRole !== 'super_admin');
+  document.getElementById('tabSiteContent').classList.toggle('hidden', currentRole !== 'super_admin');
   document.getElementById('tabAudit').classList.toggle('hidden', !can('audit_logs.view'));
 
   if (currentRole !== 'member') {
@@ -815,6 +836,20 @@ function applyRoleUI() {
     else document.getElementById('panel-admin-requests').innerHTML = '<div class="alert alert-info">এই অ্যাকাউন্টে ড্যাশবোর্ডের কোনো মেনু অনুমোদিত নেই। Super Admin-এর সঙ্গে যোগাযোগ করুন।</div>';
   }
 }
+
+
+// ================= SUPER ADMIN: SITE NOTICES & LINKS =================
+function requireSuperAdmin(){if(currentRole!=='super_admin'){RH.toast('শুধু সুপার অ্যাডমিন এই কাজ করতে পারবেন।',false);return false;}return true;}
+function resetNoticeForm(){['noticeEditId','noticeTitle','noticeBody','noticeExpires','noticeUrl','noticeLinkLabel'].forEach(id=>document.getElementById(id).value='');document.getElementById('noticeType').value='normal';document.getElementById('noticePinned').checked=false;document.getElementById('noticePublish').checked=false;}
+async function loadSiteContentAdmin(){if(!requireSuperAdmin())return;const el=document.getElementById('siteNoticesAdmin');el.textContent='লোড হচ্ছে...';const [n,l]=await Promise.all([sb.from('site_notices').select('*').order('created_at',{ascending:false}).limit(100),sb.from('site_links').select('*').order('sort_order',{ascending:true})]);if(n.error){el.innerHTML=`<div class="alert alert-error">নোটিশ টেবিল পাওয়া যায়নি: ${RH.esc(n.error.message)}<br>আগে Supabase SQL চালান।</div>`;return;}el.innerHTML=n.data?.length?n.data.map(x=>`<div class="card" style="padding:12px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong>${RH.esc(x.title)}</strong><span class="badge ${x.is_published?'badge-verified':'badge-pending'}">${x.is_published?'প্রকাশিত':'খসড়া'}</span></div><div class="muted-small">${RH.esc(x.notice_type)} · ${x.is_pinned?'পিন করা':'সাধারণ'} · ${x.published_at?RH.fmtDate(x.published_at):'প্রকাশ হয়নি'}</div><p>${RH.esc(x.body||'')}</p><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteNotice('${x.id}')">সম্পাদনা</button><button class="btn btn-small" onclick="toggleSiteNotice('${x.id}',${!x.is_published})">${x.is_published?'আনপাবলিশ':'প্রকাশ'}</button><button class="btn btn-small btn-danger" onclick="deleteSiteNotice('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="alert alert-info">এখনো কোনো নোটিশ তৈরি হয়নি।</div>';const le=document.getElementById('siteLinksAdmin');if(l.error){le.innerHTML=`<div class="alert alert-error">লিংক লোড হয়নি: ${RH.esc(l.error.message)}</div>`;return;}le.innerHTML=l.data?.length?l.data.map(x=>`<div class="perm-row"><div><strong>${RH.esc(x.title)}</strong><div class="muted-small">${RH.esc(x.url)} · ${x.is_active?'সক্রিয়':'বন্ধ'}</div></div><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteLink('${x.id}')">সম্পাদনা</button><button class="btn btn-small btn-danger" onclick="deleteSiteLink('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="muted-small">কোনো লিংক নেই।</div>';window.siteNoticesCache=n.data||[];window.siteLinksCache=l.data||[];}
+async function saveSiteNotice(){if(!requireSuperAdmin())return;const title=document.getElementById('noticeTitle').value.trim(),body=document.getElementById('noticeBody').value.trim(),id=document.getElementById('noticeEditId').value;if(!title||!body)return RH.toast('শিরোনাম ও বিস্তারিত লিখুন।',false);const url=document.getElementById('noticeUrl').value.trim();if(url&&!/^https?:\/\//i.test(url))return RH.toast('লিংক অবশ্যই http:// অথবা https:// দিয়ে শুরু হবে।',false);const pub=document.getElementById('noticePublish').checked;const row={title,body,link_url:url||null,link_label:document.getElementById('noticeLinkLabel').value.trim()||null,notice_type:document.getElementById('noticeType').value,is_pinned:document.getElementById('noticePinned').checked,is_published:pub,expires_at:document.getElementById('noticeExpires').value?new Date(document.getElementById('noticeExpires').value).toISOString():null,updated_at:new Date().toISOString()};if(pub&&!id)row.published_at=new Date().toISOString();if(id&&pub)row.published_at=window.siteNoticesCache?.find(x=>x.id===id)?.published_at||new Date().toISOString();const q=id?sb.from('site_notices').update(row).eq('id',id):sb.from('site_notices').insert({...row,created_by:currentSession.user.id});const {error}=await q;if(error)return RH.toast('সংরক্ষণ ব্যর্থ: '+error.message,false);RH.toast('নোটিশ সংরক্ষণ হয়েছে।');resetNoticeForm();await loadSiteContentAdmin();}
+function editSiteNotice(id){const x=window.siteNoticesCache?.find(n=>n.id===id);if(!x)return;document.getElementById('noticeEditId').value=x.id;document.getElementById('noticeTitle').value=x.title;document.getElementById('noticeBody').value=x.body||'';document.getElementById('noticeType').value=x.notice_type;document.getElementById('noticeUrl').value=x.link_url||'';document.getElementById('noticeLinkLabel').value=x.link_label||'';document.getElementById('noticePinned').checked=!!x.is_pinned;document.getElementById('noticePublish').checked=!!x.is_published;document.getElementById('noticeExpires').value=x.expires_at?new Date(x.expires_at).toISOString().slice(0,16):'';document.getElementById('noticeTitle').scrollIntoView({behavior:'smooth'});}
+async function toggleSiteNotice(id,pub){if(!requireSuperAdmin())return;const row={is_published:pub,updated_at:new Date().toISOString()};if(pub)row.published_at=new Date().toISOString();const {error}=await sb.from('site_notices').update(row).eq('id',id);if(error)return RH.toast(error.message,false);await loadSiteContentAdmin();}
+async function deleteSiteNotice(id){if(!requireSuperAdmin()||!confirm('এই নোটিশ স্থায়ীভাবে মুছবেন?'))return;const {error}=await sb.from('site_notices').delete().eq('id',id);if(error)return RH.toast(error.message,false);await loadSiteContentAdmin();}
+function resetSiteLinkForm(){document.getElementById('siteLinkEditId').value='';document.getElementById('siteLinkTitle').value='';document.getElementById('siteLinkUrl').value='';document.getElementById('siteLinkOrder').value='10';document.getElementById('siteLinkActive').checked=true;}
+async function saveSiteLink(){if(!requireSuperAdmin())return;const title=document.getElementById('siteLinkTitle').value.trim(),url=document.getElementById('siteLinkUrl').value.trim(),id=document.getElementById('siteLinkEditId').value;if(!title||!/^https?:\/\//i.test(url))return RH.toast('নাম ও সঠিক https/http URL দিন।',false);const row={title,url,sort_order:Number(document.getElementById('siteLinkOrder').value)||10,is_active:document.getElementById('siteLinkActive').checked,updated_at:new Date().toISOString()};const q=id?sb.from('site_links').update(row).eq('id',id):sb.from('site_links').insert({...row,created_by:currentSession.user.id});const {error}=await q;if(error)return RH.toast(error.message,false);RH.toast('লিংক সংরক্ষিত হয়েছে।');resetSiteLinkForm();await loadSiteContentAdmin();}
+function editSiteLink(id){const x=window.siteLinksCache?.find(l=>l.id===id);if(!x)return;document.getElementById('siteLinkEditId').value=x.id;document.getElementById('siteLinkTitle').value=x.title;document.getElementById('siteLinkUrl').value=x.url;document.getElementById('siteLinkOrder').value=x.sort_order;document.getElementById('siteLinkActive').checked=!!x.is_active;}
+async function deleteSiteLink(id){if(!requireSuperAdmin()||!confirm('এই লিংক মুছবেন?'))return;const {error}=await sb.from('site_links').delete().eq('id',id);if(error)return RH.toast(error.message,false);await loadSiteContentAdmin();}
 
 // ================= ADMIN: ACCESS REQUESTS =================
 async function loadAdminRequests() {
