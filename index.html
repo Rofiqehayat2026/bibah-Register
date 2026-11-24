@@ -46,6 +46,7 @@
             background: radial-gradient(circle at 10% 0%, #e1f1ec 0%, #f1f6f5 45%, #e8eff2 100%);
             color: var(--text-main);
             line-height: 1.65;
+            padding: 1.25rem;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
@@ -62,125 +63,9 @@
             transition: width 0.1s ease-out;
         }
 
-        /* নেভিগেশন বার (মেনু) */
-        .navbar {
-            background: var(--surface);
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 0.8rem 1rem;
-        }
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        .btn-nav {
-            background: var(--primary);
-            color: #fff !important;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-        }
-
-        /* মেইন লেআউট (সাইডবার ও কন্টেন্ট) */
-        .main-wrapper {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        .sidebar {
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 90px;
-        }
-        .sidebar h3 {
-            font-size: 1.1rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 0.5rem;
-        }
-        .sidebar-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .sidebar-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            padding: 0.7rem 1rem;
-            border-radius: 10px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-        .sidebar-links a:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        /* নোটিশ ও বিজ্ঞাপন */
-        .notice-board {
-            margin-bottom: 1.5rem;
-        }
-        .notice-item {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-            color: #856404;
-        }
-        .ad-item {
-            background: #cce5ff;
-            border-left: 5px solid #0d6efd;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-            color: #004085;
-        }
-        .notice-item h4, .ad-item h4 {
-            margin-bottom: 0.3rem;
-            font-size: 1rem;
-        }
-
         .container {
+            max-width: 1120px;
+            margin: 0 auto;
             background: var(--surface);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
@@ -201,6 +86,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .header::before {
             content: '';
             position: absolute;
@@ -212,6 +98,19 @@
             border-radius: 50%;
             pointer-events: none;
         }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -60%;
+            left: -10%;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(244, 213, 141, 0.14) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
         .header h1 {
             font-size: clamp(2rem, 4.5vw, 2.75rem);
             font-weight: 700;
@@ -220,6 +119,7 @@
             position: relative;
             z-index: 1;
         }
+
         .header h1 i {
             color: var(--gold);
             margin-left: 8px;
@@ -227,15 +127,18 @@
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
             animation: pulseHeart 2.5s infinite ease-in-out;
         }
+
         @keyframes pulseHeart {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.12); }
         }
+
         .header .slogan {
             font-size: 1.15rem;
             color: #f4fbf9;
             background: rgba(255, 255, 255, 0.13);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: inline-block;
             padding: 0.45rem 1.8rem;
             border-radius: 50px;
@@ -244,6 +147,45 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             position: relative;
             z-index: 1;
+        }
+
+        /* হিরো ইন্ট্রো */
+        .hero-intro {
+            text-align: center;
+            padding: 1.5rem 1rem 2rem;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--primary);
+            background: var(--primary-light);
+            border: 1px solid #c3e4d7;
+            border-radius: 50px;
+            padding: 0.4rem 1.1rem;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .hero-intro h2 {
+            color: var(--accent);
+            font-size: clamp(1.7rem, 4vw, 2.4rem);
+            line-height: 1.35;
+            margin: 0.9rem 0 0.55rem;
+            font-weight: 700;
+        }
+
+        .hero-intro h2 span {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .hero-intro p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 1.02rem;
         }
 
         /* সেকশন টাইটেল */
@@ -260,6 +202,7 @@
             align-items: center;
             gap: 11px;
         }
+
         .section-title i {
             color: var(--primary);
             font-size: 1.35rem;
@@ -273,6 +216,104 @@
             flex-shrink: 0;
         }
 
+        /* ফিচার হাব */
+        .feature-hub {
+            margin-bottom: 2.2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+            gap: 1.1rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.4rem 1.1rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: #b4d8cd;
+        }
+
+        .feature-card .feature-icon {
+            width: 56px;
+            height: 56px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 0.85rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #e7f6f0, #d4ede4);
+            color: var(--primary);
+            font-size: 1.4rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            transform: scale(1.06);
+        }
+
+        .feature-card h3 {
+            color: var(--accent);
+            font-size: 1.08rem;
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .feature-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            padding: 0.68rem 1rem;
+            min-height: 44px;
+            width: 100%;
+            color: var(--primary);
+            border: 1.5px solid #bfe0d4;
+            background: #f4fbf8;
+            transition: var(--transition);
+        }
+
+        .feature-link:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .feature-link.primary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), #198265);
+            border-color: transparent;
+            box-shadow: 0 6px 16px rgba(20, 107, 83, 0.22);
+        }
+
+        .feature-link.primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            box-shadow: 0 8px 20px rgba(20, 107, 83, 0.3);
+        }
+
         /* কার্ড ও গ্রিড */
         .card {
             background: var(--surface-soft);
@@ -283,20 +324,43 @@
             box-shadow: var(--shadow-sm);
             transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
+
         .card:hover {
             border-color: #bfd6d0;
             box-shadow: 0 8px 22px rgba(12, 74, 62, 0.045);
         }
+
+        .info-list {
+            padding-left: 1.3rem;
+            font-size: 0.96rem;
+            color: var(--text-main);
+        }
+
+        .info-list li {
+            margin-bottom: 0.42rem;
+        }
+
+        .info-list li::marker {
+            color: var(--primary);
+        }
+
         .grid-2 {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 1.25rem 1.8rem;
         }
 
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem 1.5rem;
+        }
+
         /* ফরম এলিমেন্ট */
         .form-group {
             margin-bottom: 0.85rem;
         }
+
         .form-group label {
             display: block;
             font-weight: 600;
@@ -304,6 +368,7 @@
             color: var(--accent);
             font-size: 0.96rem;
         }
+
         .form-group label .optional {
             font-weight: 500;
             color: var(--text-muted);
@@ -313,7 +378,12 @@
             padding: 0.14rem 0.65rem;
             border-radius: 20px;
         }
-        input[type="text"], input[type="date"], input[type="number"], select, textarea {
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
             width: 100%;
             padding: 0.75rem 1rem;
             border: 1.5px solid #c8dad5;
@@ -324,31 +394,45 @@
             transition: var(--transition);
             outline: none;
         }
+
         input[readonly] {
             background: #eef4f2;
             color: #46615c;
             border-style: dashed;
             cursor: default;
         }
-        input:focus:not([readonly]), select:focus, textarea:focus {
+
+        input:hover:not([readonly]),
+        select:hover,
+        textarea:hover {
+            border-color: #96bcb2;
+        }
+
+        input:focus:not([readonly]),
+        select:focus,
+        textarea:focus {
             border-color: var(--border-focus);
             box-shadow: 0 0 0 4px rgba(20, 107, 83, 0.14);
             background: #ffffff;
         }
+
         textarea {
             min-height: 96px;
             resize: vertical;
         }
 
-        /* রেডিও ও চেকবক্স */
-        .radio-group, .checkbox-group {
+        /* ক্লিকেবল পিল স্টাইল রেডিও ও চেকবক্স */
+        .radio-group,
+        .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 0.65rem 0.9rem;
             align-items: center;
             padding: 0.25rem 0;
         }
-        .radio-group label, .checkbox-group label {
+
+        .radio-group label,
+        .checkbox-group label {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -364,24 +448,56 @@
             transition: var(--transition);
             user-select: none;
         }
-        .radio-group label:hover, .checkbox-group label:hover {
+
+        .radio-group label:hover,
+        .checkbox-group label:hover {
             border-color: var(--primary);
             background: #f4fbf8;
         }
-        .radio-group label:has(input:checked), .checkbox-group label:has(input:checked) {
+
+        .radio-group label:has(input:checked),
+        .checkbox-group label:has(input:checked) {
             background: var(--primary-light);
             border-color: var(--primary);
             color: var(--primary-dark);
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(20, 107, 83, 0.1);
         }
-        .radio-group input[type="radio"], .checkbox-group input[type="checkbox"] {
+
+        .radio-group input[type="radio"],
+        .checkbox-group input[type="checkbox"] {
             width: 17px;
             height: 17px;
             accent-color: var(--primary);
             margin: 0;
             cursor: pointer;
             flex-shrink: 0;
+        }
+
+        /* গোপনীয়তা ও অথেনটিকেশন বক্স */
+        .privacy-box {
+            background: linear-gradient(135deg, #e7f4f0 0%, #eff8f5 100%);
+            border-radius: 18px;
+            padding: 1.35rem 1.8rem;
+            border: 1px solid #bfe0d5;
+            margin: 1.5rem 0;
+        }
+
+        .privacy-box h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 1.12rem;
+        }
+
+        .privacy-box ul {
+            padding-left: 1.3rem;
+        }
+
+        .privacy-box li {
+            margin-bottom: 0.35rem;
         }
 
         .auth-required {
@@ -396,12 +512,19 @@
             color: #785312;
             box-shadow: 0 6px 18px rgba(217, 169, 43, 0.08);
         }
+
         .auth-required > i {
             font-size: 1.35rem;
             margin-top: 0.2rem;
             color: #c28717;
         }
 
+        .auth-required p {
+            margin: 0.25rem 0 0;
+            font-size: 0.94rem;
+        }
+
+        /* মেসেজ বক্স */
         .note {
             font-size: 0.96rem;
             font-weight: 600;
@@ -411,19 +534,53 @@
             background: #eaf7f2;
             box-shadow: var(--shadow-sm);
         }
-        .note.is-error { background: #fef2f2; border-color: #fecaca; color: #b42318; }
-        .note.is-success { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
 
-        .hint { font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; }
-        .required-star { color: var(--danger); margin-left: 3px; font-weight: 700; }
-
-        .conditional-section { display: none; }
-        .conditional-section.active { display: block; animation: fadeSlideIn 0.28s ease-out; }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
+        .note.is-error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #b42318;
         }
 
+        .note.is-success {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #065f46;
+        }
+
+        .hint {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        .required-star {
+            color: var(--danger);
+            margin-left: 3px;
+            font-weight: 700;
+        }
+
+        /* কন্ডিশনাল সেকশন স্মুথ অ্যানিমেশন */
+        .conditional-section {
+            display: none;
+        }
+
+        .conditional-section.active {
+            display: block;
+            animation: fadeSlideIn 0.28s ease-out;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* সাবমিট বাটন */
         .btn-submit {
             background: linear-gradient(135deg, var(--primary) 0%, #0f5743 100%);
             color: #ffffff;
@@ -442,17 +599,52 @@
             justify-content: center;
             gap: 12px;
         }
-        .btn-submit:disabled { opacity: 0.65; cursor: wait; transform: none; }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
         .btn-submit:hover:not(:disabled) {
             background: linear-gradient(135deg, #0f5743 0%, #093d2f 100%);
             transform: translateY(-2px);
             box-shadow: 0 14px 28px rgba(20, 107, 83, 0.36);
         }
 
+        .btn-submit:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-submit i {
+            font-size: 1.3rem;
+        }
+
+        .enter-tip {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.7rem;
+        }
+
+        .enter-tip kbd {
+            background: #eef4f2;
+            border: 1px solid #c8dad5;
+            border-radius: 6px;
+            padding: 2px 7px;
+            font-size: 0.8rem;
+            font-family: inherit;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        #biodataForm {
+            scroll-margin-top: 1.5rem;
+        }
+
         /* ফুটার */
         .site-footer {
-            margin: 2.4rem auto 0;
-            max-width: 1200px;
+            margin: 2.4rem 0 0;
             padding: 2.2rem 1.4rem 1.4rem;
             border-radius: 22px;
             background: linear-gradient(145deg, #0e3a46, #11474b);
@@ -460,14 +652,26 @@
             text-align: center;
             box-shadow: 0 14px 32px rgba(14, 58, 70, 0.16);
         }
-        .site-footer h2 { font-size: 1.35rem; color: #fff; margin-bottom: 0.35rem; }
-        .site-footer p { color: #c9ddda; margin-bottom: 1.15rem; font-size: 0.94rem; }
+
+        .site-footer h2 {
+            font-size: 1.35rem;
+            color: #fff;
+            margin-bottom: 0.35rem;
+        }
+
+        .site-footer p {
+            color: #c9ddda;
+            margin-bottom: 1.15rem;
+            font-size: 0.94rem;
+        }
+
         .footer-actions {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 0.75rem;
         }
+
         .footer-actions a {
             display: inline-flex;
             align-items: center;
@@ -483,11 +687,14 @@
             background: rgba(255, 255, 255, 0.08);
             transition: var(--transition);
         }
+
         .footer-actions a:hover {
             background: var(--primary);
             border-color: var(--primary);
             transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
         }
+
         .footer-copy {
             margin-top: 1.5rem;
             padding-top: 1rem;
@@ -518,464 +725,569 @@
             transition: var(--transition);
             z-index: 999;
         }
-        .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
 
         /* রেসপন্সিভ */
-        @media (max-width: 900px) {
-            .main-wrapper { grid-template-columns: 1fr; }
-            .sidebar { position: static; order: -1; margin-bottom: 1rem; }
-            .grid-2 { grid-template-columns: 1fr; gap: 0.9rem; }
-            .container { padding: 1.05rem; }
-            .nav-links { display: none; } /* মোবাইলে মেনু লুকানো */
+        @media (max-width: 760px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+                gap: 0.9rem;
+            }
+            .card {
+                padding: 1.35rem 1.25rem;
+            }
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 0.5rem;
+            }
+            .container {
+                padding: 1.05rem;
+                border-radius: 18px;
+            }
+            .header {
+                padding: 1.7rem 0.9rem 1.5rem;
+                border-radius: 18px;
+            }
+            .header h1 {
+                font-size: 1.85rem;
+            }
+            .header .slogan {
+                font-size: 1rem;
+                padding: 0.4rem 1.2rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .radio-group label,
+            .checkbox-group label {
+                padding: 0.45rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .site-footer {
+                padding: 1.6rem 0.9rem;
+            }
+            .footer-actions a {
+                flex: 1 1 44%;
+                font-size: 0.86rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="scroll-progress" id="scrollProgress"></div>
 
-    <!-- নতুন নেভিগেশন বার -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="brand"><i class="fas fa-heart"></i> রফিকে হায়াত</a>
-            <div class="nav-links">
-                <a href="index.html" style="color: var(--primary);">হোম</a>
-                <a href="dashboard.html">সদস্য ড্যাশবোর্ড</a>
-                <a href="admin-login.html">অ্যাডমিন</a>
-                <a href="login.html" class="btn-nav">লগইন</a>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
+            <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
         </div>
-    </nav>
 
-    <div class="main-wrapper">
-        <!-- নতুন সাইডবার -->
-        <aside class="sidebar">
-            <h3><i class="fas fa-link"></i> গুরুত্বপূর্ণ লিংক</h3>
-            <div class="sidebar-links" id="sidebarLinks">
-                <!-- জাভাস্ক্রিপ্ট দিয়ে ডাইনামিক লোড হবে -->
-                <a href="register.html"><i class="fas fa-user-plus"></i> নতুন রেজিস্ট্রেশন</a>
-                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> সদস্য ড্যাশবোর্ড</a>
-            </div>
-        </aside>
+        <section class="hero-intro">
+            <span class="hero-kicker"><i class="fas fa-heart"></i> সম্মান, আস্থা ও দ্বীনদারির বন্ধনে</span>
+            <h2>জীবনসঙ্গী খুঁজুন <span>বিশ্বাসের সঙ্গে</span></h2>
+            <p>শরীয়তসম্মত বিবাহের উদ্দেশ্যে বায়োডাটা জমা দিন, সদস্য হিসেবে যুক্ত হোন এবং প্রয়োজনীয় কার্যক্রম পরিচালনা করুন।</p>
+        </section>
 
-        <!-- মূল কন্টেন্ট এরিয়া -->
-        <main>
-            <!-- ডাইনামিক নোটিশ বোর্ড -->
-            <div class="notice-board" id="noticeBoard">
-                <!-- জাভাস্ক্রিপ্ট দিয়ে ডাইনামিক লোড হবে -->
-            </div>
-
-            <div class="container">
-                <div class="header">
-                    <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
-                    <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
-                </div>
-
-                <div class="auth-required" id="authRequired" role="status">
-                    <i class="fas fa-lock"></i>
+        <section class="feature-hub" aria-label="প্রধান সেবাসমূহ">
+            <h2 class="section-title"><i class="fas fa-th-large"></i> আমাদের সেবাসমূহ</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
                     <div>
-                        <strong>বায়োডাটা জমা দিতে সদস্য লগইন প্রয়োজন</strong>
-                        <p>উপরের “সদস্য লগইন” সেবা থেকে আপনার অ্যাকাউন্টে প্রবেশ করার পর এই ফরমটি পূরণ করতে পারবেন।</p>
+                        <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
+                        <h3>বায়োডাটা জমা</h3>
+                        <p>বিবাহের উদ্দেশ্যে নিজের বিস্তারিত বায়োডাটা পূরণ ও জমা দিন।</p>
+                    </div>
+                    <a class="feature-link primary" href="#biodataForm">ফরমে যান</a>
+                </div>
+                <div class="feature-card">
+                    <div>
+                        <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
+                        <h3>নতুন সদস্য</h3>
+                        <p>নতুন অ্যাকাউন্ট তৈরি করে সদস্য হিসেবে যুক্ত হোন।</p>
+                    </div>
+                    <a class="feature-link" href="register.html">রেজিস্ট্রেশন</a>
+                </div>
+                <div class="feature-card">
+                    <div>
+                        <div class="feature-icon"><i class="fas fa-sign-in-alt"></i></div>
+                        <h3>সদস্য লগইন</h3>
+                        <p>আপনার অ্যাকাউন্টে প্রবেশ করে সদস্য কার্যক্রম পরিচালনা করুন।</p>
+                    </div>
+                    <a class="feature-link" href="login.html">লগইন করুন</a>
+                </div>
+                <div class="feature-card">
+                    <div>
+                        <div class="feature-icon"><i class="fas fa-users"></i></div>
+                        <h3>সদস্য ড্যাশবোর্ড</h3>
+                        <p>প্রার্থী অনুসন্ধান, বিস্তারিত দেখার অনুরোধ ও নিজের কার্যক্রম দেখুন।</p>
+                    </div>
+                    <a class="feature-link" href="dashboard.html">ড্যাশবোর্ডে যান</a>
+                </div>
+                <div class="feature-card">
+                    <div>
+                        <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                        <h3>প্রশাসনিক প্যানেল</h3>
+                        <p>অনুমোদিত কর্তৃপক্ষের জন্য প্রশাসনিক কার্যক্রম।</p>
+                    </div>
+                    <a class="feature-link" href="admin-login.html">অ্যাডমিন লগইন</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="card" style="background: linear-gradient(135deg, #f1faf7 0%, #f8fcfb 100%);">
+            <div style="display: flex; flex-wrap: wrap; gap: 1.8rem; align-items: flex-start;">
+                <div style="flex: 1; min-width: 240px;">
+                    <h3 style="color: #0e4d64; margin-bottom: 0.65rem; display: flex; align-items: center; gap: 8px;"><i class="fas fa-bullseye" style="color: #146b53;"></i> আমাদের লক্ষ্য</h3>
+                    <ul class="info-list">
+                        <li>শরীয়তসম্মত পরিচয়ের নিরাপদ মাধ্যম</li>
+                        <li>বিয়েকে সহজ করা ও দ্রুত বিবাহে উৎসাহিত করা</li>
+                        <li>জিনা ও হারাম সম্পর্কমুক্ত সমাজ গঠনে সহায়তা</li>
+                        <li>বিধবা, তালাকপ্রাপ্তা ও অসহায় নারীদের বিবাহের সুযোগ বৃদ্ধি</li>
+                        <li>দ্বীনদার পরিবার গঠনে সহযোগিতা</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 240px;">
+                    <h3 style="color: #0e4d64; margin-bottom: 0.65rem; display: flex; align-items: center; gap: 8px;"><i class="fas fa-shield-alt" style="color: #146b53;"></i> আমাদের বৈশিষ্ট্য</h3>
+                    <ul class="info-list">
+                        <li>শুধুমাত্র দ্বীনদার ও আন্তরিক ব্যক্তিদের জন্য</li>
+                        <li>ছবি জমা নেওয়া বা সংরক্ষণ করা হয় না</li>
+                        <li>ব্যক্তিগত তথ্য আমানত হিসেবে সংরক্ষণ</li>
+                        <li>দেশ-বিদেশ থেকে বায়োডাটা জমা দেওয়া যায়</li>
+                        <li>আমরা প্রচলিত ঘটক নই; শুধু যোগাযোগের মাধ্যম</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-box">
+            <h3><i class="fas fa-lock"></i> গোপনীয়তা নীতিমালা</h3>
+            <ul style="font-size: 0.95rem;">
+                <li>আমরা পাত্র-পাত্রীর পূর্ণ নাম, পূর্ণ ঠিকানা, যোগাযোগ নম্বর ও অন্যান্য ব্যক্তিগত তথ্য প্রকাশ করি না।</li>
+                <li>এসব তথ্য শুধুমাত্র প্রস্তাবিত পাত্র/পাত্রীকে প্রয়োজন অনুযায়ী সরবরাহ করা হয়।</li>
+            </ul>
+        </div>
+
+        <div class="auth-required" id="authRequired" role="status">
+            <i class="fas fa-lock"></i>
+            <div><strong>বায়োডাটা জমা দিতে সদস্য লগইন প্রয়োজন</strong><p>উপরের “সদস্য লগইন” সেবা থেকে আপনার অ্যাকাউন্টে প্রবেশ করার পর এই ফরমটি পূরণ করতে পারবেন।</p></div>
+        </div>
+        <div id="formMessage" role="status" aria-live="polite" class="note" style="display:none; margin:0 0 1.2rem;"></div>
+
+        <p class="hint" style="margin:0 0 1rem;"><i class="fas fa-shield-check" style="color:#146b53;"></i> নিরাপত্তার জন্য সম্পূর্ণ বায়োডাটা কেবল লগইন করা আবেদনকারী ও অনুমোদিত কর্তৃপক্ষ দেখতে পারবেন।</p>
+
+        <form id="biodataForm" style="display:none;" novalidate>
+            <div class="section-title"><i class="fas fa-file-alt"></i> ১. ফরম পূরণের তথ্য</div>
+            <div class="card grid-2">
+                <div class="form-group">
+                    <label>ফরম পূরণের তারিখ (স্বয়ংক্রিয়)</label>
+                    <input type="text" id="fillDate" readonly value="" placeholder="স্বয়ংক্রিয়ভাবে পূরণ হবে">
+                </div>
+                <div class="form-group">
+                    <label>বায়োডাটা আইডি (স্বয়ংক্রিয়)</label>
+                    <input type="text" id="biodataId" readonly value="" placeholder="স্বয়ংক্রিয়ভাবে পূরণ হবে">
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-user-tag"></i> ২. আবেদনকারীর ধরন</div>
+            <div class="card">
+                <div class="radio-group">
+                    <label><input type="radio" name="applicantType" value="পাত্র" checked onchange="toggleGenderSections()"> পাত্র</label>
+                    <label><input type="radio" name="applicantType" value="পাত্রী" onchange="toggleGenderSections()"> পাত্রী</label>
+                    <label><input type="radio" name="applicantType" value="ছেলে খুনসা" onchange="toggleGenderSections()"> ছেলে খুনসা</label>
+                    <label><input type="radio" name="applicantType" value="মেয়ে খুনসা" onchange="toggleGenderSections()"> মেয়ে খুনসা</label>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-user-circle"></i> ৩. ব্যক্তিগত পরিচিতি</div>
+            <div class="card grid-2">
+                <div class="form-group">
+                    <label>পূর্ণ নাম <span class="required-star">*</span></label>
+                    <input type="text" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>জন্ম তারিখ <span class="required-star">*</span></label>
+                    <input type="date" name="dob" required onchange="calculateAge()">
+                </div>
+                <div class="form-group">
+                    <label>বয়স (স্বয়ংক্রিয়)</label>
+                    <input type="text" id="ageField" readonly placeholder="স্বয়ংক্রিয়">
+                </div>
+                <div class="form-group">
+                    <label>জাতীয় পরিচয়পত্র নম্বর <span class="optional">ঐচ্ছিক</span></label>
+                    <input type="text" name="nid">
+                </div>
+                <div class="form-group">
+                    <label>বর্তমান জেলা <span class="required-star">*</span></label>
+                    <input type="text" name="currentDistrict" required>
+                </div>
+                <div class="form-group">
+                    <label>বর্তমান বিভাগ <span class="required-star">*</span></label>
+                    <select name="currentDivision" required>
+                        <option value="">-- নির্বাচন --</option>
+                        <option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option>
+                        <option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option>
+                        <option>রংপুর</option><option>ময়মনসিংহ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>স্থায়ী জেলা <span class="optional">ঐচ্ছিক</span></label>
+                    <input type="text" name="permanentDistrict">
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-address-card"></i> ৪. যোগাযোগ তথ্য</div>
+            <div class="card grid-2">
+                <div class="form-group">
+                    <label>WhatsApp নাম্বার <span class="required-star">*</span></label>
+                    <input type="text" name="whatsapp" required placeholder="যোগাযোগের জন্য আবশ্যক">
+                </div>
+                <div class="form-group">
+                    <label>Telegram নাম্বার <span class="required-star">*</span></label>
+                    <input type="text" name="telegram" required placeholder="বায়োডাটা দেখার জন্য আবশ্যক">
+                </div>
+                <div class="form-group">
+                    <label>অভিভাবকের নাম <span class="required-star">*</span></label>
+                    <input type="text" name="guardianName" required>
+                </div>
+                <div class="form-group">
+                    <label>অভিভাবকের সম্পর্ক <span class="required-star">*</span></label>
+                    <input type="text" name="guardianRelation" required placeholder="যেমন: পিতা, মাতা, ভাই">
+                </div>
+                <div class="form-group">
+                    <label>অভিভাবকের নাম্বার <span class="optional">ঐচ্ছিক</span></label>
+                    <input type="text" name="guardianPhone">
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-ruler"></i> ৫. শারীরিক তথ্য</div>
+            <div class="card grid-2">
+                <div class="form-group">
+                    <label>উচ্চতা <span class="required-star">*</span></label>
+                    <input type="text" name="height" required placeholder="ফুট/ইঞ্চি বা সেমি">
+                </div>
+                <div class="form-group">
+                    <label>ওজন <span class="optional">ঐচ্ছিক</span></label>
+                    <input type="text" name="weight">
+                </div>
+                <div class="form-group">
+                    <label>গায়ের রং <span class="required-star">*</span></label>
+                    <select name="complexion" required>
+                        <option value="">-- নির্বাচন --</option>
+                        <option>উজ্জ্বল ফর্সা</option><option>ফর্সা</option>
+                        <option>উজ্জ্বল শ্যামলা</option><option>শ্যামলা</option><option>কালো</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>শারীরিক সমস্যা আছে কি? <span class="required-star">*</span></label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="physicalProblem" value="হ্যাঁ" onchange="togglePhysicalDetail()"> হ্যাঁ</label>
+                        <label><input type="radio" name="physicalProblem" value="না" checked onchange="togglePhysicalDetail()"> না</label>
+                    </div>
+                    <div id="physicalDetail" class="conditional-section" style="margin-top:0.65rem;">
+                        <textarea name="physicalProblemDetail" placeholder="বিস্তারিত লিখুন"></textarea>
                     </div>
                 </div>
-                <div id="formMessage" role="status" aria-live="polite" class="note" style="display:none; margin:0 0 1.2rem;"></div>
-
-                <form id="biodataForm" style="display:none;" novalidate>
-                    <!-- আপনার সব ফরম ফিল্ড এখানে অক্ষত আছে -->
-                    <div class="section-title"><i class="fas fa-file-alt"></i> ১. ফরম পূরণের তথ্য</div>
-                    <div class="card grid-2">
-                        <div class="form-group">
-                            <label>ফরম পূরণের তারিখ (স্বয়ংক্রিয়)</label>
-                            <input type="text" id="fillDate" readonly value="" placeholder="স্বয়ংক্রিয়ভাবে পূরণ হবে">
-                        </div>
-                        <div class="form-group">
-                            <label>বায়োডাটা আইডি (স্বয়ংক্রিয়)</label>
-                            <input type="text" id="biodataId" readonly value="" placeholder="স্বয়ংক্রিয়ভাবে পূরণ হবে">
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-user-tag"></i> ২. আবেদনকারীর ধরন</div>
-                    <div class="card">
-                        <div class="radio-group">
-                            <label><input type="radio" name="applicantType" value="পাত্র" checked onchange="toggleGenderSections()"> পাত্র</label>
-                            <label><input type="radio" name="applicantType" value="পাত্রী" onchange="toggleGenderSections()"> পাত্রী</label>
-                            <label><input type="radio" name="applicantType" value="ছেলে খুনসা" onchange="toggleGenderSections()"> ছেলে খুনসা</label>
-                            <label><input type="radio" name="applicantType" value="মেয়ে খুনসা" onchange="toggleGenderSections()"> মেয়ে খুনসা</label>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-user-circle"></i> ৩. ব্যক্তিগত পরিচিতি</div>
-                    <div class="card grid-2">
-                        <div class="form-group">
-                            <label>পূর্ণ নাম <span class="required-star">*</span></label>
-                            <input type="text" name="fullName" required>
-                        </div>
-                        <div class="form-group">
-                            <label>জন্ম তারিখ <span class="required-star">*</span></label>
-                            <input type="date" name="dob" required onchange="calculateAge()">
-                        </div>
-                        <div class="form-group">
-                            <label>বয়স (স্বয়ংক্রিয়)</label>
-                            <input type="text" id="ageField" readonly placeholder="স্বয়ংক্রিয়">
-                        </div>
-                        <div class="form-group">
-                            <label>জাতীয় পরিচয়পত্র নম্বর <span class="optional">ঐচ্ছিক</span></label>
-                            <input type="text" name="nid">
-                        </div>
-                        <div class="form-group">
-                            <label>বর্তমান জেলা <span class="required-star">*</span></label>
-                            <input type="text" name="currentDistrict" required>
-                        </div>
-                        <div class="form-group">
-                            <label>বর্তমান বিভাগ <span class="required-star">*</span></label>
-                            <select name="currentDivision" required>
-                                <option value="">-- নির্বাচন --</option>
-                                <option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option>
-                                <option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option>
-                                <option>রংপুর</option><option>ময়মনসিংহ</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>স্থায়ী জেলা <span class="optional">ঐচ্ছিক</span></label>
-                            <input type="text" name="permanentDistrict">
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-address-card"></i> ৪. যোগাযোগ তথ্য</div>
-                    <div class="card grid-2">
-                        <div class="form-group">
-                            <label>WhatsApp নাম্বার <span class="required-star">*</span></label>
-                            <input type="text" name="whatsapp" required placeholder="যোগাযোগের জন্য আবশ্যক">
-                        </div>
-                        <div class="form-group">
-                            <label>Telegram নাম্বার <span class="required-star">*</span></label>
-                            <input type="text" name="telegram" required placeholder="বায়োডাটা দেখার জন্য আবশ্যক">
-                        </div>
-                        <div class="form-group">
-                            <label>অভিভাবকের নাম <span class="required-star">*</span></label>
-                            <input type="text" name="guardianName" required>
-                        </div>
-                        <div class="form-group">
-                            <label>অভিভাবকের সম্পর্ক <span class="required-star">*</span></label>
-                            <input type="text" name="guardianRelation" required placeholder="যেমন: পিতা, মাতা, ভাই">
-                        </div>
-                        <div class="form-group">
-                            <label>অভিভাবকের নাম্বার <span class="optional">ঐচ্ছিক</span></label>
-                            <input type="text" name="guardianPhone">
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-ruler"></i> ৫. শারীরিক তথ্য</div>
-                    <div class="card grid-2">
-                        <div class="form-group">
-                            <label>উচ্চতা <span class="required-star">*</span></label>
-                            <input type="text" name="height" required placeholder="ফুট/ইঞ্চি বা সেমি">
-                        </div>
-                        <div class="form-group">
-                            <label>ওজন <span class="optional">ঐচ্ছিক</span></label>
-                            <input type="text" name="weight">
-                        </div>
-                        <div class="form-group">
-                            <label>গায়ের রং <span class="required-star">*</span></label>
-                            <select name="complexion" required>
-                                <option value="">-- নির্বাচন --</option>
-                                <option>উজ্জ্বল ফর্সা</option><option>ফর্সা</option>
-                                <option>উজ্জ্বল শ্যামলা</option><option>শ্যামলা</option><option>কালো</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>শারীরিক সমস্যা আছে কি? <span class="required-star">*</span></label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="physicalProblem" value="হ্যাঁ" onchange="togglePhysicalDetail()"> হ্যাঁ</label>
-                                <label><input type="radio" name="physicalProblem" value="না" checked onchange="togglePhysicalDetail()"> না</label>
-                            </div>
-                            <div id="physicalDetail" class="conditional-section" style="margin-top:0.65rem;">
-                                <textarea name="physicalProblemDetail" placeholder="বিস্তারিত লিখুন"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-home"></i> ৬. পারিবারিক পরিচিতি</div>
-                    <div class="card grid-2">
-                        <div class="form-group"><label>পিতার নাম <span class="required-star">*</span></label><input type="text" name="fatherName" required></div>
-                        <div class="form-group"><label>পিতার পেশা <span class="required-star">*</span></label><input type="text" name="fatherJob" required></div>
-                        <div class="form-group"><label>মাতার নাম <span class="required-star">*</span></label><input type="text" name="motherName" required></div>
-                        <div class="form-group"><label>মাতার পেশা <span class="required-star">*</span></label><input type="text" name="motherJob" required></div>
-                        <div class="form-group"><label>ভাই কয়জন <span class="required-star">*</span></label><input type="number" name="brothers" required min="0"></div>
-                        <div class="form-group"><label>বোন কয়জন <span class="required-star">*</span></label><input type="number" name="sisters" required min="0"></div>
-                        <div class="form-group"><label>ভাইদের পেশা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="brothersJob"></div>
-                        <div class="form-group"><label>বোনদের পেশা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="sistersJob"></div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-mosque"></i> ৭. পারিবারিক দ্বীনী অবস্থা</div>
-                    <div class="card">
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="familyDeeni" value="দ্বীন পালনে আন্তরিক"> দ্বীন পালনে আন্তরিক</label>
-                            <label><input type="checkbox" name="familyDeeni" value="দ্বীনী পরিবেশে পরিচালিত"> দ্বীনী পরিবেশে পরিচালিত</label>
-                            <label><input type="checkbox" name="familyDeeni" value="দ্বীন প্রতিষ্ঠায় সচেষ্ট"> দ্বীন প্রতিষ্ঠায় সচেষ্ট</label>
-                        </div>
-                        <div class="form-group" style="margin-top:1rem;">
-                            <label>বিস্তারিত লিখুন</label>
-                            <textarea name="familyDeeniDetail" placeholder="পারিবারিক দ্বীনী অবস্থা সম্পর্কে বিস্তারিত..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-pray"></i> ৮. ব্যক্তিগত দ্বীনী অবস্থা</div>
-                    <div class="card">
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label>পাঁচ ওয়াক্ত সালাত নিয়মিত পড়েন? <span class="required-star">*</span></label>
-                                <div class="radio-group"><label><input type="radio" name="salah" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="salah" value="না"> না</label></div>
-                            </div>
-                            <div class="form-group">
-                                <label>শরয়ী পর্দা / দাড়ি মেনে চলেন? <span class="required-star">*</span></label>
-                                <div class="radio-group"><label><input type="radio" name="parda" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="parda" value="না"> না</label></div>
-                            </div>
-                            <div class="form-group">
-                                <label>মাহরাম-নন মাহরাম মেনে চলেন? <span class="required-star">*</span></label>
-                                <div class="radio-group"><label><input type="radio" name="mahram" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="mahram" value="না"> না</label></div>
-                            </div>
-                            <div class="form-group">
-                                <label>দ্বীন শেখার চর্চা আছে? <span class="required-star">*</span></label>
-                                <div class="radio-group"><label><input type="radio" name="learning" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="learning" value="না"> না</label></div>
-                            </div>
-                            <div class="form-group">
-                                <label>হারাম থেকে বাঁচার চেষ্টা করেন? <span class="required-star">*</span></label>
-                                <div class="radio-group"><label><input type="radio" name="avoidHaram" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="avoidHaram" value="না"> না</label></div>
-                            </div>
-                            <div class="form-group">
-                                <label>প্রচলিত কুফর / শিরক থেকে বেঁচে থাকার ব্যাপারে সচেতন? <span class="required-star">*</span></label>
-                                <div class="radio-group"><label><input type="radio" name="avoidShirk" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="avoidShirk" value="না"> না</label></div>
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-top:0.8rem;">
-                            <label>নিম্নোক্ত বিষয়গুলোর কোনো একটিতে জড়িত আছেন কি?</label>
-                            <div class="checkbox-group">
-                                <label><input type="checkbox" name="shirkInvolvement" value="তাবিজে ভরসা করা"> তাবিজে ভরসা করা</label>
-                                <label><input type="checkbox" name="shirkInvolvement" value="জ্যোতিষ / রাশিফল বিশ্বাস"> জ্যোতিষ / রাশিফল বিশ্বাস</label>
-                                <label><input type="checkbox" name="shirkInvolvement" value="কবরের কাছে সাহায্য চাওয়া"> কবরের কাছে সাহায্য চাওয়া</label>
-                                <label><input type="checkbox" name="shirkInvolvement" value="আল্লাহ ছাড়া অন্যের নামে মান্নত"> আল্লাহ ছাড়া অন্যের নামে মান্নত</label>
-                                <label><input type="checkbox" name="shirkInvolvement" value="বিদআতী বা শিরকী অনুষ্ঠানসমূহে অংশগ্রহণ"> বিদআতী বা শিরকী অনুষ্ঠানে অংশগ্রহণ</label>
-                                <label><input type="checkbox" name="shirkInvolvement" value="অন্যান্য প্রচলিত কুফর / শিরক"> অন্যান্য কুফর / শিরক</label>
-                            </div>
-                            <div class="hint">উপরের কোনোটিতে জড়িত থাকলে বিস্তারিত লিখুন (নিচে)</div>
-                            <textarea name="shirkDetail" placeholder="বিস্তারিত..." style="margin-top:0.5rem;"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>নিজের দ্বীনী অবস্থা বিস্তারিত লিখুন <span class="required-star">*</span></label>
-                            <textarea name="ownDeeniDetail" required placeholder="আপনার দ্বীনী অবস্থা সম্পর্কে বিস্তারিত..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-book-open"></i> ৯. মাযহাব / ফিকহি অনুসরণ</div>
-                    <div class="card">
-                        <div class="radio-group">
-                            <label><input type="radio" name="mazhab" value="হানাফী" checked> হানাফী</label>
-                            <label><input type="radio" name="mazhab" value="শাফেয়ী"> শাফেয়ী</label>
-                            <label><input type="radio" name="mazhab" value="মালেকী"> মালেকী</label>
-                            <label><input type="radio" name="mazhab" value="হাম্বলী"> হাম্বলী</label>
-                            <label><input type="radio" name="mazhab" value="আহলে হাদীস"> আহলে হাদীস</label>
-                            <label><input type="radio" name="mazhab" value="অন্যান্য"> অন্যান্য</label>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-graduation-cap"></i> ১০. শিক্ষার ধরন</div>
-                    <div class="card">
-                        <div class="radio-group">
-                            <label><input type="radio" name="educationType" value="কওমি" checked> কওমি</label>
-                            <label><input type="radio" name="educationType" value="আলিয়া"> আলিয়া</label>
-                            <label><input type="radio" name="educationType" value="জেনারেল"> জেনারেল</label>
-                            <label><input type="radio" name="educationType" value="স্বশিক্ষিত"> স্বশিক্ষিত</label>
-                            <label><input type="radio" name="educationType" value="লেখাপড়া করা হয়নি"> লেখাপড়া করা হয়নি</label>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-certificate"></i> ১১. শিক্ষাগত যোগ্যতার বিবরণ</div>
-                    <div class="card">
-                        <textarea name="educationDetail" placeholder="শিক্ষাগত যোগ্যতা সম্পর্কে বিস্তারিত..."></textarea>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-coins"></i> ১২. অর্থনৈতিক তথ্য</div>
-                    <div class="card grid-2">
-                        <div class="form-group">
-                            <label>অর্থনৈতিক অবস্থা <span class="required-star">*</span></label>
-                            <select name="economicStatus" required>
-                                <option value="">-- নির্বাচন --</option>
-                                <option>নিম্নবিত্ত</option><option>নিম্ন মধ্যবিত্ত</option><option>মধ্যবিত্ত</option>
-                                <option>উচ্চ মধ্যবিত্ত</option><option>উচ্চবিত্ত</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>আয়ের উৎস <span class="required-star">*</span></label>
-                            <textarea name="incomeSource" required placeholder="আয়ের উৎস লিখুন"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>মাসিক আয় <span class="optional">ঐচ্ছিক</span></label>
-                            <select name="monthlyIncome">
-                                <option value="">-- নির্বাচন --</option>
-                                <option>১০–২০ হাজার</option><option>২০–৫০ হাজার</option>
-                                <option>৫০ হাজার–১ লাখ</option><option>১ লাখের বেশি</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-star"></i> ১৩. দক্ষতা, অভিজ্ঞতা ও আগ্রহ</div>
-                    <div class="card">
-                        <textarea name="skills" placeholder="আপনার দক্ষতা, অভিজ্ঞতা ও আগ্রহ সম্পর্কে লিখুন..."></textarea>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-ring"></i> ১৪. বৈবাহিক অবস্থা</div>
-                    <div class="card" id="maritalStatusSection">
-                        <div id="groomMarital" class="conditional-section active">
-                            <label style="font-weight:600; margin-bottom:0.65rem; display:block; color:#0e4d64;">পাত্রের বৈবাহিক অবস্থা</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="groomMaritalStatus" value="অবিবাহিত" checked> অবিবাহিত</label>
-                                <label><input type="radio" name="groomMaritalStatus" value="বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে"> বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে</label>
-                                <label><input type="radio" name="groomMaritalStatus" value="স্ত্রী মৃত্যুবরণ করেছে"> স্ত্রী মৃত্যুবরণ করেছে</label>
-                                <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ১ স্ত্রী আছে"> বর্তমানে ১ স্ত্রী আছে</label>
-                                <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ২ স্ত্রী আছে"> বর্তমানে ২ স্ত্রী আছে</label>
-                                <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ৩ স্ত্রী আছে"> বর্তমানে ৩ স্ত্রী আছে</label>
-                            </div>
-                        </div>
-                        <div id="brideMarital" class="conditional-section">
-                            <label style="font-weight:600; margin-bottom:0.65rem; display:block; color:#0e4d64;">পাত্রীর বৈবাহিক অবস্থা</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="brideMaritalStatus" value="অবিবাহিতা"> অবিবাহিতা</label>
-                                <label><input type="radio" name="brideMaritalStatus" value="তালাকপ্রাপ্তা"> তালাকপ্রাপ্তা</label>
-                                <label><input type="radio" name="brideMaritalStatus" value="বিধবা"> বিধবা</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-child"></i> ১৫. সন্তান</div>
-                    <div class="card" id="childrenSection">
-                        <div class="radio-group">
-                            <label><input type="radio" name="hasChildren" value="হ্যাঁ" onchange="toggleChildrenDetail()"> হ্যাঁ</label>
-                            <label><input type="radio" name="hasChildren" value="না" checked onchange="toggleChildrenDetail()"> না</label>
-                        </div>
-                        <div id="childrenDetail" class="conditional-section" style="margin-top:1rem;">
-                            <div class="grid-2">
-                                <div class="form-group"><label>ছেলে কয়জন</label><input type="number" name="sons" min="0"></div>
-                                <div class="form-group"><label>মেয়ে কয়জন</label><input type="number" name="daughters" min="0"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-heartbeat"></i> ১৬. জীবনসঙ্গীর ক্ষেত্রে চাহিদা</div>
-                    <div class="card">
-                        <div id="partnerPreferenceGroom" class="conditional-section active">
-                            <p style="font-weight:700; color:#0e4d64; background:#e8f5f0; display:inline-block; padding:0.35rem 0.95rem; border-radius:10px;">পাত্র হলে - কেমন পাত্রী চান</p>
-                        </div>
-                        <div id="partnerPreferenceBride" class="conditional-section">
-                            <p style="font-weight:700; color:#0e4d64; background:#e8f5f0; display:inline-block; padding:0.35rem 0.95rem; border-radius:10px;">পাত্রী হলে - কেমন পাত্র চান</p>
-                        </div>
-                        <div class="grid-2" style="margin-top:1rem;">
-                            <div class="form-group">
-                                <label>পাত্র/পাত্রীর আনুমানিক বয়স</label>
-                                <div style="display:flex; gap:0.6rem;">
-                                    <input type="text" name="prefAgeFrom" placeholder="থেকে" style="flex:1;">
-                                    <input type="text" name="prefAgeTo" placeholder="পর্যন্ত" style="flex:1;">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>পাত্র/পাত্রীর আনুমানিক উচ্চতা</label>
-                                <div style="display:flex; gap:0.6rem;">
-                                    <input type="text" name="prefHeightFrom" placeholder="থেকে" style="flex:1;">
-                                    <input type="text" name="prefHeightTo" placeholder="পর্যন্ত" style="flex:1;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label>গায়ের রং</label>
-                                <select name="prefComplexion">
-                                    <option value="পছন্দ হলে যেকোনো">পছন্দ হলে যেকোনো</option>
-                                    <option>উজ্জ্বল ফর্সা</option><option>ফর্সা</option><option>উজ্জ্বল শ্যামলা</option><option>শ্যামলা</option><option>কালো</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>শিক্ষার ধরন</label>
-                                <select name="prefEducation">
-                                    <option value="যেকোনো">যেকোনো</option>
-                                    <option>কওমি</option><option>আলিয়া</option><option>জেনারেল</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label>পারিবারিক অবস্থা</label>
-                                <select name="prefFamily">
-                                    <option value="যেকোনো দ্বীনদার পরিবার">যেকোনো দ্বীনদার পরিবার</option>
-                                    <option>দ্বীনদার আলেম পরিবার</option><option>দ্বীনদার জেনারেল পরিবার</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>অর্থনৈতিক অবস্থা</label>
-                                <select name="prefEconomic">
-                                    <option value="পছন্দ হলে যেকোনো">পছন্দ হলে যেকোনো</option>
-                                    <option>নিম্নবিত্ত</option><option>মধ্যবিত্ত</option><option>উচ্চবিত্ত</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>কোন এলাকার পাত্র/পাত্রী চান?</label>
-                            <input type="text" name="prefArea" placeholder="উদাহরণ: ঢাকা, চট্টগ্রাম, সিলেট, উত্তরবঙ্গ, যেকোনো, দেশের বাইরে ইত্যাদি">
-                        </div>
-                        <div class="form-group">
-                            <label>কাঙ্ক্ষিত বৈবাহিক অবস্থা</label>
-                            <div id="prefMaritalGroom" class="conditional-section active">
-                                <div class="radio-group">
-                                    <label><input type="radio" name="prefMaritalForGroom" value="অবিবাহিতা"> অবিবাহিতা</label>
-                                    <label><input type="radio" name="prefMaritalForGroom" value="তালাকপ্রাপ্তা"> তালাকপ্রাপ্তা</label>
-                                    <label><input type="radio" name="prefMaritalForGroom" value="বিধবা"> বিধবা</label>
-                                    <label><input type="radio" name="prefMaritalForGroom" value="যেকোনো" checked> যেকোনো</label>
-                                </div>
-                            </div>
-                            <div id="prefMaritalBride" class="conditional-section">
-                                <div class="radio-group">
-                                    <label><input type="radio" name="prefMaritalForBride" value="অবিবাহিত"> অবিবাহিত</label>
-                                    <label><input type="radio" name="prefMaritalForBride" value="বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে"> বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে</label>
-                                    <label><input type="radio" name="prefMaritalForBride" value="স্ত্রী মৃত্যুবরণ করেছে"> স্ত্রী মৃত্যুবরণ করেছে</label>
-                                    <label><input type="radio" name="prefMaritalForBride" value="বর্তমানে স্ত্রী আছে"> বর্তমানে স্ত্রী আছে</label>
-                                    <label><input type="radio" name="prefMaritalForBride" value="যেকোনো" checked> যেকোনো</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-plus-circle"></i> ১৭. অতিরিক্ত চাহিদা</div>
-                    <div class="card">
-                        <textarea name="extraRequirements" placeholder="অতিরিক্ত কোনো চাহিদা থাকলে লিখুন..."></textarea>
-                    </div>
-
-                    <div class="section-title"><i class="fas fa-check-circle"></i> ১৮. সম্মতিপত্র</div>
-                    <div class="card">
-                        <div class="checkbox-group" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
-                            <label style="width: 100%;"><input type="checkbox" name="consent" value="truth" required> আমি নিশ্চিত করছি প্রদত্ত তথ্য সত্য</label>
-                            <label style="width: 100%;"><input type="checkbox" name="consent" value="cancel" required> মিথ্যা তথ্য প্রমাণিত হলে বায়োডাটা বাতিল করা যাবে</label>
-                            <label style="width: 100%;"><input type="checkbox" name="consent" value="store" required> আমার তথ্য প্ল্যাটফর্ম কর্তৃপক্ষ আমানত হিসেবে সংরক্ষণ করতে পারবে</label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> বায়োডাটা জমা দিন</button>
-                    <p class="enter-tip" style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:0.7rem;">টিপস: যেকোনো ঘরে <kbd>Enter</kbd> চাপলে পরবর্তী ঘরে যাবে।</p>
-                </form>
             </div>
-        </main>
-    </div>
 
-    <footer class="site-footer" aria-label="যোগাযোগ">
-        <h2>রফিকে হায়াত</h2>
-        <p>যোগাযোগ ও সহায়তার জন্য আমাদের সঙ্গে যোগাযোগ করুন</p>
-        <div class="footer-actions">
-            <a href="tel:01957939495"><i class="fas fa-phone"></i> মোবাইল: 01957939495</a>
-            <a href="https://wa.me/8801957939495" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-            <a href="mailto:rafiqehayat2026@gmail.com"><i class="fas fa-envelope"></i> ইমেইল: rafiqehayat2026@gmail.com</a>
-            <a href="#" aria-disabled="true" title="ফেসবুক পেজের লিংক পরে যুক্ত করা হবে" onclick="event.preventDefault();"><i class="fab fa-facebook"></i> Facebook (লিংক পরে যুক্ত হবে)</a>
-            <a href="login.html"><i class="fas fa-user"></i> সদস্য লগইন</a>
-            <a href="admin-login.html"><i class="fas fa-user-shield"></i> অ্যাডমিন লগইন</a>
-        </div>
-        <div class="footer-copy">© <span id="footerYear"></span> রফিকে হায়াত। সর্বস্বত্ব সংরক্ষিত।</div>
-    </footer>
+            <div class="section-title"><i class="fas fa-home"></i> ৬. পারিবারিক পরিচিতি</div>
+            <div class="card grid-2">
+                <div class="form-group"><label>পিতার নাম <span class="required-star">*</span></label><input type="text" name="fatherName" required></div>
+                <div class="form-group"><label>পিতার পেশা <span class="required-star">*</span></label><input type="text" name="fatherJob" required></div>
+                <div class="form-group"><label>মাতার নাম <span class="required-star">*</span></label><input type="text" name="motherName" required></div>
+                <div class="form-group"><label>মাতার পেশা <span class="required-star">*</span></label><input type="text" name="motherJob" required></div>
+                <div class="form-group"><label>ভাই কয়জন <span class="required-star">*</span></label><input type="number" name="brothers" required min="0"></div>
+                <div class="form-group"><label>বোন কয়জন <span class="required-star">*</span></label><input type="number" name="sisters" required min="0"></div>
+                <div class="form-group"><label>ভাইদের পেশা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="brothersJob"></div>
+                <div class="form-group"><label>বোনদের পেশা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="sistersJob"></div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-mosque"></i> ৭. পারিবারিক দ্বীনী অবস্থা</div>
+            <div class="card">
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="familyDeeni" value="দ্বীন পালনে আন্তরিক"> দ্বীন পালনে আন্তরিক</label>
+                    <label><input type="checkbox" name="familyDeeni" value="দ্বীনী পরিবেশে পরিচালিত"> দ্বীনী পরিবেশে পরিচালিত</label>
+                    <label><input type="checkbox" name="familyDeeni" value="দ্বীন প্রতিষ্ঠায় সচেষ্ট"> দ্বীন প্রতিষ্ঠায় সচেষ্ট</label>
+                </div>
+                <div class="form-group" style="margin-top:1rem;">
+                    <label>বিস্তারিত লিখুন</label>
+                    <textarea name="familyDeeniDetail" placeholder="পারিবারিক দ্বীনী অবস্থা সম্পর্কে বিস্তারিত..."></textarea>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-pray"></i> ৮. ব্যক্তিগত দ্বীনী অবস্থা</div>
+            <div class="card">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>পাঁচ ওয়াক্ত সালাত নিয়মিত পড়েন? <span class="required-star">*</span></label>
+                        <div class="radio-group"><label><input type="radio" name="salah" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="salah" value="না"> না</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label>শরয়ী পর্দা / দাড়ি মেনে চলেন? <span class="required-star">*</span></label>
+                        <div class="radio-group"><label><input type="radio" name="parda" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="parda" value="না"> না</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label>মাহরাম-নন মাহরাম মেনে চলেন? <span class="required-star">*</span></label>
+                        <div class="radio-group"><label><input type="radio" name="mahram" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="mahram" value="না"> না</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label>দ্বীন শেখার চর্চা আছে? <span class="required-star">*</span></label>
+                        <div class="radio-group"><label><input type="radio" name="learning" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="learning" value="না"> না</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label>হারাম থেকে বাঁচার চেষ্টা করেন? <span class="required-star">*</span></label>
+                        <div class="radio-group"><label><input type="radio" name="avoidHaram" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="avoidHaram" value="না"> না</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label>প্রচলিত কুফর / শিরক থেকে বেঁচে থাকার ব্যাপারে সচেতন? <span class="required-star">*</span></label>
+                        <div class="radio-group"><label><input type="radio" name="avoidShirk" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="avoidShirk" value="না"> না</label></div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:0.8rem;">
+                    <label>নিম্নোক্ত বিষয়গুলোর কোনো একটিতে জড়িত আছেন কি?</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="shirkInvolvement" value="তাবিজে ভরসা করা"> তাবিজে ভরসা করা</label>
+                        <label><input type="checkbox" name="shirkInvolvement" value="জ্যোতিষ / রাশিফল বিশ্বাস"> জ্যোতিষ / রাশিফল বিশ্বাস</label>
+                        <label><input type="checkbox" name="shirkInvolvement" value="কবরের কাছে সাহায্য চাওয়া"> কবরের কাছে সাহায্য চাওয়া</label>
+                        <label><input type="checkbox" name="shirkInvolvement" value="আল্লাহ ছাড়া অন্যের নামে মান্নত"> আল্লাহ ছাড়া অন্যের নামে মান্নত</label>
+                        <label><input type="checkbox" name="shirkInvolvement" value="বিদআতী বা শিরকী অনুষ্ঠানসমূহে অংশগ্রহণ"> বিদআতী বা শিরকী অনুষ্ঠানে অংশগ্রহণ</label>
+                        <label><input type="checkbox" name="shirkInvolvement" value="অন্যান্য প্রচলিত কুফর / শিরক"> অন্যান্য কুফর / শিরক</label>
+                    </div>
+                    <div class="hint">উপরের কোনোটিতে জড়িত থাকলে বিস্তারিত লিখুন (নিচে)</div>
+                    <textarea name="shirkDetail" placeholder="বিস্তারিত..." style="margin-top:0.5rem;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>নিজের দ্বীনী অবস্থা বিস্তারিত লিখুন <span class="required-star">*</span></label>
+                    <textarea name="ownDeeniDetail" required placeholder="আপনার দ্বীনী অবস্থা সম্পর্কে বিস্তারিত..."></textarea>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-book-open"></i> ৯. মাযহাব / ফিকহি অনুসরণ</div>
+            <div class="card">
+                <div class="radio-group">
+                    <label><input type="radio" name="mazhab" value="হানাফী" checked> হানাফী</label>
+                    <label><input type="radio" name="mazhab" value="শাফেয়ী"> শাফেয়ী</label>
+                    <label><input type="radio" name="mazhab" value="মালেকী"> মালেকী</label>
+                    <label><input type="radio" name="mazhab" value="হাম্বলী"> হাম্বলী</label>
+                    <label><input type="radio" name="mazhab" value="আহলে হাদীস"> আহলে হাদীস</label>
+                    <label><input type="radio" name="mazhab" value="অন্যান্য"> অন্যান্য</label>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-graduation-cap"></i> ১০. শিক্ষার ধরন</div>
+            <div class="card">
+                <div class="radio-group">
+                    <label><input type="radio" name="educationType" value="কওমি" checked> কওমি</label>
+                    <label><input type="radio" name="educationType" value="আলিয়া"> আলিয়া</label>
+                    <label><input type="radio" name="educationType" value="জেনারেল"> জেনারেল</label>
+                    <label><input type="radio" name="educationType" value="স্বশিক্ষিত"> স্বশিক্ষিত</label>
+                    <label><input type="radio" name="educationType" value="লেখাপড়া করা হয়নি"> লেখাপড়া করা হয়নি</label>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-certificate"></i> ১১. শিক্ষাগত যোগ্যতার বিবরণ</div>
+            <div class="card">
+                <textarea name="educationDetail" placeholder="শিক্ষাগত যোগ্যতা সম্পর্কে বিস্তারিত..."></textarea>
+            </div>
+
+            <div class="section-title"><i class="fas fa-coins"></i> ১২. অর্থনৈতিক তথ্য</div>
+            <div class="card grid-2">
+                <div class="form-group">
+                    <label>অর্থনৈতিক অবস্থা <span class="required-star">*</span></label>
+                    <select name="economicStatus" required>
+                        <option value="">-- নির্বাচন --</option>
+                        <option>নিম্নবিত্ত</option><option>নিম্ন মধ্যবিত্ত</option><option>মধ্যবিত্ত</option>
+                        <option>উচ্চ মধ্যবিত্ত</option><option>উচ্চবিত্ত</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>আয়ের উৎস <span class="required-star">*</span></label>
+                    <textarea name="incomeSource" required placeholder="আয়ের উৎস লিখুন"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>মাসিক আয় <span class="optional">ঐচ্ছিক</span></label>
+                    <select name="monthlyIncome">
+                        <option value="">-- নির্বাচন --</option>
+                        <option>১০–২০ হাজার</option><option>২০–৫০ হাজার</option>
+                        <option>৫০ হাজার–১ লাখ</option><option>১ লাখের বেশি</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-star"></i> ১৩. দক্ষতা, অভিজ্ঞতা ও আগ্রহ</div>
+            <div class="card">
+                <textarea name="skills" placeholder="আপনার দক্ষতা, অভিজ্ঞতা ও আগ্রহ সম্পর্কে লিখুন..."></textarea>
+            </div>
+
+            <div class="section-title"><i class="fas fa-ring"></i> ১৪. বৈবাহিক অবস্থা</div>
+            <div class="card" id="maritalStatusSection">
+                <div id="groomMarital" class="conditional-section active">
+                    <label style="font-weight:600; margin-bottom:0.65rem; display:block; color:#0e4d64;">পাত্রের বৈবাহিক অবস্থা</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="groomMaritalStatus" value="অবিবাহিত" checked> অবিবাহিত</label>
+                        <label><input type="radio" name="groomMaritalStatus" value="বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে"> বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে</label>
+                        <label><input type="radio" name="groomMaritalStatus" value="স্ত্রী মৃত্যুবরণ করেছে"> স্ত্রী মৃত্যুবরণ করেছে</label>
+                        <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ১ স্ত্রী আছে"> বর্তমানে ১ স্ত্রী আছে</label>
+                        <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ২ স্ত্রী আছে"> বর্তমানে ২ স্ত্রী আছে</label>
+                        <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ৩ স্ত্রী আছে"> বর্তমানে ৩ স্ত্রী আছে</label>
+                    </div>
+                </div>
+                <div id="brideMarital" class="conditional-section">
+                    <label style="font-weight:600; margin-bottom:0.65rem; display:block; color:#0e4d64;">পাত্রীর বৈবাহিক অবস্থা</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="brideMaritalStatus" value="অবিবাহিতা"> অবিবাহিতা</label>
+                        <label><input type="radio" name="brideMaritalStatus" value="তালাকপ্রাপ্তা"> তালাকপ্রাপ্তা</label>
+                        <label><input type="radio" name="brideMaritalStatus" value="বিধবা"> বিধবা</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-child"></i> ১৫. সন্তান</div>
+            <div class="card" id="childrenSection">
+                <div class="radio-group">
+                    <label><input type="radio" name="hasChildren" value="হ্যাঁ" onchange="toggleChildrenDetail()"> হ্যাঁ</label>
+                    <label><input type="radio" name="hasChildren" value="না" checked onchange="toggleChildrenDetail()"> না</label>
+                </div>
+                <div id="childrenDetail" class="conditional-section" style="margin-top:1rem;">
+                    <div class="grid-2">
+                        <div class="form-group"><label>ছেলে কয়জন</label><input type="number" name="sons" min="0"></div>
+                        <div class="form-group"><label>মেয়ে কয়জন</label><input type="number" name="daughters" min="0"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-heartbeat"></i> ১৬. জীবনসঙ্গীর ক্ষেত্রে চাহিদা</div>
+            <div class="card">
+                <div id="partnerPreferenceGroom" class="conditional-section active">
+                    <p style="font-weight:700; color:#0e4d64; background:#e8f5f0; display:inline-block; padding:0.35rem 0.95rem; border-radius:10px;">পাত্র হলে - কেমন পাত্রী চান</p>
+                </div>
+                <div id="partnerPreferenceBride" class="conditional-section">
+                    <p style="font-weight:700; color:#0e4d64; background:#e8f5f0; display:inline-block; padding:0.35rem 0.95rem; border-radius:10px;">পাত্রী হলে - কেমন পাত্র চান</p>
+                </div>
+                <div class="grid-2" style="margin-top:1rem;">
+                    <div class="form-group">
+                        <label>পাত্র/পাত্রীর আনুমানিক বয়স</label>
+                        <div style="display:flex; gap:0.6rem;">
+                            <input type="text" name="prefAgeFrom" placeholder="থেকে" style="flex:1;">
+                            <input type="text" name="prefAgeTo" placeholder="পর্যন্ত" style="flex:1;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>পাত্র/পাত্রীর আনুমানিক উচ্চতা</label>
+                        <div style="display:flex; gap:0.6rem;">
+                            <input type="text" name="prefHeightFrom" placeholder="থেকে" style="flex:1;">
+                            <input type="text" name="prefHeightTo" placeholder="পর্যন্ত" style="flex:1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>গায়ের রং</label>
+                        <select name="prefComplexion">
+                            <option value="পছন্দ হলে যেকোনো">পছন্দ হলে যেকোনো</option>
+                            <option>উজ্জ্বল ফর্সা</option><option>ফর্সা</option><option>উজ্জ্বল শ্যামলা</option><option>শ্যামলা</option><option>কালো</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>শিক্ষার ধরন</label>
+                        <select name="prefEducation">
+                            <option value="যেকোনো">যেকোনো</option>
+                            <option>কওমি</option><option>আলিয়া</option><option>জেনারেল</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>পারিবারিক অবস্থা</label>
+                        <select name="prefFamily">
+                            <option value="যেকোনো দ্বীনদার পরিবার">যেকোনো দ্বীনদার পরিবার</option>
+                            <option>দ্বীনদার আলেম পরিবার</option><option>দ্বীনদার জেনারেল পরিবার</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>অর্থনৈতিক অবস্থা</label>
+                        <select name="prefEconomic">
+                            <option value="পছন্দ হলে যেকোনো">পছন্দ হলে যেকোনো</option>
+                            <option>নিম্নবিত্ত</option><option>মধ্যবিত্ত</option><option>উচ্চবিত্ত</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>কোন এলাকার পাত্র/পাত্রী চান?</label>
+                    <input type="text" name="prefArea" placeholder="উদাহরণ: ঢাকা, চট্টগ্রাম, সিলেট, উত্তরবঙ্গ, যেকোনো, দেশের বাইরে ইত্যাদি">
+                </div>
+                <div class="form-group">
+                    <label>কাঙ্ক্ষিত বৈবাহিক অবস্থা</label>
+                    <div id="prefMaritalGroom" class="conditional-section active">
+                        <div class="radio-group">
+                            <label><input type="radio" name="prefMaritalForGroom" value="অবিবাহিতা"> অবিবাহিতা</label>
+                            <label><input type="radio" name="prefMaritalForGroom" value="তালাকপ্রাপ্তা"> তালাকপ্রাপ্তা</label>
+                            <label><input type="radio" name="prefMaritalForGroom" value="বিধবা"> বিধবা</label>
+                            <label><input type="radio" name="prefMaritalForGroom" value="যেকোনো" checked> যেকোনো</label>
+                        </div>
+                    </div>
+                    <div id="prefMaritalBride" class="conditional-section">
+                        <div class="radio-group">
+                            <label><input type="radio" name="prefMaritalForBride" value="অবিবাহিত"> অবিবাহিত</label>
+                            <label><input type="radio" name="prefMaritalForBride" value="বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে"> বৈবাহিক সম্পর্ক বিচ্ছিন্ন হয়েছে</label>
+                            <label><input type="radio" name="prefMaritalForBride" value="স্ত্রী মৃত্যুবরণ করেছে"> স্ত্রী মৃত্যুবরণ করেছে</label>
+                            <label><input type="radio" name="prefMaritalForBride" value="বর্তমানে স্ত্রী আছে"> বর্তমানে স্ত্রী আছে</label>
+                            <label><input type="radio" name="prefMaritalForBride" value="যেকোনো" checked> যেকোনো</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-plus-circle"></i> ১৭. অতিরিক্ত চাহিদা</div>
+            <div class="card">
+                <textarea name="extraRequirements" placeholder="অতিরিক্ত কোনো চাহিদা থাকলে লিখুন..."></textarea>
+            </div>
+
+            <div class="section-title"><i class="fas fa-check-circle"></i> ১৮. সম্মতিপত্র</div>
+            <div class="card">
+                <div class="checkbox-group" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+                    <label style="width: 100%;"><input type="checkbox" name="consent" value="truth" required> আমি নিশ্চিত করছি প্রদত্ত তথ্য সত্য</label>
+                    <label style="width: 100%;"><input type="checkbox" name="consent" value="cancel" required> মিথ্যা তথ্য প্রমাণিত হলে বায়োডাটা বাতিল করা যাবে</label>
+                    <label style="width: 100%;"><input type="checkbox" name="consent" value="store" required> আমার তথ্য প্ল্যাটফর্ম কর্তৃপক্ষ আমানত হিসেবে সংরক্ষণ করতে পারবে</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> বায়োডাটা জমা দিন</button>
+            <p class="enter-tip">টিপস: যেকোনো ঘরে <kbd>Enter</kbd> চাপলে পরবর্তী ঘরে যাবে এবং ফরম শেষে <kbd>Enter</kbd> অথবা <kbd>Ctrl + Enter</kbd> চাপলে জমা হবে।</p>
+        </form>
+
+        <p style="text-align: center; margin-top: 2rem; font-size: 0.92rem; color: #556b67; border-top: 1px solid #d5e3df; padding-top: 1.1rem;">
+            <i class="fas fa-info-circle" style="color: #146b53;"></i> আমাদের ওয়েবসাইট উদ্বোধন উপলক্ষে প্রথম ১০০ দিন কোনো ফি ছাড়াই বায়োডাটা গ্রহণ করা হবে ইন শা আল্লাহ।
+        </p>
+
+        <footer class="site-footer" aria-label="যোগাযোগ">
+            <h2>রফিকে হায়াত</h2>
+            <p>যোগাযোগ ও সহায়তার জন্য আমাদের সঙ্গে যোগাযোগ করুন</p>
+            <div class="footer-actions">
+                <a href="tel:01957939495"><i class="fas fa-phone"></i> মোবাইল: 01957939495</a>
+                <a href="https://wa.me/8801957939495" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="mailto:rafiqehayat2026@gmail.com"><i class="fas fa-envelope"></i> ইমেইল: rafiqehayat2026@gmail.com</a>
+                <a href="#" aria-disabled="true" title="ফেসবুক পেজের লিংক পরে যুক্ত করা হবে" onclick="event.preventDefault();"><i class="fab fa-facebook"></i> Facebook (লিংক পরে যুক্ত হবে)</a>
+                <a href="login.html"><i class="fas fa-user"></i> সদস্য লগইন</a>
+                <a href="admin-login.html"><i class="fas fa-user-shield"></i> অ্যাডমিন লগইন</a>
+            </div>
+            <div class="footer-copy">© <span id="footerYear"></span> রফিকে হায়াত। সর্বস্বত্ব সংরক্ষিত।</div>
+        </footer>
+    </div>
 
     <button type="button" class="back-to-top" id="backToTop" aria-label="উপরে যান" title="উপরে যান">
         <i class="fas fa-arrow-up"></i>
@@ -1000,32 +1312,6 @@
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-
-        // অ্যাডমিন প্যানেলের ডাইনামিক কন্টেন্ট লোড (নোটিশ ও সাইডবার লিংক)
-        async function loadDynamicContent() {
-            try {
-                // ১. নোটিশ লোড
-                const { data: notices } = await sb.from('notices').select('*').eq('is_active', true).order('created_at', { ascending: false });
-                if (notices && notices.length > 0) {
-                    document.getElementById('noticeBoard').innerHTML = notices.map(n => `
-                        <div class="${n.type === 'ad' ? 'ad-item' : 'notice-item'}">
-                            <h4><i class="fas ${n.type === 'ad' ? 'fa-bullhorn' : 'fa-info-circle'}"></i> ${n.title}</h4>
-                            <p>${n.content}</p>
-                        </div>
-                    `).join('');
-                }
-
-                // ২. সাইডবার লিংক লোড
-                const { data: links } = await sb.from('site_links').select('*').eq('is_active', true);
-                if (links && links.length > 0) {
-                    document.getElementById('sidebarLinks').innerHTML = links.map(l => `
-                        <a href="${l.url}"><i class="${l.icon || 'fas fa-link'}"></i> ${l.title}</a>
-                    `).join('');
-                }
-            } catch (err) {
-                console.warn('Dynamic content load failed:', err);
-            }
-        }
 
         const form = document.getElementById('biodataForm');
         const formMessage = document.getElementById('formMessage');
@@ -1108,9 +1394,16 @@
             document.getElementById('childrenDetail').classList.toggle('active', sel?.value === 'হ্যাঁ');
         }
 
+        // স্মার্ট Enter কী হ্যান্ডলার:
+        // ১) ইনপুট/সিলেক্ট/রেডিও/চেকবক্সে Enter চাপলে পরবর্তী ফিল্ডে ফোকাস যাবে
+        // ২) সর্বশেষ ফিল্ড বা সাবমিট বাটনে Enter চাপলে ফরম সাবমিট হবে
+        // ৩) Textarea-তে সাধারণ Enter নতুন লাইন দেবে, কিন্তু Ctrl+Enter চাপলে ফরম সাবমিট হবে
         form.addEventListener('keydown', (event) => {
             if (event.key !== 'Enter') return;
+
             const target = event.target;
+
+            // Textarea-র ক্ষেত্রে Ctrl+Enter দিলে সাবমিট হবে, নাহলে স্বাভাবিক নতুন লাইন
             if (target.tagName === 'TEXTAREA') {
                 if (event.ctrlKey || event.metaKey) {
                     event.preventDefault();
@@ -1118,11 +1411,19 @@
                 }
                 return;
             }
-            if (target.type === 'submit' || target.tagName === 'BUTTON') return;
+
+            // Submit বাটনে Enter চাপলে স্বাভাবিক সাবমিট হবে
+            if (target.type === 'submit' || target.tagName === 'BUTTON') {
+                return;
+            }
+
             event.preventDefault();
+
+            // ফরমের ভেতরের দৃশ্যমান ও সক্রিয় এলিমেন্টগুলো সংগ্রহ
             const focusable = Array.from(
                 form.querySelectorAll('input:not([type="hidden"]):not([readonly]), select, textarea, button[type="submit"]')
             ).filter(el => !el.disabled && el.offsetParent !== null);
+
             const currentIndex = focusable.indexOf(target);
             if (currentIndex > -1 && currentIndex < focusable.length - 1) {
                 const nextEl = focusable[currentIndex + 1];
@@ -1205,6 +1506,7 @@
                     current_district: formData.currentDistrict || null,
                     marital_status: maritalStatus,
                     form_data: formData,
+                    // সম্মতির তথ্য biodata_records টেবিলের বিদ্যমান Boolean কলামে সংরক্ষণ
                     consent_truth: consentValues.includes('truth'),
                     consent_cancel: consentValues.includes('cancel'),
                     consent_storage: consentValues.includes('store'),
@@ -1243,7 +1545,6 @@
             setAuthUI(data?.session || null);
         });
         initializeForm();
-        loadDynamicContent(); // নোটিশ ও লিংক লোড হবে
         document.querySelectorAll('input[name="applicantType"]').forEach(el =>
             el.addEventListener('change', toggleGenderSections));
         document.querySelectorAll('input[name="groomMaritalStatus"], input[name="brideMaritalStatus"]')
