@@ -134,14 +134,14 @@ textarea{min-height:80px;resize:vertical}
       </div>
       <div class="form-group"><label>জেলা</label><input type="text" name="currentDistrict" id="districtField" readonly></div>
       <div class="form-group"><label>বিভাগ</label><input type="text" name="currentDivision" id="divisionField" readonly></div>
+      <div class="form-group"><label>গ্রাম / মহল্লা</label><input type="text" name="currentVillage" placeholder="গ্রাম বা মহল্লার নাম"></div>
+      <div class="form-group"><label>ডাকঘর</label><input type="text" name="currentPostOffice" placeholder="ডাকঘরের নাম"></div>
       <div class="form-group">
         <label>ইউনিয়ন / পৌরসভা</label>
         <select name="currentUnion" id="unionSelect">
           <option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option>
         </select>
       </div>
-      <div class="form-group"><label>গ্রাম / মহল্লা</label><input type="text" name="currentVillage" placeholder="গ্রাম বা মহল্লার নাম"></div>
-      <div class="form-group"><label>ডাকঘর</label><input type="text" name="currentPostOffice" placeholder="ডাকঘরের নাম"></div>
       <div class="form-group">
         <label>ওয়ার্ড নম্বর</label>
         <select name="currentWard">
@@ -244,7 +244,12 @@ textarea{min-height:80px;resize:vertical}
           <label><input type="radio" name="educationType" value="স্বশিক্ষিত"> স্বশিক্ষিত</label>
         </div>
       </div>
-      <div class="form-group"><label>শিক্ষাগত বিবরণ</label><textarea name="educationDetail"></textarea></div>
+      <div class="form-group" id="educationQualificationsWrap">
+        <label id="educationQualificationsLabel">শিক্ষাগত যোগ্যতা (প্রযোজ্যগুলো নির্বাচন করুন)</label>
+        <div class="checkbox-group" id="educationQualifications"></div>
+        <div class="note">শিক্ষার ধরন অনুযায়ী যোগ্যতার তালিকা পরিবর্তিত হবে। একাধিক যোগ্যতা নির্বাচন করতে পারবেন।</div>
+      </div>
+      <div class="form-group"><label>অতিরিক্ত শিক্ষাগত বিবরণ <span class="optional">ঐচ্ছিক</span></label><textarea name="educationDetail" placeholder="প্রতিষ্ঠানের নাম, বিভাগ, ফলাফল বা অন্যান্য তথ্য"></textarea></div>
     </div>
 
     <!-- ৯. অর্থনৈতিক -->
@@ -449,9 +454,39 @@ function updateSiblingPositionLabel() {
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
+const EDUCATION_QUALIFICATIONS = {
+  'কওমি': ['হিফজুল কুরআন','ক্বারীয়ানা','ইবতেদায়ী','মিযান','নাহবেমীর','হেদায়াতুন্নাহু','কাফিয়া','শরহে জামী','জালালাইন','মেশকাত','দাওরায়ে হাদিস','ইফতা','তাখাসসুস'],
+  'আলিয়া': ['ইবতেদায়ী','দাখিল','আলিম','ফাজিল','কামিল','কামিল (হাদিস)','কামিল (ফিকহ)'],
+  'জেনারেল': ['প্রাথমিক','JSC / অষ্টম শ্রেণি','SSC / দাখিল সমমান','HSC / আলিম সমমান','ডিপ্লোমা','স্নাতক (অনার্স)','স্নাতক (পাস)','মাস্টার্স','এমফিল','পিএইচডি'],
+  'স্বশিক্ষিত': ['কুরআন শিক্ষা','হাদিস শিক্ষা','আরবি ভাষা','ইসলামি বই অধ্যয়ন','অন্যান্য স্বশিক্ষা']
+};
+function renderEducationQualifications(selected=[]) {
+  const type=document.querySelector('[name="educationType"]:checked')?.value || 'কওমি';
+  const wrap=document.getElementById('educationQualifications');
+  if(!wrap)return;
+  const options=EDUCATION_QUALIFICATIONS[type] || [];
+  wrap.innerHTML=options.map((name,i)=>`<label><input type="checkbox" name="educationQualifications" value="${escapeHtml(name)}" ${selected.map(String).includes(name)?'checked':''}> ${escapeHtml(name)}</label>`).join('');
+  const applicant=document.querySelector('[name="applicantType"]:checked')?.value || 'male';
+  const gender=(applicant==='male'||applicant==='boy_khunsha')?'পুরুষ':'নারী';
+  document.getElementById('educationQualificationsLabel').textContent=`${type} ${gender} শিক্ষার যোগ্যতা (প্রযোজ্যগুলো নির্বাচন করুন)`;
+}
+document.querySelectorAll('[name="educationType"]').forEach(el=>el.addEventListener('change',()=>renderEducationQualifications([])));
+document.querySelectorAll('[name="applicantType"]').forEach(el=>el.addEventListener('change',()=>renderEducationQualifications(Array.from(document.querySelectorAll('[name="educationQualifications"]:checked')).map(x=>x.value))));
+renderEducationQualifications();
+
 function populateBiodataForm(values) {
   const data = values && typeof values === 'object' ? values : {};
   const formEl=document.getElementById('biodataForm');
+  // প্রথমে dependency-ভিত্তিক controls তৈরি/সেট করি, তারপর বাকি পুরোনো তথ্য বসাই।
+  if(data.educationType){
+    const educationRadio=formEl.querySelector(`[name="educationType"][value="${CSS.escape(String(data.educationType))}"]`);
+    if(educationRadio)educationRadio.checked=true;
+  }
+  renderEducationQualifications(Array.isArray(data.educationQualifications)?data.educationQualifications:(data.educationQualifications?[data.educationQualifications]:[]));
+  if(data.currentThana){
+    const thana=formEl.querySelector('[name="currentThana"]');
+    if(thana){thana.value=data.currentThana;thana.dispatchEvent(new Event('change',{bubbles:true}));}
+  }
   Object.entries(data).forEach(([name,value])=>{
     const controls=Array.from(formEl.elements).filter(el=>el.name===name);
     if(!controls.length)return;
@@ -478,6 +513,8 @@ function populateBiodataForm(values) {
   ['consentTruth','consentCancel','consentStorage'].forEach((name,i)=>{
     const el=formEl.querySelector(`[name="${name}"]`);if(el)el.checked=!![existingBiodata?.consent_truth,existingBiodata?.consent_cancel,existingBiodata?.consent_storage][i];
   });
+  if(data.currentDistrict && !formEl.elements.currentDistrict.value) formEl.elements.currentDistrict.value=data.currentDistrict;
+  if(data.currentDivision && !formEl.elements.currentDivision.value) formEl.elements.currentDivision.value=data.currentDivision;
   calculateAge();
   toggleGenderSections();
   togglePhysicalDetail();
