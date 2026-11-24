@@ -163,14 +163,20 @@ textarea{min-height:80px;resize:vertical}
       </div>
       <div style="border-top:1px dashed #cbd9e6;margin:1rem 0"></div>
       <h3 style="color:#0e4d64;margin-bottom:.8rem">স্থায়ী ঠিকানা</h3>
+      <label class="same-address-toggle" style="display:flex;align-items:center;gap:10px;padding:12px 14px;margin:0 0 14px;background:#eef8f2;border:1px solid #b9d9c8;border-radius:10px;color:#145c43;font-weight:700;cursor:pointer">
+        <input type="checkbox" id="sameAddressCheckbox" style="width:18px;height:18px;accent-color:#168052">
+        বর্তমান ও স্থায়ী ঠিকানা একই
+      </label>
       <div class="grid-2">
         <div class="form-group"><label>গ্রাম / মহল্লা, বাড়ি নং / রোড নং <span class="required-star">*</span></label><input name="permanentVillage" required placeholder="গ্রাম/মহল্লা, বাড়ি নং, রোড নং ইত্যাদি"></div>
         <div class="form-group"><label>পোস্ট অফিস <span class="required-star">*</span></label><input name="permanentPostOffice" required placeholder="ডাকঘরের নাম ও পোস্ট কোড (থাকলে)"></div>
         <div class="form-group"><label>থানা / উপজেলা <span class="required-star">*</span></label><select name="permanentThana" id="permanentThanaSelect" required><option value="">-- থানা / উপজেলা নির্বাচন করুন --</option></select></div>
         <div class="form-group"><label>জেলা</label><input type="text" name="permanentDistrict" id="permanentDistrictField" readonly required></div>
         <div class="form-group"><label>বিভাগ</label><input type="text" name="permanentDivision" id="permanentDivisionField" readonly required></div>
+        <div class="form-group"><label>ইউনিয়ন / পৌরসভা</label><select name="permanentUnion" id="permanentUnionSelect"><option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option></select></div>
+        <div class="form-group"><label>ওয়ার্ড নম্বর <span class="optional">১–৫০</span></label><input type="number" name="permanentWard" min="1" max="50" step="1" inputmode="numeric" placeholder="ওয়ার্ড নম্বর (১–৫০)"></div>
       </div>
-      <div class="note">দুই ঠিকানার গ্রাম/বাড়ি/রোড, পোস্ট অফিস ও থানা/উপজেলা পূরণ করা বাধ্যতামূলক। থানা/উপজেলা নির্বাচন করলে জেলা ও বিভাগ স্বয়ংক্রিয়ভাবে বসবে। পোস্ট অফিসের নাম লিখে সংশ্লিষ্ট থানা নির্বাচন করুন।</div>
+      <div class="note">বর্তমান ও স্থায়ী ঠিকানা একই হলে উপরের চেকবক্সে টিক দিন—ঠিকানার সব তথ্য স্বয়ংক্রিয়ভাবে স্থায়ী ঠিকানায় বসবে। আলাদা হলে দুই ঠিকানাই পৃথকভাবে পূরণ করুন। থানা/উপজেলা নির্বাচন করলে জেলা ও বিভাগ স্বয়ংক্রিয়ভাবে বসবে।</div>
     </div>
 
     <!-- ৪. অভিভাবক -->
@@ -391,6 +397,7 @@ async function initGeoSelect() {
   const tSel = document.getElementById('thanaSelect');
   const pSel = document.getElementById('permanentThanaSelect');
   const uSel = document.getElementById('unionSelect');
+  const puSel = document.getElementById('permanentUnionSelect');
   const districtField = document.getElementById('districtField');
   const divisionField = document.getElementById('divisionField');
   let geoRows = [];
@@ -502,7 +509,41 @@ async function initGeoSelect() {
     });
   };
   bindAddressSelect(tSel, districtField, divisionField, uSel);
-  bindAddressSelect(pSel, document.getElementById('permanentDistrictField'), document.getElementById('permanentDivisionField'));
+  bindAddressSelect(pSel, document.getElementById('permanentDistrictField'), document.getElementById('permanentDivisionField'), puSel);
+
+  // একই ঠিকানা নির্বাচন করলে বর্তমান ঠিকানার সব তথ্য স্থায়ী ঠিকানায় কপি ও সিঙ্ক হবে।
+  const sameAddress = document.getElementById('sameAddressCheckbox');
+  const addressPairs = [
+    ['currentVillage','permanentVillage'], ['currentPostOffice','permanentPostOffice'],
+    ['currentThana','permanentThana'], ['currentUnion','permanentUnion'],
+    ['currentWard','permanentWard']
+  ];
+  const copyCurrentToPermanent = () => {
+    addressPairs.forEach(([from,to]) => {
+      const source = document.querySelector(`[name="${from}"]`);
+      const target = document.querySelector(`[name="${to}"]`);
+      if (!source || !target) return;
+      target.value = source.value;
+      if (from === 'currentThana') target.dispatchEvent(new Event('change', {bubbles:true}));
+    });
+    // থানা পরিবর্তনের ফলে ইউনিয়নের অপশন নতুন করে তৈরি হয়; তাই পুনরায় মান বসানো।
+    const currentUnion = document.querySelector('[name="currentUnion"]');
+    if (currentUnion && puSel) puSel.value = currentUnion.value;
+  };
+  sameAddress.addEventListener('change', () => {
+    if (sameAddress.checked) copyCurrentToPermanent();
+    else {
+      addressPairs.forEach(([,to]) => { const el=document.querySelector(`[name="${to}"]`); if(el) el.value=''; });
+      document.getElementById('permanentDistrictField').value='';
+      document.getElementById('permanentDivisionField').value='';
+    }
+  });
+  ['input','change'].forEach(evt => {
+    ['currentVillage','currentPostOffice','currentThana','currentUnion','currentWard'].forEach(name => {
+      const el=document.querySelector(`[name="${name}"]`);
+      el?.addEventListener(evt, () => { if(sameAddress.checked) copyCurrentToPermanent(); });
+    });
+  });
 }
 
 function updateSiblingPositionLabel() {
