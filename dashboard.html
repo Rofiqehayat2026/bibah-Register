@@ -60,6 +60,27 @@
 .preview-row .lbl{font-weight:700;color:#587487}.preview-row .val{overflow-wrap:anywhere}
 @media(max-width:600px){.preview-row{grid-template-columns:1fr;gap:2px}}
 
+
+/* Super Admin permission checklist */
+.permission-group{border:1px solid #dbe7ec;border-radius:12px;margin:12px 0;overflow:hidden;background:#fbfdfe}
+.permission-group-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;background:#eef5f7;color:#164b60;font-weight:800}
+.permission-list{padding:5px 14px}
+.permission-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid #edf1f3}
+.permission-item:last-child{border-bottom:0}
+.permission-copy{min-width:0}.permission-copy strong{display:block;color:#183c4a;font-size:.94rem}
+.permission-copy small{display:block;color:#71838b;font-size:.77rem;overflow-wrap:anywhere}
+.permission-toggle{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;cursor:pointer;font-size:.82rem;color:#536b75}
+.permission-toggle input{appearance:none;width:42px;height:24px;border-radius:20px;background:#cbd5db;position:relative;cursor:pointer;transition:.18s;outline:none;margin:0}
+.permission-toggle input:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;box-shadow:0 1px 3px #0003;transition:.18s}
+.permission-toggle input:checked{background:#16845c}
+.permission-toggle input:checked:before{transform:translateX(18px)}
+.permission-toggle input:disabled{opacity:.55;cursor:wait}
+.admin-person-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.admin-person-head .id-short{font-size:.75rem;overflow-wrap:anywhere;color:#71838b}
+.admin-perm-summary{font-size:.82rem;color:#58727d;margin-top:5px}
+.admin-print-btn{background:#176b51;color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer;font:inherit;font-size:.86rem}
+@media(max-width:600px){.permission-item{align-items:flex-start}.permission-toggle{padding-top:2px}.permission-copy small{max-width:210px}}
+
 </style>
 </head>
 <body>
@@ -140,7 +161,21 @@
 
   <div class="tab-panel" id="panel-admin-requests">
     <div class="section-title"><i class="fas fa-clipboard-check"></i> বিস্তারিত বায়োডাটা দেখার আবেদন</div>
-    <div class="alert alert-info">অ্যাডমিন অনুমোদন করলে আবেদনকারী ৭ দিনের জন্য বায়োডাটা দেখতে পারবেন। মালিকের আলাদা অনুমোদন প্রয়োজন নেই।</div>
+    <div class="alert alert-info">অ্যাডমিন অনুমোদন করলে আবেদনকারী সর্বোচ্চ ২৪ ঘণ্টার জন্য বায়োডাটা দেখতে পারবেন। প্রয়োজনে এডমিন আবার মেয়াদ বাড়াতে পারবেন।</div>
+    <div class="card">
+      <h3 style="margin-top:0;color:#0e4d64">সাময়িক বায়োডাটা দেখার অনুমতি</h3>
+      <p class="muted-small">প্রথম ঘরে যিনি দেখবেন তাঁর সদস্য কোড, দ্বিতীয় ঘরে যার বায়োডাটা দেখবেন তাঁর কোড দিন। প্রতিবার সর্বোচ্চ ২৪ ঘণ্টা।</p>
+      <div class="grid-2">
+        <div class="form-group"><label for="permissionViewerCode">যিনি দেখবেন (সদস্য কোড)</label><input id="permissionViewerCode" placeholder="M000001"></div>
+        <div class="form-group"><label for="permissionTargetCode">যার বায়োডাটা দেখবেন (সদস্য কোড)</label><input id="permissionTargetCode" placeholder="F000001"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label for="permissionHours">অনুমতির সময় (ঘণ্টা)</label><select id="permissionHours"><option value="24">২৪ ঘণ্টা</option><option value="12">১২ ঘণ্টা</option><option value="6">৬ ঘণ্টা</option><option value="1">১ ঘণ্টা</option></select></div>
+        <div class="form-group" style="display:flex;align-items:end"><button class="btn" onclick="grantBiodataView()"><i class="fas fa-key"></i> অনুমতি দিন</button></div>
+      </div>
+      <button class="btn btn-secondary btn-small" onclick="loadAdminViewPermissions()"><i class="fas fa-rotate"></i> অনুমতিগুলো রিফ্রেশ</button>
+      <div id="adminViewPermissions" class="mt-2">লোড হচ্ছে...</div>
+    </div>
     <button class="btn btn-secondary mb-2" onclick="loadAdminRequests()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
     <div id="adminRequestsList">লোড হচ্ছে...</div>
   </div>
@@ -148,8 +183,18 @@
   <div class="tab-panel" id="panel-admin-biodata">
     <div class="section-title"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</div>
     <div class="alert alert-info">এখানে অপেক্ষমাণ এবং আগে অনুমোদিত—দুই ধরনের বায়োডাটা দেখা যাবে।</div>
+    <div class="card">
+      <h3 style="margin-top:0;color:#0e4d64">সদস্য খুঁজুন</h3>
+      <p class="muted-small">সদস্য নম্বর, মোবাইল নম্বর অথবা নামের অংশ লিখে খুঁজুন।</p>
+      <div class="grid-2">
+        <input id="adminMemberSearchInput" placeholder="যেমন: M000001 / 01XXXXXXXXX / আরিফ" autocomplete="off">
+        <button class="btn" onclick="searchAdminMembers()"><i class="fas fa-search"></i> সদস্য খুঁজুন</button>
+      </div>
+      <div id="adminMemberSearchResults" class="mt-2"></div>
+    </div>
     <div class="admin-actions mb-2">
       <button class="btn btn-small" onclick="loadAdminBiodata('pending')">অপেক্ষমাণ আবেদন</button>
+      <button class="btn btn-small btn-secondary" onclick="loadAdminBiodata('revision_requested')">সংশোধনের অপেক্ষায়</button>
       <button class="btn btn-small btn-secondary" onclick="loadAdminBiodata('approved')">আগে অনুমোদিত বায়োডাটা</button>
       <button class="btn btn-small btn-secondary" onclick="loadAdminBiodata()">রিফ্রেশ</button>
     </div>
@@ -229,6 +274,7 @@ let currentProfile = null;
     await Promise.all([loadHome(), loadNotifications()]);
   } else {
     if (can('access_requests.view')) await loadAdminRequests();
+    if (can('access_requests.view') || can('access_requests.approve') || can('access_requests.extend')) await loadAdminViewPermissions();
     if (can('biodata.verify')) await loadAdminBiodata('pending');
     if (currentRole === 'super_admin') await loadAdminMatrix();
     if (can('audit_logs.view')) await loadAuditLogs();
@@ -245,7 +291,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
-    if (btn.dataset.tab === 'admin-requests') await loadAdminRequests();
+    if (btn.dataset.tab === 'admin-requests') { if (can('access_requests.view')) await loadAdminRequests(); await loadAdminViewPermissions(); }
     if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata('pending');
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
@@ -282,8 +328,16 @@ async function loadHome() {
     pending: '<span class="badge badge-pending">অ্যাডমিন যাচাইয়ের অপেক্ষায়</span>',
     approved: '<span class="badge badge-verified">✅ অনুমোদিত</span>',
     rejected: '<span class="badge badge-rejected">❌ বাতিল</span>',
+    revision_requested: '<span class="badge badge-rejected">সংশোধন প্রয়োজন</span>',
     matched: '<span class="badge badge-matched">💚 ম্যাচড</span>'
   }[data.status] || `<span class="badge">${RH.esc(data.status)}</span>`;
+
+  let revisionNotice = '';
+  if (data.status === 'revision_requested') {
+    const {data:revision} = await sb.rpc('member_get_biodata_revision_request');
+    const note = revision?.[0]?.note || 'আপনার বায়োডাটা সংশোধনের জন্য ফেরত দেওয়া হয়েছে।';
+    revisionNotice = `<div class="alert alert-error" style="margin-top:1rem"><strong>সংশোধনের নির্দেশনা:</strong><br>${RH.esc(note)}<br><a class="btn mt-1" href="biodata-form.html" style="display:inline-flex">সংশোধন করে পুনরায় জমা দিন</a></div>`;
+  }
 
   el.innerHTML = `
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;align-items:center">
@@ -302,7 +356,8 @@ async function loadHome() {
           <i class="fas fa-eye"></i> প্রিভিউ / প্রিন্ট
         </a>
       </div>
-    </div>`;
+    </div>
+    ${revisionNotice}`;
 }
 
 async function loadNotifications() {
@@ -531,15 +586,15 @@ async function loadApproved() {
   const el = document.getElementById('approvedList');
   el.innerHTML = 'লোড হচ্ছে...';
 
-  const { data, error } = await sb.rpc('list_my_approved_biodatas');
+  const { data, error } = await sb.rpc('list_my_biodata_view_permissions');
   if (error) {
     el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`;
     return;
   }
   if (!data?.length) {
     el.innerHTML = `<div class="alert alert-info">
-      এখনো কোনো অনুমোদিত বায়োডাটা নেই।<br>
-      "প্রার্থী খুঁজুন" ট্যাব থেকে অনুরোধ পাঠান, অ্যাডমিন অনুমোদন দিলে এখানে দেখা যাবে।
+      এখনো কোনো সক্রিয় সাময়িক অনুমতি নেই।<br>
+      “প্রার্থী খুঁজুন” ট্যাব থেকে অনুরোধ পাঠান; অথবা এডমিন অনুমতি দিলে এখানে দেখা যাবে।
     </div>`;
     return;
   }
@@ -576,7 +631,7 @@ async function showDetail(biodataId) {
   document.getElementById('detailModal').classList.add('show');
   document.getElementById('detailContent').innerHTML = 'লোড হচ্ছে...';
 
-  const { data, error } = await sb.rpc('get_approved_biodata', { p_biodata_id: biodataId });
+  const { data, error } = await sb.rpc('get_biodata_via_permission', { p_biodata_id: biodataId });
   if (error) {
     document.getElementById('detailContent').innerHTML =
       `<div class="alert alert-error">${RH.esc(error.message)}</div>`;
@@ -747,7 +802,7 @@ function applyRoleUI() {
 
   document.querySelectorAll('.role-member').forEach(x => x.classList.toggle('hidden', currentRole !== 'member'));
   document.querySelectorAll('.role-admin').forEach(x => x.classList.toggle('hidden', currentRole === 'member'));
-  document.getElementById('tabAdminRequests').classList.toggle('hidden', !can('access_requests.view'));
+  document.getElementById('tabAdminRequests').classList.toggle('hidden', !(can('access_requests.view') || can('access_requests.approve') || can('access_requests.extend')));
   document.getElementById('tabAdminBiodata').classList.toggle('hidden', !can('biodata.verify'));
   document.getElementById('tabSuperAdmin').classList.toggle('hidden', currentRole !== 'super_admin');
   document.getElementById('tabAudit').classList.toggle('hidden', !can('audit_logs.view'));
@@ -793,8 +848,8 @@ async function loadAdminRequests() {
 
 async function approveAccessRequest(id) {
   if (!can('access_requests.approve')) return RH.toast('অনুমতি নেই।',false);
-  if (!confirm('অনুমোদন করলে আবেদনকারী ৭ দিনের জন্য বায়োডাটা দেখতে পারবেন। অনুমোদন করবেন?')) return;
-  const {data,error} = await sb.rpc('admin_approve_access_request',{p_request_id:id});
+  if (!confirm('অনুমোদন করলে আবেদনকারী ২৪ ঘণ্টার জন্য বায়োডাটা দেখতে পারবেন। অনুমোদন করবেন?')) return;
+  const {data,error} = await sb.rpc('admin_approve_access_request',{p_request_id:id,p_hours:24});
   if (error) return RH.toast('অনুমোদন ব্যর্থ: '+error.message,false);
   if (!data) return RH.toast('আবেদনটি আর অপেক্ষমাণ নেই।',false);
   RH.toast('আবেদন অনুমোদিত হয়েছে।'); await loadAdminRequests();
@@ -812,33 +867,31 @@ async function rejectAccessRequest(id) {
 
 async function extendAccessRequest(id) {
   if (!can('access_requests.extend')) return RH.toast('অনুমতি নেই।',false);
-  const raw = prompt('কত দিন মেয়াদ বাড়াবেন? (১–৩০ দিন)','7');
+  const raw = prompt('কত ঘণ্টার জন্য নতুন করে মেয়াদ বাড়াবেন? (১–২৪ ঘণ্টা)','24');
   if (raw === null) return;
-  const days = Number(raw);
-  if (!Number.isInteger(days) || days < 1 || days > 30) return RH.toast('১ থেকে ৩০ দিনের মধ্যে লিখুন।',false);
-  const {data:row,error:readError} = await sb.from('access_requests').select('expires_at,status').eq('id',id).maybeSingle();
-  if (readError || !row) return RH.toast('আবেদন পাওয়া যায়নি: '+(readError?.message||''),false);
-  const base = row.expires_at && new Date(row.expires_at)>new Date() ? new Date(row.expires_at) : new Date();
-  base.setDate(base.getDate()+days);
-  const {error} = await sb.from('access_requests').update({
-    status:'approved',admin_approved:true,expires_at:base.toISOString(),updated_at:new Date().toISOString()
-  }).eq('id',id);
+  const hours = Number(raw);
+  if (!Number.isInteger(hours) || hours < 1 || hours > 24) return RH.toast('১ থেকে ২৪ ঘণ্টার মধ্যে লিখুন।',false);
+  const {data,error} = await sb.rpc('admin_extend_access_request',{p_request_id:id,p_hours:hours});
   if (error) return RH.toast('মেয়াদ বাড়ানো যায়নি: '+error.message,false);
+  if (!data) return RH.toast('এই আবেদনটি আর সক্রিয় নেই বা পাওয়া যায়নি।',false);
   RH.toast('মেয়াদ বাড়ানো হয়েছে।'); await loadAdminRequests();
 }
 
 // ================= ADMIN: BIODATA REVIEW =================
+const adminBiodataCache = Object.create(null);
 async function loadAdminBiodata(status = 'pending') {
   const el = document.getElementById('adminBiodataList');
   if (!can('biodata.verify')) { el.innerHTML='<div class="alert alert-error">বায়োডাটা যাচাইয়ের অনুমতি নেই।</div>'; return; }
-  if (!['pending', 'approved'].includes(status)) status = 'pending';
+  if (!['pending', 'approved', 'revision_requested'].includes(status)) status = 'pending';
   el.innerHTML='লোড হচ্ছে...';
   const {data,error}=await sb.rpc('admin_list_biodata_for_review',{p_status:status});
   if(error){el.innerHTML=`<div class="alert alert-error">বায়োডাটা লোড হয়নি: ${RH.esc(error.message)}</div>`;return;}
   if(!data?.length){
     el.innerHTML=status==='pending'
       ? '<div class="alert alert-info">যাচাইয়ের অপেক্ষায় কোনো বায়োডাটা নেই।</div>'
-      : '<div class="alert alert-info">আগে অনুমোদিত কোনো বায়োডাটা পাওয়া যায়নি।</div>';
+      : status==='revision_requested'
+        ? '<div class="alert alert-info">সংশোধনের অপেক্ষায় কোনো বায়োডাটা নেই।</div>'
+        : '<div class="alert alert-info">আগে অনুমোদিত কোনো বায়োডাটা পাওয়া যায়নি।</div>';
     return;
   }
   const showValue = value => {
@@ -851,13 +904,13 @@ async function loadAdminBiodata(status = 'pending') {
     const details = Object.entries(fd).map(([key,value]) =>
       `<div class="preview-row"><div class="lbl">${RH.esc(key)}</div><div class="val" style="white-space:pre-wrap">${RH.esc(showValue(value))}</div></div>`
     ).join('');
-    const badge = status === 'approved'
-      ? '<span class="badge badge-verified">অনুমোদিত</span>'
-      : '<span class="badge badge-pending">যাচাই অপেক্ষমাণ</span>';
-    const actions = status === 'pending' ? `<div class="admin-actions mt-1">
-      <button class="btn btn-small" onclick="reviewBiodata('${b.id}','approved')">যাচাই করে অনুমোদন</button>
-      <button class="btn btn-small btn-danger" onclick="reviewBiodata('${b.id}','rejected')">বাতিল</button>
-    </div>` : '';
+    const badge = status === 'approved' ? '<span class="badge badge-verified">অনুমোদিত</span>' : status === 'revision_requested' ? '<span class="badge badge-rejected">সংশোধন প্রয়োজন</span>' : '<span class="badge badge-pending">যাচাই অপেক্ষমাণ</span>'; 
+    const actions = `<div class="admin-actions mt-1">
+      <button class="admin-print-btn" onclick="printAdminBiodata('${b.id}')"><i class="fas fa-print"></i> A4 বায়োডাটা / প্রিন্ট</button>
+      ${status === 'pending' || status === 'approved' ? `<button class="btn btn-small" onclick="reviewBiodata('${b.id}','approved')">যাচাই করে অনুমোদন</button>
+      <button class="btn btn-small btn-warning" onclick="requestBiodataRevision('${b.id}')">সংশোধনের জন্য ফেরত</button>
+      <button class="btn btn-small btn-danger" onclick="reviewBiodata('${b.id}','rejected')">বাতিল</button>` : ''}
+    </div>`;
     return `<div class="card">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <strong>${RH.esc(b.biodata_code||'কোড নেই')}</strong>${badge}
@@ -869,6 +922,82 @@ async function loadAdminBiodata(status = 'pending') {
     </div>`;
   }).join('');
 }
+async function searchAdminMembers() {
+  if (!can('biodata.verify') && !can('biodata.view_all')) return RH.toast('অনুমতি নেই।',false);
+  const q=(document.getElementById('adminMemberSearchInput')?.value||'').trim();
+  const el=document.getElementById('adminMemberSearchResults');
+  if(q.length<2){el.innerHTML='<div class="alert alert-info">কমপক্ষে ২ অক্ষর লিখুন।</div>';return;}
+  el.innerHTML='খোঁজা হচ্ছে...';
+  const {data,error}=await sb.rpc('admin_search_biodata_members',{p_query:q});
+  if(error){el.innerHTML=`<div class="alert alert-error">খোঁজা যায়নি: ${RH.esc(error.message)}</div>`;return;}
+  if(!data?.length){el.innerHTML='<div class="alert alert-info">কোনো সদস্য পাওয়া যায়নি।</div>';return;}
+  el.innerHTML=data.map(m=>{
+    adminBiodataCache[m.id]=m;
+    const fd=m.form_data&&typeof m.form_data==='object'?m.form_data:{};
+    const details=Object.entries(fd).map(([k,v])=>`<div class="preview-row"><div class="lbl">${RH.esc(k)}</div><div class="val">${RH.esc(typeof v==='object'?JSON.stringify(v):String(v??''))}</div></div>`).join('');
+    return `<div class="card" style="margin:.6rem 0;padding:12px">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong>${RH.esc(m.full_name||'নাম নেই')} — ${RH.esc(m.biodata_code||'কোড নেই')}</strong><span class="badge">${RH.esc(m.status||'')}</span></div>
+      <div class="muted-small">মোবাইল: ${RH.esc(m.phone||'—')} | ${RH.esc(m.current_district||'—')}, ${RH.esc(m.current_division||'—')}</div>
+      ${details?`<details style="margin-top:8px"><summary style="cursor:pointer;color:#0e4d64;font-weight:700">বায়োডাটার তথ্য দেখুন</summary>${details}</details>`:''}
+      <div class="admin-actions mt-1"><button class="admin-print-btn" onclick="printAdminBiodata('${m.id}')"><i class="fas fa-print"></i> A4 প্রিন্ট</button>${['pending','approved'].includes(m.status)?`<button class="btn btn-small btn-warning" onclick="requestBiodataRevision('${m.id}')">সংশোধনের জন্য ফেরত পাঠান</button>`:''}</div>
+    </div>`;
+  }).join('');
+}
+async function requestBiodataRevision(id) {
+  if(!can('biodata.verify'))return RH.toast('বায়োডাটা যাচাইয়ের অনুমতি নেই।',false);
+  const note=prompt('সদস্যকে কী কী তথ্য সংশোধন করতে হবে? কারণ/নির্দেশনা লিখুন:');
+  if(note===null)return;
+  if(!note.trim())return RH.toast('সংশোধনের নির্দেশনা লিখুন।',false);
+  const {data,error}=await sb.rpc('admin_request_biodata_revision',{p_biodata_id:id,p_note:note.trim()});
+  if(error)return RH.toast('ফেরত পাঠানো যায়নি: '+error.message,false);
+  RH.toast('সদস্যের কাছে সংশোধনের জন্য পাঠানো হয়েছে।');
+  await loadAdminBiodata('revision_requested');
+}
+async function grantBiodataView() {
+  if(!can('access_requests.approve'))return RH.toast('সাময়িক অনুমতি দেওয়ার অধিকার নেই।',false);
+  const viewer=(document.getElementById('permissionViewerCode')?.value||'').trim();
+  const target=(document.getElementById('permissionTargetCode')?.value||'').trim();
+  const hours=Number(document.getElementById('permissionHours')?.value||24);
+  if(!viewer||!target)return RH.toast('দুই সদস্যের বায়োডাটা কোড লিখুন।',false);
+  if(viewer.toLowerCase()===target.toLowerCase())return RH.toast('একই সদস্যকে নিজের বায়োডাটা দেখার অনুমতি দেওয়া যাবে না।',false);
+  if(!confirm(`${viewer} কে ${target}-এর বায়োডাটা ${hours} ঘণ্টা দেখার অনুমতি দেবেন?`))return;
+  const {data,error}=await sb.rpc('admin_grant_biodata_view',{p_viewer_code:viewer,p_biodata_code:target,p_hours:hours});
+  if(error)return RH.toast('অনুমতি দেওয়া যায়নি: '+error.message,false);
+  RH.toast('সাময়িক দেখার অনুমতি দেওয়া হয়েছে।');
+  document.getElementById('permissionViewerCode').value='';document.getElementById('permissionTargetCode').value='';
+  await loadAdminViewPermissions();
+}
+async function loadAdminViewPermissions() {
+  const el=document.getElementById('adminViewPermissions');if(!el)return;
+  if(!(can('access_requests.view')||can('access_requests.approve')||can('access_requests.extend'))){el.innerHTML='<div class="muted-small">অনুমতিগুলো দেখার অধিকার নেই।</div>';return;}
+  el.innerHTML='লোড হচ্ছে...';
+  const {data,error}=await sb.rpc('admin_list_biodata_view_permissions');
+  if(error){el.innerHTML=`<div class="alert alert-error">অনুমতি তালিকা লোড হয়নি: ${RH.esc(error.message)}</div>`;return;}
+  if(!data?.length){el.innerHTML='<div class="alert alert-info">সাম্প্রতিক কোনো সাময়িক অনুমতি নেই।</div>';return;}
+  el.innerHTML=data.map(p=>{
+    const active=!p.revoked_at && new Date(p.expires_at)>new Date();
+    return `<div class="card" style="padding:12px;margin:.6rem 0"><strong>${RH.esc(p.viewer_code)} (${RH.esc(p.viewer_name||'')})</strong> → <strong>${RH.esc(p.target_code)} (${RH.esc(p.target_name||'')})</strong>
+      <div class="muted-small">মেয়াদ: ${RH.fmtDate(p.expires_at)} | ${active?'সক্রিয়':p.revoked_at?'বাতিল':'মেয়াদ শেষ'}</div>
+      ${!p.revoked_at?`<div class="admin-actions mt-1"><button class="btn btn-small btn-warning" onclick="extendBiodataView('${p.id}')">${active?'আরও সময় দিন':'আবার অনুমতি দিন'}</button><button class="btn btn-small btn-danger" onclick="revokeBiodataView('${p.id}')">অনুমতি বাতিল</button></div>`:''}
+    </div>`;
+  }).join('');
+}
+async function extendBiodataView(id) {
+  const raw=prompt('আর কত ঘণ্টার জন্য নতুন করে অনুমতি দেবেন? (১–২৪)','24');if(raw===null)return;
+  const hours=Number(raw);if(!Number.isInteger(hours)||hours<1||hours>24)return RH.toast('১ থেকে ২৪ ঘণ্টা লিখুন।',false);
+  const {data,error}=await sb.rpc('admin_extend_biodata_view',{p_permission_id:id,p_hours:hours});
+  if(error)return RH.toast('মেয়াদ বাড়ানো যায়নি: '+error.message,false);
+  if(!data)return RH.toast('এই অনুমতিটি আর সক্রিয় নেই।',false);
+  RH.toast('মেয়াদ বাড়ানো হয়েছে।');await loadAdminViewPermissions();
+}
+async function revokeBiodataView(id) {
+  if(!confirm('এই সাময়িক অনুমতি বাতিল করবেন?'))return;
+  const {data,error}=await sb.rpc('admin_revoke_biodata_view',{p_permission_id:id});
+  if(error)return RH.toast('অনুমতি বাতিল হয়নি: '+error.message,false);
+  if(!data)return RH.toast('এই অনুমতিটি আগে থেকেই বাতিল বা মেয়াদোত্তীর্ণ।',false);
+  RH.toast('অনুমতি বাতিল হয়েছে।');await loadAdminViewPermissions();
+}
+
 async function reviewBiodata(id,status) {
   if (!can('biodata.verify')) return RH.toast('অনুমতি নেই।',false);
   if (!['approved', 'rejected'].includes(status)) return RH.toast('অবৈধ স্ট্যাটাস।', false);
@@ -912,6 +1041,18 @@ async function addAdminUser() {
     if(button) button.disabled=false;
   }
 }
+const PERMISSION_GROUP_NAMES = {
+  access_requests: 'বায়োডাটা দেখার আবেদন',
+  biodata: 'বায়োডাটা যাচাই ও পরিচালনা',
+  audit_logs: 'অডিট লগ',
+  members: 'সদস্য পরিচালনা',
+  admins: 'অ্যাডমিন পরিচালনা',
+  settings: 'সিস্টেম সেটিংস'
+};
+function permissionGroupName(code) {
+  const prefix = String(code||'').split('.')[0];
+  return PERMISSION_GROUP_NAMES[prefix] || 'অন্যান্য অনুমতি';
+}
 async function loadAdminMatrix() {
   const el=document.getElementById('adminMatrix');
   if(currentRole!=='super_admin'){el.innerHTML='<div class="alert alert-error">শুধু Super Admin দেখতে পারবেন।</div>';return;}
@@ -920,27 +1061,74 @@ async function loadAdminMatrix() {
   if(error){el.innerHTML=`<div class="alert alert-error">${RH.esc(error.message)}</div>`;return;}
   if(!data?.length){el.innerHTML='<div class="alert alert-info">এখনো কোনো সাধারণ Admin নেই।</div>';return;}
   const grouped={};
-  data.forEach(p=>{if(!grouped[p.user_id])grouped[p.user_id]={user_id:p.user_id,active:p.is_active,permissions:[]};grouped[p.user_id].permissions.push(p);});
-  el.innerHTML=Object.values(grouped).map(a=>`<div class="card">
-    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
-      <div><strong>সাধারণ অ্যাডমিন</strong><div class="id-short">${RH.esc(a.user_id)}</div></div>
-      <div class="admin-actions"><span class="badge ${a.active?'badge-verified':'badge-rejected'}">${a.active?'সক্রিয়':'নিষ্ক্রিয়'}</span>
-      <button class="btn btn-small ${a.active?'btn-danger':''}" onclick="toggleAdminActive('${a.user_id}',${!a.active})">${a.active?'নিষ্ক্রিয় করুন':'সক্রিয় করুন'}</button></div>
-    </div>
-    <h4>অনুমতিসমূহ</h4>
-    ${a.permissions.map(p=>`<div class="perm-row"><div><strong>${RH.esc(p.permission_name)}</strong><div class="muted-small">${RH.esc(p.permission_code)}</div></div>
-      <div class="admin-actions"><span class="badge ${p.is_granted?'badge-verified':''}">${p.is_granted?'প্রদান করা আছে':'নেই'}</span>
-      <button class="btn btn-small ${p.is_granted?'btn-danger':''}" onclick="changeAdminPermission('${a.user_id}','${p.permission_code}',${!p.is_granted})">${p.is_granted?'বাতিল':'অনুমতি দিন'}</button></div></div>`).join('')}
-  </div>`).join('');
+  data.forEach(p=>{
+    if(!grouped[p.user_id])grouped[p.user_id]={user_id:p.user_id,active:p.is_active,permissions:[]};
+    grouped[p.user_id].permissions.push(p);
+  });
+  el.innerHTML=Object.values(grouped).map(a=>{
+    const granted=a.permissions.filter(p=>p.is_granted).length;
+    const groups={};
+    a.permissions.forEach(p=>{
+      const name=permissionGroupName(p.permission_code);
+      (groups[name] ||= []).push(p);
+    });
+    const groupHtml=Object.entries(groups).map(([name,items])=>`
+      <section class="permission-group">
+        <div class="permission-group-title"><span>${RH.esc(name)}</span><span class="muted-small">${items.filter(p=>p.is_granted).length}/${items.length} অনুমতি</span></div>
+        <div class="permission-list">
+          ${items.map(p=>`<label class="permission-item">
+            <span class="permission-copy"><strong>${RH.esc(p.permission_name||p.permission_code)}</strong><small>${RH.esc(p.permission_code)}</small></span>
+            <span class="permission-toggle"><input type="checkbox" ${p.is_granted?'checked':''}
+              aria-label="${RH.esc(p.permission_name||p.permission_code)}"
+              onchange="changeAdminPermission('${a.user_id}','${String(p.permission_code).replace(/'/g,"\\'")}',this.checked,this)">
+              <span>${p.is_granted?'চালু':'বন্ধ'}</span>
+            </span>
+          </label>`).join('')}
+        </div>
+      </section>`).join('');
+    return `<div class="card" style="margin-bottom:16px">
+      <div class="admin-person-head">
+        <div><strong><i class="fas fa-user-shield"></i> সাধারণ অ্যাডমিন</strong><div class="id-short">${RH.esc(a.user_id)}</div>
+          <div class="admin-perm-summary">${granted}টি / ${a.permissions.length}টি পারমিশন চালু</div>
+        </div>
+        <div class="admin-actions"><span class="badge ${a.active?'badge-verified':'badge-rejected'}">${a.active?'সক্রিয়':'নিষ্ক্রিয়'}</span>
+          <button class="btn btn-small ${a.active?'btn-danger':''}" onclick="toggleAdminActive('${a.user_id}',${!a.active})">${a.active?'নিষ্ক্রিয় করুন':'সক্রিয় করুন'}</button>
+        </div>
+      </div>
+      <div style="margin-top:14px"><strong style="color:#164b60">পারমিশন তালিকা</strong>${groupHtml}</div>
+    </div>`;
+  }).join('');
 }
 
-async function changeAdminPermission(userId,code,grant) {
-  if(currentRole!=='super_admin')return RH.toast('অনুমতি নেই।',false);
+async function changeAdminPermission(userId,code,grant,checkbox) {
+  if(currentRole!=='super_admin') {
+    if(checkbox) checkbox.checked=!grant;
+    return RH.toast('অনুমতি নেই।',false);
+  }
+  if(checkbox) checkbox.disabled=true;
   const fn=grant?'grant_admin_permission':'revoke_admin_permission';
   const {data,error}=await sb.rpc(fn,{p_user_id:userId,p_permission_code:code});
-  if(error)return RH.toast('পরিবর্তন ব্যর্থ: '+error.message,false);
-  if(!data)return RH.toast('পরিবর্তন হয়নি।',false);
-  RH.toast(grant?'অনুমতি প্রদান করা হয়েছে।':'অনুমতি বাতিল করা হয়েছে।');await loadAdminMatrix();
+  if(error || !data) {
+    if(checkbox) checkbox.checked=!grant;
+    RH.toast('পারমিশন পরিবর্তন ব্যর্থ: '+(error?.message||'পরিবর্তন হয়নি'),false);
+  } else {
+    const label=checkbox?.parentElement?.querySelector('span');
+    if(label) label.textContent=grant?'চালু':'বন্ধ';
+    RH.toast(grant?'পারমিশন চালু করা হয়েছে।':'পারমিশন বন্ধ করা হয়েছে।');
+    const card=checkbox?.closest('.card');
+    if(card) {
+      const checks=[...card.querySelectorAll('.permission-toggle input')];
+      const summary=card.querySelector('.admin-perm-summary');
+      if(summary) summary.textContent=`${checks.filter(x=>x.checked).length}টি / ${checks.length}টি পারমিশন চালু`;
+      const group=checkbox.closest('.permission-group');
+      const groupCount=group?.querySelector('.permission-group-title .muted-small');
+      if(groupCount) {
+        const gc=[...group.querySelectorAll('.permission-toggle input')];
+        groupCount.textContent=`${gc.filter(x=>x.checked).length}/${gc.length} অনুমতি`;
+      }
+    }
+  }
+  if(checkbox) checkbox.disabled=false;
 }
 
 async function toggleAdminActive(userId,active) {
@@ -950,6 +1138,80 @@ async function toggleAdminActive(userId,active) {
   if(error)return RH.toast('স্ট্যাটাস পরিবর্তন ব্যর্থ: '+error.message,false);
   if(!data)return RH.toast('স্ট্যাটাস পরিবর্তন হয়নি।',false);
   RH.toast('অ্যাডমিন স্ট্যাটাস পরিবর্তিত হয়েছে।');await loadAdminMatrix();
+}
+
+// ============ ADMIN BIODATA A4 PRINT ============
+function printAdminBiodata(id) {
+  const record = adminBiodataCache[id];
+  if (!record) return RH.toast('বায়োডাটার তথ্য পাওয়া যায়নি। তালিকা রিফ্রেশ করে আবার চেষ্টা করুন।', false);
+  const d = record.form_data && typeof record.form_data === 'object' ? record.form_data : {};
+  const labels = {
+    fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',telegram:'Telegram',
+    currentThana:'থানা / উপজেলা',currentDistrict:'বর্তমান জেলা',currentDivision:'বিভাগ',currentUnion:'ইউনিয়ন',
+    currentVillage:'গ্রাম',currentPostOffice:'ডাকঘর',currentWard:'ওয়ার্ড নম্বর',permanentDistrict:'স্থায়ী জেলা',
+    guardianName:'অভিভাবকের নাম',guardianRelation:'সম্পর্ক',guardianPhone:'অভিভাবকের নম্বর',
+    height:'উচ্চতা',weight:'ওজন',complexion:'গায়ের রং',physicalProblem:'শারীরিক সমস্যা',physicalProblemDetail:'সমস্যার বিবরণ',
+    fatherName:'পিতার নাম',fatherJob:'পিতার পেশা',motherName:'মাতার নাম',motherJob:'মাতার পেশা',
+    brothers:'ভাই',sisters:'বোন',siblingPosition:'ভাই/বোনদের মধ্যে অবস্থান',
+    salah:'৫ ওয়াক্ত সালাত',parda:'পর্দা / দাড়ি',mahram:'মাহরাম',avoidHaram:'হারাম বর্জন',
+    ownDeeniDetail:'নিজের দ্বীনি অবস্থা',mazhab:'মাযহাব',educationType:'শিক্ষার ধরন',
+    educationDetail:'শিক্ষাগত বিবরণ',economicStatus:'অর্থনৈতিক অবস্থা',incomeSource:'আয়ের উৎস',
+    groomMaritalStatus:'পাত্রের বৈবাহিক অবস্থা',brideMaritalStatus:'পাত্রীর বৈবাহিক অবস্থা',
+    prefAge:'প্রত্যাশিত বয়স',prefAgeFrom:'প্রত্যাশিত বয়স (সর্বনিম্ন)',prefAgeTo:'প্রত্যাশিত বয়স (সর্বোচ্চ)',
+    prefHeight:'প্রত্যাশিত উচ্চতা',prefHeightFrom:'প্রত্যাশিত উচ্চতা (সর্বনিম্ন)',prefHeightTo:'প্রত্যাশিত উচ্চতা (সর্বোচ্চ)',
+    prefArea:'পছন্দের এলাকা',prefEducation:'প্রত্যাশিত শিক্ষা',extraRequirements:'অতিরিক্ত চাহিদ'
+  };
+  const groups = [
+    {title:'ব্যক্তিগত পরিচিতি ও যোগাযোগ',keys:['dob','mobile','whatsapp','telegram','nid']},
+    {title:'ঠিকানা ও অভিভাবক',keys:['currentThana','currentDistrict','currentDivision','currentUnion','currentVillage','currentPostOffice','currentWard','permanentDistrict','guardianName','guardianRelation','guardianPhone']},
+    {title:'শারীরিক তথ্য',keys:['height','weight','complexion','physicalProblem','physicalProblemDetail']},
+    {title:'পারিবারিক তথ্য',keys:['fatherName','fatherJob','motherName','motherJob','brothers','sisters','siblingPosition']},
+    {title:'দ্বীনি অবস্থা',keys:['salah','parda','mahram','avoidHaram','ownDeeniDetail','mazhab']},
+    {title:'শিক্ষা ও অর্থনৈতিক অবস্থা',keys:['educationType','educationDetail','economicStatus','incomeSource']},
+    {title:'বৈবাহিক অবস্থা ও জীবনসঙ্গীর চাহিদা',keys:['groomMaritalStatus','brideMaritalStatus','prefAge','prefAgeFrom','prefAgeTo','prefHeight','prefHeightFrom','prefHeightTo','prefArea','prefEducation','extraRequirements']}
+  ];
+  const esc = v => String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const show = v => Array.isArray(v) ? v.filter(Boolean).join(', ') : typeof v==='boolean' ? (v?'হ্যাঁ':'না') : String(v??'').trim();
+  const used = new Set(groups.flatMap(g=>g.keys));
+  const extraKeys = Object.keys(d).filter(k=>!used.has(k) && show(d[k])!=='');
+  if(extraKeys.length) groups.push({title:'অন্যান্য তথ্য',keys:extraKeys});
+  const typeMap={male:'পাত্র',female:'পাত্রী',boy_khunsha:'ছেলে খুনসা',girl_khunsha:'মেয়ে খুনসা'};
+  const sections=groups.map(g=>{
+    const entries=g.keys.map(k=>{
+      let v=d[k];
+      if(k==='dob') v=v||record.dob;
+      if(k==='currentDistrict') v=v||record.current_district;
+      if(k==='currentDivision') v=v||record.current_division;
+      if(k==='permanentDistrict') v=v||record.permanent_district;
+      if(k==='groomMaritalStatus'||k==='brideMaritalStatus') v=v||record.marital_status;
+      const value=show(v); if(!value) return '';
+      const wide=['ownDeeniDetail','educationDetail','incomeSource','physicalProblemDetail','extraRequirements'].includes(k) || value.length>65;
+      return `<div class="item ${wide?'wide':''}"><span class="label">${esc(labels[k]||k)}:</span><span class="value">${esc(value)}</span></div>`;
+    }).filter(Boolean).join('');
+    return entries?`<section class="section"><h2>${esc(g.title)}</h2><div class="items">${entries}</div></section>`:'';
+  }).join('');
+  const popup=window.open('','_blank');
+  if(!popup) return RH.toast('পপ-আপ ব্লক হয়েছে। এই সাইটের Pop-ups Allow করে আবার চেষ্টা করুন।',false);
+  popup.document.open();
+  popup.document.write(`<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(record.biodata_code||'বায়োডাটা')} - A4</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+  :root{--ink:#173344;--muted:#607783;--green:#176b51;--gold:#c69a43;--line:#dce7e7;--soft:#f3f8f6}
+  *{box-sizing:border-box}body{margin:0;background:#edf2f3;color:var(--ink);font-family:'Noto Sans Bengali',sans-serif;line-height:1.4}
+  .toolbar{max-width:920px;margin:16px auto 10px;display:flex;justify-content:space-between;padding:0 12px}.toolbar button{border:0;border-radius:8px;padding:9px 16px;background:var(--green);color:white;font:600 14px inherit;cursor:pointer}
+  .sheet{width:210mm;height:297mm;margin:0 auto 20px;background:white;padding:8mm 9mm 7mm;box-shadow:0 8px 35px #18354420;overflow:hidden}
+  .topline{height:4px;background:linear-gradient(90deg,var(--green),#7cae91,var(--gold));margin:-8mm -9mm 5mm}
+  .brand{text-align:center;border-bottom:1px solid var(--line);padding-bottom:3mm;margin-bottom:3mm}.brand .small{font-size:8pt;color:var(--gold);font-weight:700}.brand h1{font-size:18pt;line-height:1.2;margin:1mm 0;color:var(--green);font-weight:800}.brand .slogan{font-size:8pt;color:var(--muted)}
+  .identity{display:flex;align-items:center;justify-content:space-between;gap:6mm;background:var(--soft);border:1px solid #d8e9e0;border-radius:8px;padding:2mm 3mm;margin-bottom:3mm}.identity .name{font-size:12pt;font-weight:800}.identity .type{font-size:8pt;color:var(--green);font-weight:700}.code{text-align:right;font-size:7pt;color:var(--muted)}.code strong{display:block;color:var(--green);font-size:10pt}
+  .sections{display:grid;grid-template-columns:1fr 1fr;gap:2mm 3mm;align-items:start}.section{border:1px solid var(--line);border-radius:6px;overflow:hidden;break-inside:avoid}.section h2{font-size:8pt;margin:0;padding:1.2mm 2mm;background:#edf5f1;color:var(--green);font-weight:800;border-bottom:1px solid var(--line)}.items{padding:1.2mm 2mm;display:grid;grid-template-columns:1fr 1fr;gap:1mm 2mm}.item{min-width:0;font-size:6.6pt;display:flex;gap:1mm;align-items:flex-start;border-bottom:1px dotted #e8eeee;padding-bottom:.4mm}.item.wide{grid-column:1/-1}.label{color:var(--muted);white-space:nowrap;font-weight:500}.value{color:#203d4a;font-weight:600;overflow-wrap:anywhere}
+  .footer{margin-top:2.5mm;border-top:1px solid var(--line);padding-top:1.5mm;display:flex;justify-content:space-between;gap:4mm;font-size:6.3pt;color:var(--muted)}.footer strong{color:var(--green)}
+  @page{size:A4 portrait;margin:0}@media print{body{background:#fff}.toolbar{display:none!important}.sheet{margin:0;width:210mm;height:297mm;box-shadow:none;overflow:hidden}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body><div class="toolbar"><span>বায়োডাটা প্রিন্ট প্রিভিউ · A4 এক পৃষ্ঠা</span><button onclick="window.print()">▤ প্রিন্ট / PDF সংরক্ষণ</button></div>
+  <main class="sheet"><div class="topline"></div><header class="brand"><div class="small">বিবাহের উদ্দেশ্যে পরিচিতি</div><h1>রফিকে হায়াত</h1><div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div></header>
+  <div class="identity"><div><div class="type">${esc(typeMap[record.applicant_type]||record.applicant_type||'বায়োডাটা')}</div><div class="name">${esc(record.full_name||d.fullName||'নাম উল্লেখ নেই')}</div></div><div class="code">বায়োডাটা আইডি<strong>${esc(record.biodata_code||'—')}</strong></div></div>
+  <div class="sections">${sections}</div><footer class="footer"><span>ব্যক্তিগত ও গোপনীয় তথ্য — অনুমতি ছাড়া প্রচার করবেন না</span><span><strong>রফিকে হায়াত</strong> · জান্নাতের পথে সাথীর সন্ধানে</span></footer></main></body></html>`);
+  popup.document.close();
+  popup.focus();
 }
 
 // ================= AUDIT LOG =================
