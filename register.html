@@ -6,11 +6,7 @@
 <title>একসাথে সদস্য নিবন্ধন ও বায়োডাটা | রফিকে হায়াত</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-// অ্যাকাউন্টের নাম ও মোবাইল বায়োডাটার মূল ফিল্ডে স্বয়ংক্রিয়ভাবে বসে।
-document.getElementById('accountFullName').addEventListener('input',e=>document.getElementById('biodataFullName').value=e.target.value.trim());
-document.getElementById('accountPhone').addEventListener('input',e=>document.getElementById('biodataMobile').value=e.target.value.replace(/[\s-]/g,''));
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Bengali','Segoe UI',Tahoma,sans-serif}
@@ -377,6 +373,14 @@ textarea{min-height:80px;resize:vertical}
 
 <script>
 
+// অ্যাকাউন্টের নাম ও মোবাইল বায়োডাটার মূল ফিল্ডে স্বয়ংক্রিয়ভাবে বসে।
+document.getElementById('accountFullName').addEventListener('input', e => {
+  document.getElementById('biodataFullName').value = e.target.value.trim();
+});
+document.getElementById('accountPhone').addEventListener('input', e => {
+  document.getElementById('biodataMobile').value = e.target.value.replace(/[\s-]/g, '');
+});
+
 let submittedCredentialsText = '';
 let pendingBiodataData = null;
 
@@ -392,7 +396,8 @@ async function initGeoSelect() {
   // GitHub Pages ব্যর্থ হলে একই ডেটার Raw GitHub mirror চেষ্টা করা হবে।
   const dataUrls = [
     'https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json',
-    'https://raw.githubusercontent.com/iqbalhasandev/bangladesh-geo-json/main/bangladesh-geo.json'
+    'https://raw.githubusercontent.com/iqbalhasandev/bangladesh-geo-json/main/bangladesh-geo.json',
+    'https://github.com/iqbalhasandev/bangladesh-geo-json/releases/latest/download/bangladesh-geo.json'
   ];
   tSel.innerHTML = '<option value="">অপেক্ষা করুন—বাংলাদেশের থানা/উপজেলার তালিকা লোড হচ্ছে...</option>';
   tSel.disabled = true;
@@ -401,9 +406,13 @@ async function initGeoSelect() {
   for (const url of dataUrls) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
-      const response = await fetch(url, { cache: 'no-cache', signal: controller.signal });
-      clearTimeout(timeout);
+      const timeout = setTimeout(() => controller.abort(), 12000);
+      let response;
+      try {
+        response = await fetch(url, { cache: 'force-cache', signal: controller.signal });
+      } finally {
+        clearTimeout(timeout);
+      }
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const tree = await response.json();
       if (!Array.isArray(tree)) throw new Error('ডেটার ফরম্যাট সঠিক নয়');
@@ -447,8 +456,19 @@ async function initGeoSelect() {
     const note = document.createElement('div');
     note.className = 'alert alert-error';
     note.id = 'geoLoadError';
-    note.textContent = 'বাংলাদেশের থানা/উপজেলার তালিকা ইন্টারনেট থেকে লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে পেজ রিফ্রেশ করুন।';
+    note.textContent = 'বাংলাদেশের থানা/উপজেলার তালিকা ইন্টারনেট থেকে লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'btn btn-secondary';
+    retry.style.marginTop = '8px';
+    retry.textContent = 'তালিকা আবার লোড করুন';
+    retry.addEventListener('click', () => {
+      note.remove();
+      retry.remove();
+      initGeoSelect();
+    });
     tSel.parentElement.appendChild(note);
+    tSel.parentElement.appendChild(retry);
     console.error('সম্পূর্ণ বাংলাদেশ লোকেশন ডেটা পাওয়া যায়নি:', loadError);
     return;
   }
@@ -508,20 +528,27 @@ document.querySelectorAll('[name="applicantType"]').forEach(el=>el.addEventListe
 renderEducationQualifications();
 
 // ============ প্রারম্ভিক প্রস্তুতি ============
+// লোকেশন ডেটা Supabase session check-এর ওপর নির্ভর করবে না।
 (async function initRegistration() {
-  const sessionResult = await sb.auth.getSession();
-  if (sessionResult.data?.session) {
-    const msg=document.getElementById('formMessage');
-    msg.className='alert alert-info';
-    msg.textContent='আপনি ইতিমধ্যে লগইন করা আছেন। নতুন সদস্য নিবন্ধনের জন্য আগে লগআউট করুন, অথবা ড্যাশবোর্ড থেকে বায়োডাটা পূরণ করুন।';
-    msg.classList.remove('hidden');
-    document.getElementById('previewBtn').disabled=true;
-    return;
+  const geoPromise = initGeoSelect();
+
+  try {
+    const sessionResult = await sb.auth.getSession();
+    if (sessionResult.data?.session) {
+      const msg = document.getElementById('formMessage');
+      msg.className = 'alert alert-info';
+      msg.textContent = 'আপনি ইতিমধ্যে লগইন করা আছেন। নতুন সদস্য নিবন্ধনের জন্য আগে লগআউট করুন, অথবা ড্যাশবোর্ড থেকে বায়োডাটা পূরণ করুন।';
+      msg.classList.remove('hidden');
+      document.getElementById('previewBtn').disabled = true;
+    }
+  } catch (err) {
+    console.error('Supabase session check failed; geo list will still load:', err);
   }
-  await initGeoSelect();
+
+  await geoPromise;
   toggleGenderSections();
   updateSiblingPositionLabel();
-})();
+})();;
 
 // ============ বয়স গণনা ============
 function calculateAge() {
