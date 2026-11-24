@@ -166,8 +166,8 @@
       <h3 style="margin-top:0;color:#0e4d64">সাময়িক বায়োডাটা দেখার অনুমতি</h3>
       <p class="muted-small">প্রথম ঘরে যিনি দেখবেন তাঁর সদস্য কোড, দ্বিতীয় ঘরে যার বায়োডাটা দেখবেন তাঁর কোড দিন। প্রতিবার সর্বোচ্চ ২৪ ঘণ্টা।</p>
       <div class="grid-2">
-        <div class="form-group"><label for="permissionViewerCode">যিনি দেখবেন (সদস্য কোড)</label><input id="permissionViewerCode" placeholder="M000001"></div>
-        <div class="form-group"><label for="permissionTargetCode">যার বায়োডাটা দেখবেন (সদস্য কোড)</label><input id="permissionTargetCode" placeholder="F000001"></div>
+        <div class="form-group"><label for="permissionViewerCode">যিনি দেখবেন (সদস্য কোড)</label><input id="permissionViewerCode" placeholder="M000001" autocomplete="off" oninput="schedulePermissionMemberPreview('viewer')" onblur="previewPermissionMember('viewer')"><div id="permissionViewerPreview" class="muted-small" style="margin-top:5px">সদস্য কোড লিখলে নাম দেখাবে</div></div>
+        <div class="form-group"><label for="permissionTargetCode">যার বায়োডাটা দেখবেন (সদস্য কোড)</label><input id="permissionTargetCode" placeholder="F000001" autocomplete="off" oninput="schedulePermissionMemberPreview('target')" onblur="previewPermissionMember('target')"><div id="permissionTargetPreview" class="muted-small" style="margin-top:5px">সদস্য কোড লিখলে নাম দেখাবে</div></div>
       </div>
       <div class="grid-2">
         <div class="form-group"><label for="permissionHours">অনুমতির সময় (ঘণ্টা)</label><select id="permissionHours"><option value="24">২৪ ঘণ্টা</option><option value="12">১২ ঘণ্টা</option><option value="6">৬ ঘণ্টা</option><option value="1">১ ঘণ্টা</option></select></div>
@@ -604,6 +604,7 @@ async function loadApproved() {
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;align-items:center">
         <div>
           <strong style="color:#0e4d64;font-size:1.1rem;font-family:monospace">${RH.esc(b.biodata_code)}</strong>
+          <span style="color:#244b5d;font-weight:700;margin-left:.5rem">${RH.esc(b.full_name || 'নাম পাওয়া যায়নি')}</span>
           <span style="color:#45748a;font-size:.9rem;margin-left:.7rem">
             ${RH.esc(b.current_district || '')} • ${RH.esc(b.current_division || '')}
           </span>
@@ -953,6 +954,26 @@ async function requestBiodataRevision(id) {
   RH.toast('সদস্যের কাছে সংশোধনের জন্য পাঠানো হয়েছে।');
   await loadAdminBiodata('revision_requested');
 }
+const permissionPreviewTimers = {};
+function schedulePermissionMemberPreview(which) {
+  if (permissionPreviewTimers[which]) clearTimeout(permissionPreviewTimers[which]);
+  permissionPreviewTimers[which] = setTimeout(() => previewPermissionMember(which), 450);
+}
+async function previewPermissionMember(which) {
+  const inputId = which === 'viewer' ? 'permissionViewerCode' : 'permissionTargetCode';
+  const previewId = which === 'viewer' ? 'permissionViewerPreview' : 'permissionTargetPreview';
+  const code = (document.getElementById(inputId)?.value || '').trim();
+  const el = document.getElementById(previewId);
+  if (!el) return;
+  if (!code) { el.textContent = 'সদস্য কোড লিখলে নাম দেখাবে'; return; }
+  el.textContent = 'সদস্য খোঁজা হচ্ছে...';
+  const {data,error} = await sb.rpc('admin_search_biodata_members',{p_query:code});
+  if (error) { el.textContent = 'সদস্য যাচাই করা যায়নি: ' + error.message; return; }
+  const match = (data || []).find(m => String(m.biodata_code || '').toLowerCase() === code.toLowerCase());
+  if (!match) { el.textContent = 'এই সদস্য কোডে কাউকে পাওয়া যায়নি'; return; }
+  el.innerHTML = `<span style="color:#17603a;font-weight:700"><i class="fas fa-user-check"></i> ${RH.esc(match.full_name || 'নাম পাওয়া যায়নি')}</span> <span class="muted-small">(${RH.esc(match.biodata_code)})</span>`;
+}
+
 async function grantBiodataView() {
   if(!can('access_requests.approve'))return RH.toast('সাময়িক অনুমতি দেওয়ার অধিকার নেই।',false);
   const viewer=(document.getElementById('permissionViewerCode')?.value||'').trim();
@@ -965,6 +986,7 @@ async function grantBiodataView() {
   if(error)return RH.toast('অনুমতি দেওয়া যায়নি: '+error.message,false);
   RH.toast('সাময়িক দেখার অনুমতি দেওয়া হয়েছে।');
   document.getElementById('permissionViewerCode').value='';document.getElementById('permissionTargetCode').value='';
+  document.getElementById('permissionViewerPreview').textContent='সদস্য কোড লিখলে নাম দেখাবে';document.getElementById('permissionTargetPreview').textContent='সদস্য কোড লিখলে নাম দেখাবে';
   await loadAdminViewPermissions();
 }
 async function loadAdminViewPermissions() {
@@ -976,11 +998,13 @@ async function loadAdminViewPermissions() {
   if(!data?.length){el.innerHTML='<div class="alert alert-info">সাম্প্রতিক কোনো সাময়িক অনুমতি নেই।</div>';return;}
   el.innerHTML=data.map(p=>{
     const active=!p.revoked_at && new Date(p.expires_at)>new Date();
-    return `<div class="card" style="padding:12px;margin:.6rem 0"><strong>${RH.esc(p.viewer_code)} (${RH.esc(p.viewer_name||'')})</strong> → <strong>${RH.esc(p.target_code)} (${RH.esc(p.target_name||'')})</strong>
-      <div class="muted-small">মেয়াদ: ${RH.fmtDate(p.expires_at)} | ${active?'সক্রিয়':p.revoked_at?'বাতিল':'মেয়াদ শেষ'}</div>
+    return `<div class="card" style="padding:12px;margin:.6rem 0"><strong>${RH.esc(p.viewer_code)} (${RH.esc(p.viewer_name||'নাম পাওয়া যায়নি')})</strong> → <strong>${RH.esc(p.target_code)} (${RH.esc(p.target_name||'নাম পাওয়া যায়নি')})</strong>
+      <div class="muted-small">মেয়াদ শেষ হবে: ${RH.fmtDate(p.expires_at)} | ${active?'সক্রিয়':p.revoked_at?'বাতিল':'মেয়াদ শেষ'}</div>
+      <div class="countdown-wrap mt-1" data-expires="${p.revoked_at?'':(p.expires_at||'')}">${p.revoked_at?'<span class="countdown countdown-danger">অনুমতি বাতিল</span>':renderCountdown(p.expires_at)}</div>
       ${!p.revoked_at?`<div class="admin-actions mt-1"><button class="btn btn-small btn-warning" onclick="extendBiodataView('${p.id}')">${active?'আরও সময় দিন':'আবার অনুমতি দিন'}</button><button class="btn btn-small btn-danger" onclick="revokeBiodataView('${p.id}')">অনুমতি বাতিল</button></div>`:''}
     </div>`;
   }).join('');
+  startAllCountdowns();
 }
 async function extendBiodataView(id) {
   const raw=prompt('আর কত ঘণ্টার জন্য নতুন করে অনুমতি দেবেন? (১–২৪)','24');if(raw===null)return;
