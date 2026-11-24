@@ -786,7 +786,17 @@
                 font-size: 0.86rem;
             }
         }
-    </style>
+    
+/* Professional notice/sidebar layer */
+.site-topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 18px;margin:0 0 18px;border-radius:16px;background:linear-gradient(120deg,#0c4a3e,#146b53);color:#fff;box-shadow:0 10px 25px #0c4a3e20}
+.site-topnav .brand-mini{font-weight:800;font-size:1.05rem}.site-topnav nav{display:flex;gap:8px;flex-wrap:wrap}.site-topnav nav a{color:#fff;padding:7px 10px;border-radius:9px;font-size:.9rem}.site-topnav nav a:hover{background:#ffffff20;text-decoration:none}
+.notice-ticker{display:flex;align-items:center;gap:12px;background:#fff8e8;border:1px solid #f1d89a;border-radius:12px;padding:10px 14px;margin:0 0 18px;overflow:hidden;color:#61480a}.notice-ticker strong{white-space:nowrap;color:#8a5b00}.notice-ticker-track{min-width:0;overflow:hidden;white-space:nowrap;flex:1}.notice-ticker-track span{display:inline-block;padding-left:100%;animation:noticeTicker 28s linear infinite}.notice-ticker:hover .notice-ticker-track span{animation-play-state:paused}@keyframes noticeTicker{to{transform:translateX(-100%)}}
+.home-grid{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:20px;align-items:start}.home-main{min-width:0}.notice-sidebar{background:#fbfdfb;border:1px solid #d8e8df;border-radius:16px;padding:16px;box-shadow:0 8px 22px #0c4a3e0a;position:sticky;top:16px}.notice-sidebar h3{margin:0 0 10px;color:#0c4a3a;font-size:1rem}.notice-scroll{height:230px;overflow:hidden;position:relative;border-bottom:1px solid #e5eee8;margin-bottom:14px}.notice-scroll-inner{display:flex;flex-direction:column;gap:9px;animation:noticeUp 32s linear infinite}.notice-scroll:hover .notice-scroll-inner{animation-play-state:paused}@keyframes noticeUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
+.side-notice{padding:9px 10px;border-radius:10px;background:#fff;border:1px solid #e3ece6;font-size:.87rem}.side-notice.important{border-left:4px solid #d89a19;background:#fffaf0}.side-notice.urgent{border-left:4px solid #c43d36;background:#fff5f4}.side-notice .new-tag{display:inline-block;background:#dff4e7;color:#17623b;border-radius:20px;padding:1px 7px;font-size:.7rem;font-weight:800;margin-left:5px}.side-links{display:flex;flex-direction:column;gap:7px}.side-links a{display:block;padding:8px 10px;background:#f0f7f2;border-radius:9px;color:#14543f;font-size:.88rem}.side-links a:hover{background:#e0f0e6;text-decoration:none}.notice-archive-link{font-size:.84rem;font-weight:700}.site-footer{background:linear-gradient(135deg,#0c4a3e,#146b53)!important;color:#fff!important}.site-footer h2,.site-footer p,.site-footer a,.site-footer .footer-copy{color:#fff!important}
+@media(max-width:900px){.home-grid{grid-template-columns:1fr}.notice-sidebar{position:static}.notice-scroll{height:180px}}
+@media(prefers-reduced-motion:reduce){.notice-ticker-track span,.notice-scroll-inner{animation:none}.notice-scroll{overflow:auto}}
+
+</style>
 </head>
 <body>
     <div class="scroll-progress" id="scrollProgress"></div>
@@ -796,7 +806,9 @@
             <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
             <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
         </div>
-
+        <div class="site-topnav"><div class="brand-mini"><i class="fas fa-mosque"></i> জান্নাতের পথে সাথীর সন্ধানে</div><nav aria-label="প্রধান মেনু"><a href="index.html">মূল পেজ</a><a href="register.html">রেজিস্ট্রেশন</a><a href="login.html">সদস্য লগইন</a><a href="dashboard.html">ড্যাশবোর্ড</a><a href="admin-login.html">অ্যাডমিন</a></nav></div>
+        <div class="notice-ticker" id="noticeTicker" aria-live="polite"><strong><i class="fas fa-bullhorn"></i> চলমান নোটিশ</strong><div class="notice-ticker-track"><span id="noticeTickerText">সর্বশেষ নোটিশ এখানে প্রদর্শিত হবে।</span></div></div>
+        <div class="home-grid"><div class="home-main">
         <section class="hero-intro">
             <span class="hero-kicker"><i class="fas fa-heart"></i> সম্মান, আস্থা ও দ্বীনদারির বন্ধনে</span>
             <h2>জীবনসঙ্গী খুঁজুন <span>বিশ্বাসের সঙ্গে</span></h2>
@@ -848,6 +860,12 @@
                 </div>
             </div>
         </section>
+        </div><aside class="notice-sidebar" aria-label="নোটিশ ও গুরুত্বপূর্ণ লিংক">
+          <h3><i class="fas fa-bell"></i> নতুন ও গুরুত্বপূর্ণ নোটিশ</h3><div class="notice-scroll"><div class="notice-scroll-inner" id="sidebarNotices"><div class="side-notice">নোটিশ লোড হচ্ছে...</div></div></div>
+          <a class="notice-archive-link" href="#noticeArchive" onclick="openNoticeArchive(event)">সব নোটিশ দেখুন <i class="fas fa-arrow-left"></i></a>
+          <h3 style="margin-top:18px"><i class="fas fa-link"></i> গুরুত্বপূর্ণ ওয়েবসাইট</h3><div class="side-links" id="importantLinks"><a href="https://www ইসলামিক" onclick="return false">লিংক লোড হচ্ছে...</a></div>
+        </aside></div>
+        <section id="noticeArchive" class="card" style="display:none"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3 style="margin:0;color:#146b53">নোটিশ আর্কাইভ</h3><button type="button" class="btn-submit" onclick="closeNoticeArchive()">বন্ধ করুন</button></div><div id="noticeArchiveList" style="margin-top:12px"></div></section>
 
         <div class="card" style="background: linear-gradient(135deg, #f1faf7 0%, #f8fcfb 100%);">
             <div style="display: flex; flex-wrap: wrap; gap: 1.8rem; align-items: flex-start;">
@@ -1296,7 +1314,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script>
+        // Public notices and important links (published rows only; protected by Supabase RLS)
+        let publicNotices = [];
+        function safeNoticeDate(value){try{return new Date(value).toLocaleDateString('bn-BD',{year:'numeric',month:'short',day:'numeric'});}catch(e){return '';}}
+        function openNoticeArchive(e){if(e)e.preventDefault();const el=document.getElementById('noticeArchive');el.style.display='block';document.getElementById('noticeArchiveList').innerHTML=publicNotices.length?publicNotices.map(n=>`<article class="side-notice ${n.notice_type==='urgent'?'urgent':n.notice_type==='important'?'important':''}"><strong>${escapeNoticeHtml(n.title)}</strong><div>${escapeNoticeHtml(n.body||'')}</div><small>${safeNoticeDate(n.published_at)}</small>${n.link_url?`<div><a href="${safeNoticeUrl(n.link_url)}" target="_blank" rel="noopener">${escapeNoticeHtml(n.link_label||'বিস্তারিত')}</a></div>`:''}</article>`).join(''):'কোনো প্রকাশিত নোটিশ নেই।';el.scrollIntoView({behavior:'smooth'});}
+        function closeNoticeArchive(){document.getElementById('noticeArchive').style.display='none';}
+        function escapeNoticeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+        function safeNoticeUrl(s){try{const u=new URL(s,location.href);return ['http:','https:'].includes(u.protocol)?u.href:'#';}catch(e){return '#';}}
+        async function loadPublicNoticeContent(){if(typeof sb === 'undefined')return;try{const now=new Date().toISOString();const [nr,lr]=await Promise.all([sb.from('site_notices').select('id,title,body,link_url,link_label,notice_type,published_at,is_pinned,expires_at').eq('is_published',true).or(`expires_at.is.null,expires_at.gt.${now}`).order('is_pinned',{ascending:false}).order('published_at',{ascending:false}).limit(40),sb.from('site_links').select('id,title,url,sort_order').eq('is_active',true).order('sort_order',{ascending:true}).limit(20)]);if(nr.error)throw nr.error;publicNotices=nr.data||[];const ticker=document.getElementById('noticeTickerText');ticker.textContent=publicNotices.length?publicNotices.slice(0,8).map(n=>`${n.notice_type==='urgent'?'জরুরি: ':''}${n.title} — ${n.body||''}`).join('  •  '):'এই মুহূর্তে কোনো নতুন নোটিশ নেই।';const side=document.getElementById('sidebarNotices');side.innerHTML=publicNotices.length?publicNotices.map(n=>{const fresh=n.published_at&&(Date.now()-new Date(n.published_at).getTime())<=7*86400000;return `<article class="side-notice ${n.notice_type==='urgent'?'urgent':n.notice_type==='important'?'important':''}"><strong>${escapeNoticeHtml(n.title)}</strong>${fresh?'<span class="new-tag">নতুন</span>':''}<div>${escapeNoticeHtml((n.body||'').slice(0,150))}${(n.body||'').length>150?'…':''}</div><small>${safeNoticeDate(n.published_at)}</small></article>`}).join(''):'<div class="side-notice">এখনো কোনো নোটিশ প্রকাশিত হয়নি।</div>';const links=document.getElementById('importantLinks');links.innerHTML=lr.data?.length?lr.data.map(l=>`<a href="${safeNoticeUrl(l.url)}" target="_blank" rel="noopener">${escapeNoticeHtml(l.title)} <i class="fas fa-external-link-alt"></i></a>`).join(''):'<a href="https://www.supremecourt.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ সুপ্রিম কোর্ট</a><a href="https://www.bangladesh.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ জাতীয় তথ্য বাতায়ন</a>'; }catch(err){console.warn('Notice content load:',err.message);document.getElementById('noticeTickerText').textContent='নোটিশ সাময়িকভাবে লোড করা যাচ্ছে না।';}}
         document.getElementById('footerYear').textContent = new Date().getFullYear();
+        loadPublicNoticeContent();
 
         // স্ক্রল প্রোগ্রেস ও ব্যাক-টু-টপ বাটন কন্ট্রোল
         const scrollProgress = document.getElementById('scrollProgress');
