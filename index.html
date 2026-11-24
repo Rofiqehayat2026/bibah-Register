@@ -789,6 +789,7 @@
     
 /* Professional notice/sidebar layer */
 .site-topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 18px;margin:0 0 18px;border-radius:16px;background:linear-gradient(120deg,#0c4a3e,#146b53);color:#fff;box-shadow:0 10px 25px #0c4a3e20}
+.feature-card h3{font-family:'Noto Sans Bengali',sans-serif;font-size:1.16rem;font-weight:800;letter-spacing:.01em;color:#0c4a3e;line-height:1.5}.feature-card:first-child h3{font-size:1.24rem;font-weight:900;color:#0b6048;text-shadow:0 1px 0 #ffffff;}.feature-card:first-child{border:1px solid #b9d9c8;box-shadow:0 8px 22px rgba(12,74,62,.10)}
 .site-topnav .brand-mini{font-weight:800;font-size:1.05rem}.site-topnav nav{display:flex;gap:8px;flex-wrap:wrap}.site-topnav nav a{color:#fff;padding:7px 10px;border-radius:9px;font-size:.9rem}.site-topnav nav a:hover{background:#ffffff20;text-decoration:none}
 .notice-ticker{display:flex;align-items:center;gap:12px;background:#fff8e8;border:1px solid #f1d89a;border-radius:12px;padding:10px 14px;margin:0 0 18px;overflow:hidden;color:#61480a}.notice-ticker strong{white-space:nowrap;color:#8a5b00}.notice-ticker-track{min-width:0;overflow:hidden;white-space:nowrap;flex:1}.notice-ticker-track span{display:inline-block;padding-left:100%;animation:noticeTicker 28s linear infinite}.notice-ticker:hover .notice-ticker-track span{animation-play-state:paused}@keyframes noticeTicker{to{transform:translateX(-100%)}}
 .home-grid{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:20px;align-items:start}.home-main{min-width:0}.notice-sidebar{background:#fbfdfb;border:1px solid #d8e8df;border-radius:16px;padding:16px;box-shadow:0 8px 22px #0c4a3e0a;position:sticky;top:16px}.notice-sidebar h3{margin:0 0 10px;color:#0c4a3a;font-size:1rem}.notice-scroll{height:230px;overflow:hidden;position:relative;border-bottom:1px solid #e5eee8;margin-bottom:14px}.notice-scroll-inner{display:flex;flex-direction:column;gap:9px;animation:noticeUp 32s linear infinite}.notice-scroll:hover .notice-scroll-inner{animation-play-state:paused}@keyframes noticeUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
@@ -806,7 +807,7 @@
             <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
             <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
         </div>
-        <div class="site-topnav"><div class="brand-mini"><i class="fas fa-mosque"></i> জান্নাতের পথে সাথীর সন্ধানে</div><nav aria-label="প্রধান মেনু"><a href="index.html">মূল পেজ</a><a href="register.html">রেজিস্ট্রেশন</a><a href="login.html">সদস্য লগইন</a><a href="dashboard.html">ড্যাশবোর্ড</a><a href="admin-login.html">অ্যাডমিন</a></nav></div>
+        <div class="site-topnav"><div class="brand-mini"><i class="fas fa-mosque"></i> জান্নাতের পথে সাথীর সন্ধানে</div><nav aria-label="প্রধান মেনু"><a href="index.html">মূল পেজ</a><a href="register.html">সদস্য রেজিস্ট্রেশন</a><a href="login.html">সদস্য লগইন</a><a href="dashboard.html">ড্যাশবোর্ড</a><a href="admin-login.html">অ্যাডমিন</a></nav></div>
         <div class="notice-ticker" id="noticeTicker" aria-live="polite"><strong><i class="fas fa-bullhorn"></i> চলমান নোটিশ</strong><div class="notice-ticker-track"><span id="noticeTickerText">সর্বশেষ নোটিশ এখানে প্রদর্শিত হবে।</span></div></div>
         <div class="home-grid"><div class="home-main">
         <section class="hero-intro">
@@ -820,19 +821,11 @@
             <div class="feature-grid">
                 <div class="feature-card">
                     <div>
-                        <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
-                        <h3>বায়োডাটা জমা</h3>
-                        <p>বিবাহের উদ্দেশ্যে নিজের বিস্তারিত বায়োডাটা পূরণ ও জমা দিন।</p>
-                    </div>
-                    <a class="feature-link primary" href="#biodataForm">ফরমে যান</a>
-                </div>
-                <div class="feature-card">
-                    <div>
                         <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
-                        <h3>নতুন সদস্য</h3>
-                        <p>নতুন অ্যাকাউন্ট তৈরি করে সদস্য হিসেবে যুক্ত হোন।</p>
+                        <h3>রেজিস্ট্রেশন ও বায়োডাটা জমা</h3>
+                        <p>নতুন হলে প্রথমে সদস্য অ্যাকাউন্ট তৈরি করুন। ইতোমধ্যে লগইন করা সদস্য সরাসরি বায়োডাটা ফরমে যেতে পারবেন।</p>
                     </div>
-                    <a class="feature-link" href="register.html">রেজিস্ট্রেশন</a>
+                    <a class="feature-link primary" href="register.html" id="registrationBiodataLink" onclick="return openRegistrationOrBiodata(event)">শুরু করুন</a>
                 </div>
                 <div class="feature-card">
                     <div>
@@ -1358,6 +1351,18 @@
             const signedIn = Boolean(session?.user);
             document.getElementById('authRequired').style.display = signedIn ? 'none' : 'flex';
             form.style.display = signedIn ? 'block' : 'none';
+        }
+
+        // একক প্রবেশ বাটন: লগইন করা সদস্যকে বায়োডাটা ফরমে, নতুন সদস্যকে রেজিস্ট্রেশনে পাঠায়।
+        function openRegistrationOrBiodata(event) {
+            if (currentSession?.user) {
+                event.preventDefault();
+                form.style.display = 'block';
+                document.getElementById('authRequired').style.display = 'none';
+                form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return false;
+            }
+            return true;
         }
 
         function initializeForm() {
