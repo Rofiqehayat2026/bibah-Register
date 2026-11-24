@@ -103,10 +103,10 @@ textarea{min-height:80px;resize:vertical}
     <div class="section-title"><i class="fas fa-user-tag"></i> ১. আবেদনকারীর ধরন</div>
     <div class="card">
       <div class="radio-group">
-        <label><input type="radio" name="applicantType" value="male" checked onchange="toggleGenderSections()"> পাত্র</label>
-        <label><input type="radio" name="applicantType" value="female" onchange="toggleGenderSections()"> পাত্রী</label>
-        <label><input type="radio" name="applicantType" value="boy_khunsha" onchange="toggleGenderSections()"> ছেলে খুনসা</label>
-        <label><input type="radio" name="applicantType" value="girl_khunsha" onchange="toggleGenderSections()"> মেয়ে খুনসা</label>
+        <label><input type="radio" name="applicantType" value="male" checked onchange="toggleGenderSections(); updateSiblingPositionLabel()"> পাত্র</label>
+        <label><input type="radio" name="applicantType" value="female" onchange="toggleGenderSections(); updateSiblingPositionLabel()"> পাত্রী</label>
+        <label><input type="radio" name="applicantType" value="boy_khunsha" onchange="toggleGenderSections(); updateSiblingPositionLabel()"> ছেলে খুনসা</label>
+        <label><input type="radio" name="applicantType" value="girl_khunsha" onchange="toggleGenderSections(); updateSiblingPositionLabel()"> মেয়ে খুনসা</label>
       </div>
     </div>
 
@@ -128,12 +128,33 @@ textarea{min-height:80px;resize:vertical}
       <div class="form-group">
         <label>থানা / উপজেলা <span class="required-star">*</span></label>
         <select name="currentThana" id="thanaSelect" required>
-          <option value="">-- থানা --</option>
+          <option value="">-- থানা / উপজেলা নির্বাচন করুন --</option>
         </select>
-        <div class="note"><i class="fas fa-info-circle"></i> থানা নির্বাচন করলে জেলা ও বিভাগ স্বয়ংক্রিয়ভাবে সেট হবে</div>
+        <div class="note"><i class="fas fa-info-circle"></i> থানা / উপজেলা নির্বাচন করলে জেলা ও বিভাগ স্বয়ংক্রিয়ভাবে বসবে</div>
       </div>
       <div class="form-group"><label>জেলা</label><input type="text" name="currentDistrict" id="districtField" readonly></div>
       <div class="form-group"><label>বিভাগ</label><input type="text" name="currentDivision" id="divisionField" readonly></div>
+      <div class="form-group">
+        <label>ইউনিয়ন / পৌরসভা</label>
+        <select name="currentUnion" id="unionSelect">
+          <option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option>
+        </select>
+      </div>
+      <div class="form-group"><label>গ্রাম / মহল্লা</label><input type="text" name="currentVillage" placeholder="গ্রাম বা মহল্লার নাম"></div>
+      <div class="form-group"><label>ডাকঘর</label><input type="text" name="currentPostOffice" placeholder="ডাকঘরের নাম"></div>
+      <div class="form-group">
+        <label>ওয়ার্ড নম্বর</label>
+        <select name="currentWard">
+          <option value="">-- ওয়ার্ড নির্বাচন করুন --</option>
+          <option value="1">১</option><option value="2">২</option><option value="3">৩</option>
+          <option value="4">৪</option><option value="5">৫</option><option value="6">৬</option>
+          <option value="7">৭</option><option value="8">৮</option><option value="9">৯</option>
+          <option value="10">১০</option><option value="11">১১</option><option value="12">১২</option>
+          <option value="13">১৩</option><option value="14">১৪</option><option value="15">১৫</option>
+          <option value="16">১৬</option><option value="17">১৭</option><option value="18">১৮</option>
+          <option value="19">১৯</option><option value="20">২০</option>
+        </select>
+      </div>
       <div class="form-group"><label>স্থায়ী জেলা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="permanentDistrict"></div>
     </div>
 
@@ -175,6 +196,15 @@ textarea{min-height:80px;resize:vertical}
       <div class="form-group"><label>মাতার পেশা <span class="required-star">*</span></label><input name="motherJob" required></div>
       <div class="form-group"><label>ভাই <span class="required-star">*</span></label><input type="number" name="brothers" required min="0" value="0"></div>
       <div class="form-group"><label>বোন <span class="required-star">*</span></label><input type="number" name="sisters" required min="0" value="0"></div>
+      <div class="form-group">
+        <label id="siblingPositionLabel">ভাইদের মধ্যে আপনি কততম?</label>
+        <select name="siblingPosition" id="siblingPosition">
+          <option value="">-- নির্বাচন করুন --</option>
+          <option value="1">১ম</option><option value="2">২য়</option>
+          <option value="3">৩য়</option><option value="4">৪র্থ</option>
+          <option value="5">৫ম</option>
+        </select>
+      </div>
     </div>
 
     <!-- ৭. দ্বীনী অবস্থা -->
@@ -343,28 +373,75 @@ const BD_GEO = {
   }
 };
 
-function initGeoSelect() {
+async function initGeoSelect() {
   const tSel = document.getElementById('thanaSelect');
-  const allThanas = [];
-  Object.entries(BD_GEO).forEach(([div, dists]) => {
-    Object.entries(dists).forEach(([dist, thanas]) => {
-      thanas.forEach(t => allThanas.push({ div, dist, thana: t }));
+  const uSel = document.getElementById('unionSelect');
+  const districtField = document.getElementById('districtField');
+  const divisionField = document.getElementById('divisionField');
+  let geoRows = [];
+
+  // Full Bangladesh hierarchy: 8 divisions, 64 districts, upazilas and unions.
+  // Source dataset is MIT licensed; browser caches it after the first successful load.
+  try {
+    const response = await fetch(
+      'https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json',
+      { cache: 'force-cache' }
+    );
+    if (!response.ok) throw new Error('লোকেশন ডেটা লোড হয়নি');
+    const tree = await response.json();
+
+    tree.forEach(div => {
+      (div.districts || []).forEach(dist => {
+        (dist.upazilas || []).forEach(upz => {
+          geoRows.push({
+            division: div.bn_name || div.name,
+            district: dist.bn_name || dist.name,
+            thana: upz.bn_name || upz.name,
+            unions: (upz.unions || []).map(u => u.bn_name || u.name).filter(Boolean)
+          });
+        });
+      });
     });
-  });
-  allThanas.sort((a, b) => a.thana.localeCompare(b.thana, 'bn'));
-  tSel.innerHTML = '<option value="">-- থানা / উপজেলা --</option>' +
-    allThanas.map(t => `<option data-div="${t.div}" data-dist="${t.dist}">${t.thana}</option>`).join('');
+    if (!geoRows.length) throw new Error('লোকেশন ডেটা খালি');
+  } catch (err) {
+    console.warn('Full Bangladesh location dataset unavailable; using built-in fallback.', err);
+    Object.entries(BD_GEO).forEach(([division, districts]) => {
+      Object.entries(districts).forEach(([district, thanas]) => {
+        thanas.forEach(thana => geoRows.push({
+          division, district, thana, unions: []
+        }));
+      });
+    });
+  }
+
+  geoRows.sort((a, b) => a.thana.localeCompare(b.thana, 'bn'));
+  tSel.innerHTML = '<option value="">-- থানা / উপজেলা নির্বাচন করুন --</option>' +
+    geoRows.map((r, i) =>
+      `<option value="${r.thana.replace(/"/g, '&quot;')}" data-index="${i}">${r.thana} — ${r.district}</option>`
+    ).join('');
 
   tSel.addEventListener('change', () => {
-    const opt = tSel.selectedOptions[0];
-    if (!opt || !opt.dataset.div) {
-      document.getElementById('districtField').value = '';
-      document.getElementById('divisionField').value = '';
+    const row = geoRows[Number(tSel.selectedOptions[0]?.dataset.index)];
+    districtField.value = row?.district || '';
+    divisionField.value = row?.division || '';
+
+    if (!row) {
+      uSel.innerHTML = '<option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option>';
       return;
     }
-    document.getElementById('districtField').value = opt.dataset.dist;
-    document.getElementById('divisionField').value = opt.dataset.div;
+
+    const unions = row.unions || [];
+    uSel.innerHTML = '<option value="">-- ইউনিয়ন / পৌরসভা নির্বাচন করুন --</option>' +
+      unions.map(name => `<option value="${name.replace(/"/g, '&quot;')}">${name}</option>`).join('') +
+      '<option value="অন্যান্য">অন্যান্য / তালিকায় নেই</option>';
   });
+}
+
+function updateSiblingPositionLabel() {
+  const type = document.querySelector('[name="applicantType"]:checked')?.value || 'male';
+  const isFemale = type === 'female' || type === 'girl_khunsha';
+  document.getElementById('siblingPositionLabel').textContent =
+    isFemale ? 'বোনদের মধ্যে আপনি কততম?' : 'ভাইদের মধ্যে আপনি কততম?';
 }
 
 // ============ প্রারম্ভিক চেক ============
@@ -393,8 +470,9 @@ function initGeoSelect() {
   document.getElementById('topBar').classList.remove('hidden');
   document.getElementById('biodataForm').classList.remove('hidden');
 
-  initGeoSelect();
+  await initGeoSelect();
   toggleGenderSections();
+  updateSiblingPositionLabel();
 })();
 
 // ============ বয়স গণনা ============
