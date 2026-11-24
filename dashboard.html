@@ -147,8 +147,12 @@
 
   <div class="tab-panel" id="panel-admin-biodata">
     <div class="section-title"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</div>
-    <div class="alert alert-info">এই অংশ চালাতে নিচে দেওয়া SQL-এ থাকা দুটি নিরাপদ RPC একবার Supabase SQL Editor-এ চালাতে হবে।</div>
-    <button class="btn btn-secondary mb-2" onclick="loadAdminBiodata()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
+    <div class="alert alert-info">এখানে অপেক্ষমাণ এবং আগে অনুমোদিত—দুই ধরনের বায়োডাটা দেখা যাবে।</div>
+    <div class="admin-actions mb-2">
+      <button class="btn btn-small" onclick="loadAdminBiodata('pending')">অপেক্ষমাণ আবেদন</button>
+      <button class="btn btn-small btn-secondary" onclick="loadAdminBiodata('approved')">আগে অনুমোদিত বায়োডাটা</button>
+      <button class="btn btn-small btn-secondary" onclick="loadAdminBiodata()">রিফ্রেশ</button>
+    </div>
     <div id="adminBiodataList">লোড হচ্ছে...</div>
   </div>
 
@@ -156,10 +160,10 @@
     <div class="section-title"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</div>
     <div class="card">
       <h3 style="color:#0e4d64;margin-top:0">নতুন অ্যাডমিন যুক্ত করুন</h3>
-      <p class="text-muted">প্রথমে ব্যক্তির Auth অ্যাকাউন্ট তৈরি থাকতে হবে। এরপর তার Auth User ID (UUID) দিন।</p>
+      <p class="text-muted">সদস্যের নিবন্ধিত মোবাইল নম্বর অথবা বায়োডাটা নিবন্ধন নম্বর (বায়োডাটা কোড) লিখে সদস্যকে খুঁজুন। Auth User ID দেওয়ার প্রয়োজন নেই।</p>
       <div class="grid-2">
-        <div class="form-group"><label for="newAdminUserId">Auth User ID (UUID)</label><input id="newAdminUserId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
-        <div class="form-group" style="display:flex;align-items:end"><button class="btn" onclick="addAdminUser()"><i class="fas fa-user-plus"></i> অ্যাডমিন যুক্ত করুন</button></div>
+        <div class="form-group"><label for="newAdminIdentifier">সদস্যের মোবাইল নম্বর / বায়োডাটা কোড</label><input id="newAdminIdentifier" autocomplete="off" placeholder="যেমন: 01XXXXXXXXX অথবা BIO-0001"></div>
+        <div class="form-group" style="display:flex;align-items:end"><button class="btn" id="addAdminButton" onclick="addAdminUser()"><i class="fas fa-user-plus"></i> সদস্য খুঁজে Admin করুন</button></div>
       </div>
     </div>
     <button class="btn btn-secondary mb-2" onclick="loadAdminMatrix()"><i class="fas fa-rotate"></i> Permission Matrix রিফ্রেশ</button>
@@ -225,7 +229,7 @@ let currentProfile = null;
     await Promise.all([loadHome(), loadNotifications()]);
   } else {
     if (can('access_requests.view')) await loadAdminRequests();
-    if (can('biodata.verify')) await loadAdminBiodata();
+    if (can('biodata.verify')) await loadAdminBiodata('pending');
     if (currentRole === 'super_admin') await loadAdminMatrix();
     if (can('audit_logs.view')) await loadAuditLogs();
   }
@@ -242,7 +246,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
     if (btn.dataset.tab === 'admin-requests') await loadAdminRequests();
-    if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata();
+    if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata('pending');
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
   });
@@ -762,9 +766,7 @@ async function loadAdminRequests() {
   const el = document.getElementById('adminRequestsList');
   if (!can('access_requests.view')) { el.innerHTML = '<div class="alert alert-error">আবেদন দেখার অনুমতি নেই।</div>'; return; }
   el.innerHTML = 'লোড হচ্ছে...';
-  const {data, error} = await sb.from('access_requests')
-    .select('id,biodata_id,owner_user_id,requester_user_id,message,status,created_at,approved_at,expires_at,admin_note')
-    .order('created_at',{ascending:false}).limit(100);
+  const {data, error} = await sb.rpc('admin_list_access_requests');
   if (error) { el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`; return; }
   if (!data?.length) { el.innerHTML = '<div class="alert alert-info">কোনো আবেদন পাওয়া যায়নি।</div>'; return; }
 
@@ -826,24 +828,47 @@ async function extendAccessRequest(id) {
 }
 
 // ================= ADMIN: BIODATA REVIEW =================
-async function loadAdminBiodata() {
+async function loadAdminBiodata(status = 'pending') {
   const el = document.getElementById('adminBiodataList');
   if (!can('biodata.verify')) { el.innerHTML='<div class="alert alert-error">বায়োডাটা যাচাইয়ের অনুমতি নেই।</div>'; return; }
+  if (!['pending', 'approved'].includes(status)) status = 'pending';
   el.innerHTML='লোড হচ্ছে...';
-  const {data,error}=await sb.rpc('list_pending_biodata_for_review');
-  if(error){el.innerHTML=`<div class="alert alert-error">${RH.esc(error.message)}<br>প্রয়োজনীয় SQL এই উত্তরের নিচে দেওয়া আছে।</div>`;return;}
-  if(!data?.length){el.innerHTML='<div class="alert alert-info">যাচাইয়ের অপেক্ষায় কোনো বায়োডাটা নেই।</div>';return;}
-  el.innerHTML=data.map(b=>`<div class="card">
-    <strong>${RH.esc(b.biodata_code)}</strong> <span class="badge badge-pending">যাচাই অপেক্ষমাণ</span>
-    <div>${RH.esc(b.full_name)}</div>
-    <div class="muted-small">${RH.esc(b.applicant_type)} | ${RH.esc(b.current_division||'—')} | ${RH.esc(b.current_district||'—')} | ${RH.fmtDate(b.created_at)}</div>
-    <div class="admin-actions mt-1">
+  const {data,error}=await sb.rpc('admin_list_biodata_for_review',{p_status:status});
+  if(error){el.innerHTML=`<div class="alert alert-error">বায়োডাটা লোড হয়নি: ${RH.esc(error.message)}</div>`;return;}
+  if(!data?.length){
+    el.innerHTML=status==='pending'
+      ? '<div class="alert alert-info">যাচাইয়ের অপেক্ষায় কোনো বায়োডাটা নেই।</div>'
+      : '<div class="alert alert-info">আগে অনুমোদিত কোনো বায়োডাটা পাওয়া যায়নি।</div>';
+    return;
+  }
+  const showValue = value => {
+    if (value === null || value === undefined || value === '') return '—';
+    if (typeof value === 'object') return JSON.stringify(value, null, 2);
+    return String(value);
+  };
+  el.innerHTML=data.map(b=>{
+    const fd = b.form_data && typeof b.form_data === 'object' ? b.form_data : {};
+    const details = Object.entries(fd).map(([key,value]) =>
+      `<div class="preview-row"><div class="lbl">${RH.esc(key)}</div><div class="val" style="white-space:pre-wrap">${RH.esc(showValue(value))}</div></div>`
+    ).join('');
+    const badge = status === 'approved'
+      ? '<span class="badge badge-verified">অনুমোদিত</span>'
+      : '<span class="badge badge-pending">যাচাই অপেক্ষমাণ</span>';
+    const actions = status === 'pending' ? `<div class="admin-actions mt-1">
       <button class="btn btn-small" onclick="reviewBiodata('${b.id}','approved')">যাচাই করে অনুমোদন</button>
       <button class="btn btn-small btn-danger" onclick="reviewBiodata('${b.id}','rejected')">বাতিল</button>
-    </div>
-  </div>`).join('');
+    </div>` : '';
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <strong>${RH.esc(b.biodata_code||'কোড নেই')}</strong>${badge}
+      </div>
+      <div><strong>${RH.esc(b.full_name||'নাম পাওয়া যায়নি')}</strong></div>
+      <div class="muted-small">${RH.esc(b.applicant_type||'—')} | ${RH.esc(b.current_division||'—')} | ${RH.esc(b.current_district||'—')} | ${RH.fmtDate(b.created_at)}</div>
+      ${details ? `<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;color:#0e4d64">সম্পূর্ণ ফরমের তথ্য দেখুন</summary><div style="margin-top:8px">${details}</div></details>` : ''}
+      ${actions}
+    </div>`;
+  }).join('');
 }
-
 async function reviewBiodata(id,status) {
   if (!can('biodata.verify')) return RH.toast('অনুমতি নেই।',false);
   if (!['approved', 'rejected'].includes(status)) return RH.toast('অবৈধ স্ট্যাটাস।', false);
@@ -853,22 +878,40 @@ async function reviewBiodata(id,status) {
   if(error)return RH.toast('পর্যালোচনা ব্যর্থ: '+error.message,false);
   if(!data)return RH.toast('বায়োডাটা পরিবর্তন করা যায়নি।',false);
   RH.toast(status==='approved'?'বায়োডাটা যাচাই ও অনুমোদন হয়েছে।':'বায়োডাটা বাতিল হয়েছে।');
-  await loadAdminBiodata();
+  await loadAdminBiodata('pending');
 }
 
 // ================= SUPER ADMIN =================
 async function addAdminUser() {
   if(currentRole!=='super_admin')return RH.toast('শুধু Super Admin পারবেন।',false);
-  const input=document.getElementById('newAdminUserId'), id=input.value.trim();
-  const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  if(!uuid.test(id))return RH.toast('সঠিক Auth User UUID দিন।',false);
-  if(!confirm('এই ব্যবহারকারীকে সাধারণ Admin করবেন?'))return;
-  const {data,error}=await sb.rpc('add_admin_user',{p_user_id:id});
-  if(error)return RH.toast('অ্যাডমিন যুক্ত হয়নি: '+error.message,false);
-  if(!data)return RH.toast('অ্যাডমিন যুক্ত করা যায়নি।',false);
-  input.value='';RH.toast('অ্যাডমিন যুক্ত হয়েছে।');await loadAdminMatrix();
-}
+  const input=document.getElementById('newAdminIdentifier');
+  const identifier=(input?.value||'').trim();
+  if(!identifier)return RH.toast('সদস্যের মোবাইল নম্বর অথবা বায়োডাটা কোড লিখুন।',false);
 
+  const button=document.getElementById('addAdminButton');
+  if(button) button.disabled=true;
+  try {
+    const {data:members,error:lookupError}=await sb.rpc('admin_lookup_member_for_admin',{p_identifier:identifier});
+    if(lookupError)return RH.toast('সদস্য খুঁজে পাওয়া যায়নি: '+lookupError.message,false);
+    if(!members?.length)return RH.toast('এই মোবাইল নম্বর/বায়োডাটা কোডে কোনো সদস্য পাওয়া যায়নি।',false);
+    if(members.length>1)return RH.toast('একাধিক সদস্য পাওয়া গেছে। নির্দিষ্ট বায়োডাটা কোড ব্যবহার করুন।',false);
+
+    const member=members[0];
+    const details='নাম: '+(member.full_name||'নাম পাওয়া যায়নি')+
+      '\nমোবাইল: '+(member.phone||'পাওয়া যায়নি')+
+      '\nবায়োডাটা কোড: '+(member.biodata_code||'পাওয়া যায়নি');
+    if(!confirm(details+'\n\nএই সদস্যকে সাধারণ Admin হিসেবে যুক্ত করবেন?'))return;
+
+    const {data,error}=await sb.rpc('add_admin_user',{p_user_id:member.user_id});
+    if(error)return RH.toast('অ্যাডমিন যুক্ত হয়নি: '+error.message,false);
+    if(!data)return RH.toast('অ্যাডমিন যুক্ত করা যায়নি।',false);
+    input.value='';
+    RH.toast('অ্যাডমিন যুক্ত হয়েছে। এখন Permission Matrix থেকে পারমিশন দিন।');
+    await loadAdminMatrix();
+  } finally {
+    if(button) button.disabled=false;
+  }
+}
 async function loadAdminMatrix() {
   const el=document.getElementById('adminMatrix');
   if(currentRole!=='super_admin'){el.innerHTML='<div class="alert alert-error">শুধু Super Admin দেখতে পারবেন।</div>';return;}
