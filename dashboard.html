@@ -841,9 +841,11 @@ async function loadAdminRequests() {
       ${r.message ? `<p><strong>বার্তা:</strong> ${RH.esc(r.message)}</p>` : ''}
       ${r.admin_note ? `<p class="note">${RH.esc(r.admin_note)}</p>` : ''}
       <div class="muted-small">জমা: ${RH.fmtDate(r.created_at)} ${r.expires_at ? '| মেয়াদ: '+RH.fmtDate(r.expires_at):''}</div>
+      ${r.status === 'approved' && r.expires_at ? `<div class="countdown-wrap" data-expires="${r.expires_at}" style="margin-top:.5rem">${renderCountdown(r.expires_at)}</div>` : ''}
       <div class="admin-actions mt-1">${buttons || '<span class="muted-small">এখানে কোনো কার্যকর অনুমতি নেই।</span>'}</div>
     </div>`;
   }).join('');
+  startAllCountdowns();
 }
 
 async function approveAccessRequest(id) {
@@ -978,9 +980,11 @@ async function loadAdminViewPermissions() {
     const active=!p.revoked_at && new Date(p.expires_at)>new Date();
     return `<div class="card" style="padding:12px;margin:.6rem 0"><strong>${RH.esc(p.viewer_code)} (${RH.esc(p.viewer_name||'')})</strong> → <strong>${RH.esc(p.target_code)} (${RH.esc(p.target_name||'')})</strong>
       <div class="muted-small">মেয়াদ: ${RH.fmtDate(p.expires_at)} | ${active?'সক্রিয়':p.revoked_at?'বাতিল':'মেয়াদ শেষ'}</div>
+      ${active && p.expires_at ? `<div class="countdown-wrap" data-expires="${p.expires_at}" style="margin-top:.5rem">${renderCountdown(p.expires_at)}</div>` : ''}
       ${!p.revoked_at?`<div class="admin-actions mt-1"><button class="btn btn-small btn-warning" onclick="extendBiodataView('${p.id}')">${active?'আরও সময় দিন':'আবার অনুমতি দিন'}</button><button class="btn btn-small btn-danger" onclick="revokeBiodataView('${p.id}')">অনুমতি বাতিল</button></div>`:''}
     </div>`;
   }).join('');
+  startAllCountdowns();
 }
 async function extendBiodataView(id) {
   const raw=prompt('আর কত ঘণ্টার জন্য নতুন করে অনুমতি দেবেন? (১–২৪)','24');if(raw===null)return;
