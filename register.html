@@ -439,45 +439,77 @@ async function initGeoSelect() {
   const divisionField = document.getElementById('divisionField');
   let geoRows = [];
 
-  // Full Bangladesh hierarchy: 8 divisions, 64 districts, upazilas and unions.
-  // Source dataset is MIT licensed; browser caches it after the first successful load.
-  try {
-    const response = await fetch(
-      'https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json',
-      { cache: 'force-cache' }
-    );
-    if (!response.ok) throw new Error('লোকেশন ডেটা লোড হয়নি');
-    const tree = await response.json();
+  // পূর্ণ বাংলাদেশ প্রশাসনিক ডেটা: ৮ বিভাগ, ৬৪ জেলা ও উপজেলা।
+  // GitHub Pages ব্যর্থ হলে একই ডেটার Raw GitHub mirror চেষ্টা করা হবে।
+  const dataUrls = [
+    'https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json',
+    'https://raw.githubusercontent.com/iqbalhasandev/bangladesh-geo-json/main/bangladesh-geo.json'
+  ];
+  tSel.innerHTML = '<option value="">অপেক্ষা করুন—বাংলাদেশের থানা/উপজেলার তালিকা লোড হচ্ছে...</option>';
+  tSel.disabled = true;
 
-    tree.forEach(div => {
-      (div.districts || []).forEach(dist => {
-        (dist.upazilas || []).forEach(upz => {
-          geoRows.push({
-            division: div.bn_name || div.name,
-            district: dist.bn_name || dist.name,
-            thana: upz.bn_name || upz.name,
-            unions: (upz.unions || []).map(u => u.bn_name || u.name).filter(Boolean)
+  let loadError = null;
+  for (const url of dataUrls) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      const response = await fetch(url, { cache: 'no-cache', signal: controller.signal });
+      clearTimeout(timeout);
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const tree = await response.json();
+      if (!Array.isArray(tree)) throw new Error('ডেটার ফরম্যাট সঠিক নয়');
+
+      const rows = [];
+      tree.forEach(div => {
+        (div.districts || []).forEach(dist => {
+          (dist.upazilas || []).forEach(upz => {
+            const division = div.bn_name || div.name || '';
+            const district = dist.bn_name || dist.name || '';
+            const thana = upz.bn_name || upz.name || '';
+            if (!division || !district || !thana) return;
+            rows.push({
+              division,
+              district,
+              thana,
+              unions: (upz.unions || []).map(u => u.bn_name || u.name).filter(Boolean)
+            });
           });
         });
       });
-    });
-    if (!geoRows.length) throw new Error('লোকেশন ডেটা খালি');
-  } catch (err) {
-    console.warn('Full Bangladesh location dataset unavailable; using built-in fallback.', err);
-    Object.entries(BD_GEO).forEach(([division, districts]) => {
-      Object.entries(districts).forEach(([district, thanas]) => {
-        thanas.forEach(thana => geoRows.push({
-          division, district, thana, unions: []
-        }));
-      });
-    });
+
+      const districtCount = new Set(rows.map(r => r.district)).size;
+      const divisionCount = new Set(rows.map(r => r.division)).size;
+      // আংশিক/অসম্পূর্ণ ডেটা দিয়ে ফরম চালু করা হবে না।
+      if (divisionCount < 8 || districtCount < 60 || rows.length < 450) {
+        throw new Error('অসম্পূর্ণ লোকেশন ডেটা: ' + divisionCount + ' বিভাগ, ' + districtCount + ' জেলা, ' + rows.length + ' উপজেলা পাওয়া গেছে');
+      }
+      geoRows = rows;
+      loadError = null;
+      break;
+    } catch (err) {
+      loadError = err;
+      console.warn('লোকেশন ডেটা সোর্স লোড হয়নি:', url, err);
+    }
+  }
+
+  if (!geoRows.length) {
+    tSel.innerHTML = '<option value="">লোকেশন তালিকা লোড হয়নি—পেজ রিফ্রেশ করুন</option>';
+    tSel.disabled = true;
+    const note = document.createElement('div');
+    note.className = 'alert alert-error';
+    note.id = 'geoLoadError';
+    note.textContent = 'বাংলাদেশের থানা/উপজেলার তালিকা ইন্টারনেট থেকে লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে পেজ রিফ্রেশ করুন।';
+    tSel.parentElement.appendChild(note);
+    console.error('সম্পূর্ণ বাংলাদেশ লোকেশন ডেটা পাওয়া যায়নি:', loadError);
+    return;
   }
 
   geoRows.sort((a, b) => a.thana.localeCompare(b.thana, 'bn'));
   tSel.innerHTML = '<option value="">-- থানা / উপজেলা নির্বাচন করুন --</option>' +
     geoRows.map((r, i) =>
-      `<option value="${r.thana.replace(/"/g, '&quot;')}" data-index="${i}">${r.thana} — ${r.district}</option>`
+      `<option value="${r.thana.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" data-index="${i}">${r.thana} — ${r.district}</option>`
     ).join('');
+  tSel.disabled = false;
 
   tSel.addEventListener('change', () => {
     const row = geoRows[Number(tSel.selectedOptions[0]?.dataset.index)];
@@ -491,7 +523,7 @@ async function initGeoSelect() {
 
     const unions = row.unions || [];
     uSel.innerHTML = '<option value="">-- ইউনিয়ন / পৌরসভা নির্বাচন করুন --</option>' +
-      unions.map(name => `<option value="${name.replace(/"/g, '&quot;')}">${name}</option>`).join('') +
+      unions.map(name => `<option value="${name.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">${name}</option>`).join('') +
       '<option value="অন্যান্য">অন্যান্য / তালিকায় নেই</option>';
   });
 }
