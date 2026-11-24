@@ -37,15 +37,15 @@
 <script>
 const $ = id => document.getElementById(id);
 const labels = {
- fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',telegram:'Telegram',currentThana:'থানা / উপজেলা',currentDistrict:'বর্তমান জেলা',currentDivision:'বিভাগ',permanentDistrict:'স্থায়ী জেলা',guardianName:'অভিভাবকের নাম',guardianRelation:'সম্পর্ক',guardianPhone:'অভিভাবকের নম্বর',height:'উচ্চতা',weight:'ওজন',complexion:'গায়ের রং',physicalProblem:'শারীরিক সমস্যা',physicalProblemDetail:'সমস্যার বিবরণ',fatherName:'পিতার নাম',fatherJob:'পিতার পেশা',motherName:'মাতার নাম',motherJob:'মাতার পেশা',brothers:'ভাই',sisters:'বোন',salah:'৫ ওয়াক্ত সালাত',parda:'পর্দা / দাড়ি',mahram:'মাহরাম',avoidHaram:'হারাম বর্জন',ownDeeniDetail:'নিজের দ্বীনী অবস্থা',mazhab:'মাযহাব',educationType:'শিক্ষার ধরন',educationDetail:'শিক্ষাগত বিবরণ',economicStatus:'অর্থনৈতিক অবস্থা',incomeSource:'আয়ের উৎস',groomMaritalStatus:'পাত্রের বৈবাহিক অবস্থা',brideMaritalStatus:'পাত্রীর বৈবাহিক অবস্থা',prefAge:'প্রত্যাশিত বয়স',prefHeight:'প্রত্যাশিত উচ্চতা',prefArea:'পছন্দের এলাকা',prefEducation:'প্রত্যাশিত শিক্ষা',extraRequirements:'অতিরিক্ত চাহিদা'
+ fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',telegram:'Telegram',currentThana:'থানা / উপজেলা',currentDistrict:'জেলা',currentDivision:'বিভাগ',currentVillage:'গ্রাম / মহল্লা',currentPostOffice:'ডাকঘর',currentUnion:'ইউনিয়ন / পৌরসভা',currentWard:'ওয়ার্ড নং',permanentDistrict:'স্থায়ী জেলা',guardianName:'অভিভাবকের নাম',guardianRelation:'সম্পর্ক',guardianPhone:'অভিভাবকের নম্বর',height:'উচ্চতা',weight:'ওজন',complexion:'গায়ের রং',physicalProblem:'শারীরিক সমস্যা',physicalProblemDetail:'সমস্যার বিবরণ',fatherName:'পিতার নাম',fatherJob:'পিতার পেশা',motherName:'মাতার নাম',motherJob:'মাতার পেশা',brothers:'ভাই',sisters:'বোন',salah:'৫ ওয়াক্ত সালাত',parda:'পর্দা / দাড়ি',mahram:'মাহরাম',avoidHaram:'হারাম বর্জন',ownDeeniDetail:'নিজের দ্বীনী অবস্থা',mazhab:'মাযহাব',educationType:'শিক্ষার ধরন',educationQualifications:'নির্বাচিত শিক্ষাগত যোগ্যতা',educationDetail:'অতিরিক্ত শিক্ষাগত বিবরণ',economicStatus:'অর্থনৈতিক অবস্থা',incomeSource:'আয়ের উৎস',groomMaritalStatus:'পাত্রের বৈবাহিক অবস্থা',brideMaritalStatus:'পাত্রীর বৈবাহিক অবস্থা',prefAge:'প্রত্যাশিত বয়স',prefHeight:'প্রত্যাশিত উচ্চতা',prefArea:'পছন্দের এলাকা',prefEducation:'প্রত্যাশিত শিক্ষা',extraRequirements:'অতিরিক্ত চাহিদা'
 };
 const groups = [
  {title:'ব্যক্তিগত পরিচিতি ও যোগাযোগ',keys:['dob','mobile','whatsapp','telegram','nid']},
- {title:'ঠিকানা ও অভিভাবক',keys:['currentThana','currentDistrict','currentDivision','permanentDistrict','guardianName','guardianRelation','guardianPhone']},
+ {title:'ঠিকানা ও অভিভাবক',keys:['currentVillage','currentPostOffice','currentUnion','currentWard','currentThana','currentDistrict','currentDivision','permanentDistrict','guardianName','guardianRelation','guardianPhone']},
  {title:'শারীরিক তথ্য',keys:['height','weight','complexion','physicalProblem','physicalProblemDetail']},
  {title:'পারিবারিক তথ্য',keys:['fatherName','fatherJob','motherName','motherJob','brothers','sisters']},
  {title:'দ্বীনী অবস্থা',keys:['salah','parda','mahram','avoidHaram','ownDeeniDetail','mazhab']},
- {title:'শিক্ষা ও অর্থনৈতিক অবস্থা',keys:['educationType','educationDetail','economicStatus','incomeSource']},
+ {title:'শিক্ষা ও অর্থনৈতিক অবস্থা',keys:['educationType','educationQualifications','educationDetail','economicStatus','incomeSource']},
  {title:'বৈবাহিক অবস্থা ও জীবনসঙ্গীর চাহিদা',keys:['groomMaritalStatus','brideMaritalStatus','prefAge','prefHeight','prefArea','prefEducation','extraRequirements']}
 ];
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
