@@ -140,7 +140,7 @@ textarea{min-height:80px;resize:vertical}
     <div class="section-title"><i class="fas fa-user-circle"></i> ২. ব্যক্তিগত পরিচিতি</div>
     <div class="card grid-2">
       
-      <div class="form-group"><label>জন্ম তারিখ (দিন-মাস-সাল) <span class="required-star">*</span></label><input type="text" name="dob" id="dobInput" required inputmode="numeric" maxlength="10" placeholder="দিন-মাস-সাল (যেমন ২৫-০৮-২০০০)" oninput="formatDobInput(this); calculateAge()"><div class="note">দিন, মাস ও সাল লিখুন; মাঝখানের (-) দাগ স্বয়ংক্রিয়ভাবে বসবে।</div></div>
+      <div class="form-group"><label>জন্ম তারিখ (দিন/মাস/সাল) <span class="required-star">*</span></label><input type="text" name="dob" id="dobInput" required inputmode="numeric" maxlength="10" placeholder="দিন/মাস/সাল (যেমন ২৫/০৮/২০০০)" oninput="formatDobInput(this); calculateAge()"><div class="note">দিন, মাস ও সাল লিখুন; মাঝখানে (/) চিহ্ন স্বয়ংক্রিয়ভাবে বসবে।</div></div>
       <div class="form-group"><label>বয়স (স্বয়ংক্রিয়)</label><input type="text" id="ageField" readonly placeholder="স্বয়ংক্রিয়"></div>
       <div class="form-group"><label>NID <span class="optional">ঐচ্ছিক</span></label><input type="text" name="nid"></div>
       
@@ -587,12 +587,12 @@ function bnToEnDigits(value) {
 }
 function formatDobInput(input) {
   let digits = bnToEnDigits(input.value).replace(/\D/g, '').slice(0, 8);
-  if (digits.length > 4) digits = digits.slice(0,2) + '-' + digits.slice(2,4) + '-' + digits.slice(4);
-  else if (digits.length > 2) digits = digits.slice(0,2) + '-' + digits.slice(2);
+  if (digits.length > 4) digits = digits.slice(0,2) + '/' + digits.slice(2,4) + '/' + digits.slice(4);
+  else if (digits.length > 2) digits = digits.slice(0,2) + '/' + digits.slice(2);
   input.value = digits;
 }
 function dobISO(value) {
-  const m = bnToEnDigits(value).match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  const m = bnToEnDigits(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
   if (!m) return '';
   const day=+m[1], month=+m[2], year=+m[3];
   const d=new Date(Date.UTC(year,month-1,day));
