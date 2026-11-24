@@ -6,7 +6,7 @@
     <meta name="description" content="রফিকে হায়াত — শরীয়তসম্মত বিবাহের উদ্দেশ্যে নিরাপদ বায়োডাটা জমা দেওয়ার প্ল্যাটফর্ম।">
     <title>রফিকে হায়াত | বিবাহ সেবা</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #146b53;
@@ -35,7 +35,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Noto Sans Bengali', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Segoe UI', Tahoma, sans-serif;
         }
 
         html {
@@ -793,6 +793,12 @@
 @media(max-width:900px){.home-grid{grid-template-columns:1fr}.notice-sidebar{position:static}.notice-scroll{height:180px}}
 @media(prefers-reduced-motion:reduce){.notice-ticker-track span,.notice-scroll-inner{animation:none}.notice-scroll{overflow:auto}}
 
+
+/* হেডার মেনু: পরিষ্কার টাইপোগ্রাফি, কোনো আন্ডারলাইন নয় */
+.site-topnav nav a,.site-topnav nav a:hover,.site-topnav nav a:focus,.site-topnav nav a:visited{ text-decoration:none!important;border-bottom:0!important;box-shadow:none!important }
+.site-topnav nav a::before,.site-topnav nav a::after{display:none!important;content:none!important}
+.site-topnav nav a{font-family:'Hind Siliguri','Noto Sans Bengali',sans-serif;font-weight:600;letter-spacing:.05px}
+
 </style>
 </head>
 <body>
@@ -928,9 +934,31 @@
         function closeNoticeArchive(){document.getElementById('noticeArchive').style.display='none';}
         function escapeNoticeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
         function safeNoticeUrl(s){try{const u=new URL(s,location.href);return ['http:','https:'].includes(u.protocol)?u.href:'#';}catch(e){return '#';}}
-        async function loadPublicNoticeContent(){if(typeof sb === 'undefined')return;try{const now=new Date().toISOString();const [nr,lr]=await Promise.all([sb.from('site_notices').select('id,title,body,link_url,link_label,notice_type,published_at,is_pinned,expires_at').eq('is_published',true).or(`expires_at.is.null,expires_at.gt.${now}`).order('is_pinned',{ascending:false}).order('published_at',{ascending:false}).limit(40),sb.from('site_links').select('id,title,url,sort_order').eq('is_active',true).order('sort_order',{ascending:true}).limit(20)]);if(nr.error)throw nr.error;publicNotices=nr.data||[];const ticker=document.getElementById('noticeTickerText');ticker.textContent=publicNotices.length?publicNotices.slice(0,8).map(n=>`${n.notice_type==='urgent'?'জরুরি: ':''}${n.title} — ${n.body||''}`).join('  •  '):'এই মুহূর্তে কোনো নতুন নোটিশ নেই।';const side=document.getElementById('sidebarNotices');side.innerHTML=publicNotices.length?publicNotices.map(n=>{const fresh=n.published_at&&(Date.now()-new Date(n.published_at).getTime())<=7*86400000;return `<article class="side-notice ${n.notice_type==='urgent'?'urgent':n.notice_type==='important'?'important':''}"><strong>${escapeNoticeHtml(n.title)}</strong>${fresh?'<span class="new-tag">নতুন</span>':''}<div>${escapeNoticeHtml((n.body||'').slice(0,150))}${(n.body||'').length>150?'…':''}</div><small>${safeNoticeDate(n.published_at)}</small></article>`}).join(''):'<div class="side-notice">এখনো কোনো নোটিশ প্রকাশিত হয়নি।</div>';const links=document.getElementById('importantLinks');links.innerHTML=lr.data?.length?lr.data.map(l=>`<a href="${safeNoticeUrl(l.url)}" target="_blank" rel="noopener">${escapeNoticeHtml(l.title)} <i class="fas fa-external-link-alt"></i></a>`).join(''):'<a href="https://www.supremecourt.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ সুপ্রিম কোর্ট</a><a href="https://www.bangladesh.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ জাতীয় তথ্য বাতায়ন</a>'; }catch(err){console.warn('Notice content load:',err.message);document.getElementById('noticeTickerText').textContent='নোটিশ সাময়িকভাবে লোড করা যাচ্ছে না।';}}
+        async function loadPublicNoticeContent(){
+            const client = (typeof sb !== 'undefined' && sb) ? sb : (window.sb || window.supabaseClient || null);
+            const ticker=document.getElementById('noticeTickerText');
+            const side=document.getElementById('sidebarNotices');
+            const links=document.getElementById('importantLinks');
+            if(!client){ticker.textContent='নোটিশ লোড করা যাচ্ছে না: Supabase কনফিগারেশন পাওয়া যায়নি।';console.error('Supabase client is not available. Check config.js');return;}
+            try{
+                const now=new Date().toISOString();
+                const [nr,lr]=await Promise.all([
+                    client.from('site_notices').select('id,title,body,link_url,link_label,notice_type,published_at,is_pinned,expires_at').eq('is_published',true).or(`expires_at.is.null,expires_at.gt.${now}`).order('is_pinned',{ascending:false}).order('published_at',{ascending:false}).limit(40),
+                    client.from('site_links').select('id,title,url,sort_order').eq('is_active',true).order('sort_order',{ascending:true}).limit(20)
+                ]);
+                if(nr.error) throw nr.error;
+                publicNotices=nr.data||[];
+                ticker.textContent=publicNotices.length?publicNotices.slice(0,8).map(n=>`${n.notice_type==='urgent'?'জরুরি: ':n.notice_type==='important'?'গুরুত্বপূর্ণ: ':''}${n.title} — ${n.body||''}`).join('  •  '):'এই মুহূর্তে কোনো প্রকাশিত নোটিশ নেই।';
+                side.innerHTML=publicNotices.length?publicNotices.map(n=>{const fresh=n.published_at&&(Date.now()-new Date(n.published_at).getTime())<=7*86400000;return `<article class="side-notice ${n.notice_type==='urgent'?'urgent':n.notice_type==='important'?'important':''}"><strong>${escapeNoticeHtml(n.title)}</strong>${fresh?'<span class="new-tag">নতুন</span>':''}<div>${escapeNoticeHtml((n.body||'').slice(0,150))}${(n.body||'').length>150?'…':''}</div><small>${safeNoticeDate(n.published_at)}</small>${n.link_url?`<div><a href="${safeNoticeUrl(n.link_url)}" target="_blank" rel="noopener">${escapeNoticeHtml(n.link_label||'বিস্তারিত')}</a></div>`:''}</article>`}).join(''):'<div class="side-notice">এখনো কোনো নোটিশ প্রকাশিত হয়নি।</div>';
+                if(lr.error){console.warn('Important links load:',lr.error.message);}
+                links.innerHTML=lr.data?.length?lr.data.map(l=>`<a href="${safeNoticeUrl(l.url)}" target="_blank" rel="noopener">${escapeNoticeHtml(l.title)} <i class="fas fa-external-link-alt"></i></a>`).join(''):'<a href="https://www.supremecourt.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ সুপ্রিম কোর্ট</a><a href="https://www.bangladesh.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ জাতীয় তথ্য বাতায়ন</a>';
+            }catch(err){console.error('Public notice load failed:',err);ticker.textContent='নোটিশ লোড করা যায়নি। Supabase-এর site_notices public SELECT policy ও config.js পরীক্ষা করুন।';side.innerHTML='<div class="side-notice">নোটিশ সাময়িকভাবে পাওয়া যাচ্ছে না।</div>';}
+        }
+
         document.getElementById('footerYear').textContent = new Date().getFullYear();
         loadPublicNoticeContent();
+        document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadPublicNoticeContent();});
+        window.addEventListener("focus",loadPublicNoticeContent);
 
         // স্ক্রল প্রোগ্রেস ও ব্যাক-টু-টপ বাটন কন্ট্রোল
         const scrollProgress = document.getElementById('scrollProgress');
