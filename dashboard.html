@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ড্যাশবোর্ড | রফিকে হায়াত</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
 
 /* ===== রফিকে হায়াত: এমবেডেড কমন CSS (এই HTML ফাইলের ভেতরেই) ===== */
 :root{--primary:#0e4d64;--green:#1e7e5e;--ink:#1e2b3a;--muted:#587487;--line:#dce7ef;--soft:#f2f7fa;--danger:#b42318;--shadow:0 14px 36px rgba(12,45,62,.09)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;padding:20px;background:#f2f5f9;color:var(--ink);font-family:'Noto Sans Bengali','Segoe UI',Tahoma,sans-serif;line-height:1.65}a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}button,input,select,textarea{font:inherit}button{cursor:pointer} .container{width:min(100%,1100px);margin:0 auto;background:#fff;border:1px solid #e3ebf1;border-radius:20px;padding:clamp(16px,3vw,30px);box-shadow:var(--shadow)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;padding:20px;background:#f2f5f9;color:var(--ink);font-family:'Hind Siliguri','Noto Sans Bengali','Segoe UI',Tahoma,sans-serif;line-height:1.65}a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}button,input,select,textarea{font:inherit}button{cursor:pointer} .container{width:min(100%,1100px);margin:0 auto;background:#fff;border:1px solid #e3ebf1;border-radius:20px;padding:clamp(16px,3vw,30px);box-shadow:var(--shadow)}
 .card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:clamp(14px,2.5vw,22px);margin:0 0 18px;box-shadow:0 5px 18px rgba(15,55,75,.045)}.text-center{text-align:center}.hidden{display:none!important}.mb-2{margin-bottom:1rem}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.section-title{font-size:1.15rem;font-weight:700;color:var(--primary);margin:1.2rem 0 .7rem}
 .form-group{margin-bottom:1rem}.form-group label,label{display:block;font-weight:600;color:#244b5d;margin-bottom:.4rem}input:not([type=checkbox]):not([type=radio]),select,textarea{display:block;width:100%;min-height:44px;border:1px solid #cbd9e3;border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(30,126,94,.12)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;background:var(--green);color:#fff;padding:11px 17px;font-weight:700;transition:transform .15s,background .15s,box-shadow .15s;text-decoration:none}.btn:hover{background:#17694e;transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,126,94,.18);text-decoration:none}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}.btn-secondary{background:#eaf1f5;color:var(--primary)}.btn-secondary:hover{background:#dce9ef}.btn-block{width:100%}
@@ -84,11 +84,33 @@
 
 .notice-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:760px){.notice-admin-grid{grid-template-columns:1fr}}
 
+
+/* ===== প্রফেশনাল সাইডবার ড্যাশবোর্ড ===== */
+body{padding:0;background:#f3f7f6;font-family:'Hind Siliguri','Noto Sans Bengali',sans-serif}
+.container{width:100%;max-width:none;min-height:100vh;margin:0;padding:24px 30px 40px 300px;border:0;border-radius:0;background:transparent;box-shadow:none}
+.header-bar{margin:0 0 22px;padding:12px 0 18px;border-bottom:1px solid #dce8e2;gap:12px}
+.header-bar h1{font-size:clamp(1.35rem,2.4vw,1.9rem);font-weight:700;letter-spacing:-.3px}
+.tabs{position:fixed;z-index:1200;left:0;top:0;bottom:0;width:270px;overflow-y:auto;display:flex;flex-direction:column;align-items:stretch;gap:7px;margin:0;padding:22px 15px 26px;background:linear-gradient(180deg,#0b493d,#0e604a 65%,#124f43);border:0;border-radius:0;box-shadow:8px 0 28px rgba(13,65,52,.12)}
+.sidebar-brand{display:flex;align-items:center;gap:11px;color:#fff;padding:7px 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18)}
+.sidebar-brand .brand-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.14);color:#f4d58d;font-size:1.25rem}
+.sidebar-brand strong{display:block;font-size:1rem;line-height:1.35}.sidebar-brand small{display:block;color:#c4ddd2;font-size:.76rem;margin-top:2px}
+.tab-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:transparent;color:#d9ebe3;border:1px solid transparent;border-radius:11px;padding:12px 13px;font-family:inherit;font-size:.96rem;font-weight:600;transition:background .18s,color .18s,transform .18s}
+.tab-btn i{width:20px;text-align:center;font-size:1rem;color:#c6dfd3}.tab-btn:hover{background:rgba(255,255,255,.10);color:#fff;transform:translateX(2px)}.tab-btn.active{background:#fff;color:#105640;box-shadow:0 5px 16px rgba(0,0,0,.12)}.tab-btn.active i{color:#b1842c}
+.tab-panel{display:none;max-width:1240px;margin:0 auto}.tab-panel.active{display:block;animation:panelIn .22s ease}@keyframes panelIn{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{box-shadow:0 7px 22px rgba(19,68,53,.045);border-color:#e2ece6}.section-title{font-size:1.2rem;font-weight:700;color:#145a45}
+.dashboard-menu-toggle{display:none;border:0;border-radius:10px;padding:10px 12px;background:#145a45;color:#fff;font-size:1rem}
+.sidebar-backdrop{display:none}
+.header-bar a,.header-bar a:hover{text-decoration:none!important}
+@media(max-width:850px){.container{padding:18px 16px 32px}.header-bar{margin-left:0}.dashboard-menu-toggle{display:inline-flex;align-items:center;gap:8px}.tabs{width:min(82vw,290px);transform:translateX(-105%);transition:transform .25s ease;box-shadow:12px 0 35px rgba(0,0,0,.18)}body.sidebar-open .tabs{transform:translateX(0)}.sidebar-backdrop{display:block;position:fixed;inset:0;z-index:1100;background:rgba(8,28,23,.48);opacity:0;pointer-events:none;transition:opacity .2s}body.sidebar-open .sidebar-backdrop{opacity:1;pointer-events:auto}}
+@media(min-width:851px){.container{padding-left:300px}}
+@media(max-width:520px){.header-bar{align-items:center}.header-bar h1{font-size:1.2rem}.header-bar #userInfo{width:100%;order:4}.header-bar .btn{font-size:.82rem;padding:8px 10px}}
+
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header-bar">
+    <button class="dashboard-menu-toggle" type="button" onclick="toggleDashboardSidebar()" aria-label="মেনু খুলুন"><i class="fas fa-bars"></i> মেনু</button>
     <h1 id="dashboardHeading"><i class="fas fa-user-circle"></i> আমার ড্যাশবোর্ড</h1>
     <a class="btn btn-secondary" href="index.html" style="padding:.5rem 1rem;font-size:.9rem;text-decoration:none">
       <i class="fas fa-home"></i> মূল পেজ
@@ -101,7 +123,9 @@
     </div>
   </div>
 
-  <div class="tabs">
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeDashboardSidebar()"></div>
+  <div class="tabs" id="dashboardSidebar">
+    <div class="sidebar-brand"><span class="brand-icon"><i class="fas fa-mosque"></i></span><div><strong>জান্নাতের পথে</strong><small>সদস্য ও প্রশাসন প্যানেল</small></div></div>
     <button class="tab-btn active role-member" data-tab="home"><i class="fas fa-home"></i> হোম</button>
     <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
     <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
@@ -228,7 +252,7 @@
       <div class="form-group"><label>বিস্তারিত</label><textarea id="noticeBody" maxlength="5000" placeholder="নোটিশের বিস্তারিত লিখুন"></textarea></div>
       <div class="grid-2"><div class="form-group"><label>ধরন</label><select id="noticeType"><option value="normal">সাধারণ</option><option value="important">গুরুত্বপূর্ণ</option><option value="urgent">জরুরি</option></select></div><div class="form-group"><label>মেয়াদ শেষ (ঐচ্ছিক)</label><input id="noticeExpires" type="datetime-local"></div></div>
       <div class="form-group"><label>বিস্তারিত লিংক URL (ঐচ্ছিক)</label><input id="noticeUrl" type="url" placeholder="https://..."></div><div class="form-group"><label>লিংকের লেখা</label><input id="noticeLinkLabel" placeholder="বিস্তারিত পড়ুন"></div>
-      <div class="grid-2"><label><input id="noticePinned" type="checkbox"> উপরে পিন করুন</label><label><input id="noticePublish" type="checkbox"> এখনই প্রকাশ করুন</label></div>
+      <div class="grid-2"><label><input id="noticePinned" type="checkbox"> উপরে পিন করুন</label><label><input id="noticePublish" type="checkbox" checked> সংরক্ষণের সঙ্গে প্রকাশ করুন</label></div>
       <div class="admin-actions mt-2"><button class="btn" onclick="saveSiteNotice()">সংরক্ষণ করুন</button><button class="btn btn-secondary" onclick="resetNoticeForm()">ফর্ম পরিষ্কার</button></div>
     </div><div class="card"><h3 style="margin-top:0;color:#0e4d64">গুরুত্বপূর্ণ ওয়েবসাইট লিংক</h3><input type="hidden" id="siteLinkEditId"><div class="form-group"><label>লিংকের নাম</label><input id="siteLinkTitle" placeholder="যেমন: জাতীয় তথ্য বাতায়ন"></div><div class="form-group"><label>URL</label><input id="siteLinkUrl" type="url" placeholder="https://..."></div><div class="grid-2"><div class="form-group"><label>ক্রম</label><input id="siteLinkOrder" type="number" value="10"></div><label><input id="siteLinkActive" type="checkbox" checked> সক্রিয়</label></div><div class="admin-actions"><button class="btn" onclick="saveSiteLink()">লিংক সংরক্ষণ</button><button class="btn btn-secondary" onclick="resetSiteLinkForm()">পরিষ্কার</button></div><div id="siteLinksAdmin" class="mt-2"></div></div></div>
     <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><h3 style="margin:0;color:#0e4d64">প্রকাশিত ও পুরোনো নোটিশ</h3><button class="btn btn-secondary btn-small" onclick="loadSiteContentAdmin()">রিফ্রেশ</button></div><div id="siteNoticesAdmin" class="mt-2">লোড হচ্ছে...</div></div>
@@ -300,12 +324,16 @@ let currentProfile = null;
   }
 })();
 
+function toggleDashboardSidebar(){document.body.classList.toggle('sidebar-open');}
+function closeDashboardSidebar(){document.body.classList.remove('sidebar-open');}
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    closeDashboardSidebar();
 
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
@@ -840,7 +868,7 @@ function applyRoleUI() {
 
 // ================= SUPER ADMIN: SITE NOTICES & LINKS =================
 function requireSuperAdmin(){if(currentRole!=='super_admin'){RH.toast('শুধু সুপার অ্যাডমিন এই কাজ করতে পারবেন।',false);return false;}return true;}
-function resetNoticeForm(){['noticeEditId','noticeTitle','noticeBody','noticeExpires','noticeUrl','noticeLinkLabel'].forEach(id=>document.getElementById(id).value='');document.getElementById('noticeType').value='normal';document.getElementById('noticePinned').checked=false;document.getElementById('noticePublish').checked=false;}
+function resetNoticeForm(){['noticeEditId','noticeTitle','noticeBody','noticeExpires','noticeUrl','noticeLinkLabel'].forEach(id=>document.getElementById(id).value='');document.getElementById('noticeType').value='normal';document.getElementById('noticePinned').checked=false;document.getElementById('noticePublish').checked=true;}
 async function loadSiteContentAdmin(){if(!requireSuperAdmin())return;const el=document.getElementById('siteNoticesAdmin');el.textContent='লোড হচ্ছে...';const [n,l]=await Promise.all([sb.from('site_notices').select('*').order('created_at',{ascending:false}).limit(100),sb.from('site_links').select('*').order('sort_order',{ascending:true})]);if(n.error){el.innerHTML=`<div class="alert alert-error">নোটিশ টেবিল পাওয়া যায়নি: ${RH.esc(n.error.message)}<br>আগে Supabase SQL চালান।</div>`;return;}el.innerHTML=n.data?.length?n.data.map(x=>`<div class="card" style="padding:12px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong>${RH.esc(x.title)}</strong><span class="badge ${x.is_published?'badge-verified':'badge-pending'}">${x.is_published?'প্রকাশিত':'খসড়া'}</span></div><div class="muted-small">${RH.esc(x.notice_type)} · ${x.is_pinned?'পিন করা':'সাধারণ'} · ${x.published_at?RH.fmtDate(x.published_at):'প্রকাশ হয়নি'}</div><p>${RH.esc(x.body||'')}</p><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteNotice('${x.id}')">সম্পাদনা</button><button class="btn btn-small" onclick="toggleSiteNotice('${x.id}',${!x.is_published})">${x.is_published?'আনপাবলিশ':'প্রকাশ'}</button><button class="btn btn-small btn-danger" onclick="deleteSiteNotice('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="alert alert-info">এখনো কোনো নোটিশ তৈরি হয়নি।</div>';const le=document.getElementById('siteLinksAdmin');if(l.error){le.innerHTML=`<div class="alert alert-error">লিংক লোড হয়নি: ${RH.esc(l.error.message)}</div>`;return;}le.innerHTML=l.data?.length?l.data.map(x=>`<div class="perm-row"><div><strong>${RH.esc(x.title)}</strong><div class="muted-small">${RH.esc(x.url)} · ${x.is_active?'সক্রিয়':'বন্ধ'}</div></div><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteLink('${x.id}')">সম্পাদনা</button><button class="btn btn-small btn-danger" onclick="deleteSiteLink('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="muted-small">কোনো লিংক নেই।</div>';window.siteNoticesCache=n.data||[];window.siteLinksCache=l.data||[];}
 async function saveSiteNotice(){if(!requireSuperAdmin())return;const title=document.getElementById('noticeTitle').value.trim(),body=document.getElementById('noticeBody').value.trim(),id=document.getElementById('noticeEditId').value;if(!title||!body)return RH.toast('শিরোনাম ও বিস্তারিত লিখুন।',false);const url=document.getElementById('noticeUrl').value.trim();if(url&&!/^https?:\/\//i.test(url))return RH.toast('লিংক অবশ্যই http:// অথবা https:// দিয়ে শুরু হবে।',false);const pub=document.getElementById('noticePublish').checked;const row={title,body,link_url:url||null,link_label:document.getElementById('noticeLinkLabel').value.trim()||null,notice_type:document.getElementById('noticeType').value,is_pinned:document.getElementById('noticePinned').checked,is_published:pub,expires_at:document.getElementById('noticeExpires').value?new Date(document.getElementById('noticeExpires').value).toISOString():null,updated_at:new Date().toISOString()};if(pub&&!id)row.published_at=new Date().toISOString();if(id&&pub)row.published_at=window.siteNoticesCache?.find(x=>x.id===id)?.published_at||new Date().toISOString();const q=id?sb.from('site_notices').update(row).eq('id',id):sb.from('site_notices').insert({...row,created_by:currentSession.user.id});const {error}=await q;if(error)return RH.toast('সংরক্ষণ ব্যর্থ: '+error.message,false);RH.toast('নোটিশ সংরক্ষণ হয়েছে।');resetNoticeForm();await loadSiteContentAdmin();}
 function editSiteNotice(id){const x=window.siteNoticesCache?.find(n=>n.id===id);if(!x)return;document.getElementById('noticeEditId').value=x.id;document.getElementById('noticeTitle').value=x.title;document.getElementById('noticeBody').value=x.body||'';document.getElementById('noticeType').value=x.notice_type;document.getElementById('noticeUrl').value=x.link_url||'';document.getElementById('noticeLinkLabel').value=x.link_label||'';document.getElementById('noticePinned').checked=!!x.is_pinned;document.getElementById('noticePublish').checked=!!x.is_published;document.getElementById('noticeExpires').value=x.expires_at?new Date(x.expires_at).toISOString().slice(0,16):'';document.getElementById('noticeTitle').scrollIntoView({behavior:'smooth'});}
