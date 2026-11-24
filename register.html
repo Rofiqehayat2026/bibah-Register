@@ -140,48 +140,37 @@ textarea{min-height:80px;resize:vertical}
     <div class="section-title"><i class="fas fa-user-circle"></i> ২. ব্যক্তিগত পরিচিতি</div>
     <div class="card grid-2">
       
-      <div class="form-group"><label>জন্ম তারিখ <span class="required-star">*</span></label><input type="date" name="dob" required onchange="calculateAge()"></div>
+      <div class="form-group"><label>জন্ম তারিখ (দিন-মাস-সাল) <span class="required-star">*</span></label><input type="text" name="dob" id="dobInput" required inputmode="numeric" maxlength="10" placeholder="দিন-মাস-সাল (যেমন ২৫-০৮-২০০০)" oninput="formatDobInput(this); calculateAge()"><div class="note">দিন, মাস ও সাল লিখুন; মাঝখানের (-) দাগ স্বয়ংক্রিয়ভাবে বসবে।</div></div>
       <div class="form-group"><label>বয়স (স্বয়ংক্রিয়)</label><input type="text" id="ageField" readonly placeholder="স্বয়ংক্রিয়"></div>
       <div class="form-group"><label>NID <span class="optional">ঐচ্ছিক</span></label><input type="text" name="nid"></div>
       
       <div class="form-group"><label>WhatsApp <span class="required-star">*</span></label><input type="text" name="whatsapp" required></div>
-      <div class="form-group"><label>Telegram <span class="required-star">*</span></label><input type="text" name="telegram" required></div>
+      <div class="form-group"><label>বিকল্প মোবাইল নম্বর <span class="optional">ঐচ্ছিক</span></label><input type="tel" name="alternatePhone" inputmode="tel" placeholder="অন্য কোনো নম্বর থাকলে লিখুন"></div>
     </div>
 
-    <!-- ৩. ঠিকানা (থানা → জেলা → বিভাগ অটো) -->
+    <!-- ৩. বর্তমান ও স্থায়ী ঠিকানা -->
     <div class="section-title"><i class="fas fa-map-marker-alt"></i> ৩. ঠিকানা</div>
-    <div class="card grid-2">
-      <div class="form-group">
-        <label>থানা / উপজেলা <span class="required-star">*</span></label>
-        <select name="currentThana" id="thanaSelect" required>
-          <option value="">-- থানা / উপজেলা নির্বাচন করুন --</option>
-        </select>
-        <div class="note"><i class="fas fa-info-circle"></i> থানা / উপজেলা নির্বাচন করলে জেলা ও বিভাগ স্বয়ংক্রিয়ভাবে বসবে</div>
+    <div class="card">
+      <h3 style="color:#0e4d64;margin-bottom:.8rem">বর্তমান ঠিকানা</h3>
+      <div class="grid-2">
+        <div class="form-group"><label>গ্রাম / মহল্লা, বাড়ি নং / রোড নং <span class="required-star">*</span></label><input name="currentVillage" required placeholder="গ্রাম/মহল্লা, বাড়ি নং, রোড নং ইত্যাদি"></div>
+        <div class="form-group"><label>পোস্ট অফিস <span class="required-star">*</span></label><input name="currentPostOffice" required placeholder="ডাকঘরের নাম ও পোস্ট কোড (থাকলে)"></div>
+        <div class="form-group"><label>থানা / উপজেলা <span class="required-star">*</span></label><select name="currentThana" id="thanaSelect" required><option value="">-- থানা / উপজেলা নির্বাচন করুন --</option></select></div>
+        <div class="form-group"><label>জেলা</label><input type="text" name="currentDistrict" id="districtField" readonly required></div>
+        <div class="form-group"><label>বিভাগ</label><input type="text" name="currentDivision" id="divisionField" readonly required></div>
+        <div class="form-group"><label>ইউনিয়ন / পৌরসভা</label><select name="currentUnion" id="unionSelect"><option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option></select></div>
+        <div class="form-group"><label>ওয়ার্ড নম্বর <span class="optional">১–৫০</span></label><input type="number" name="currentWard" min="1" max="50" step="1" inputmode="numeric" placeholder="ওয়ার্ড নম্বর (১–৫০)"></div>
       </div>
-      <div class="form-group"><label>জেলা</label><input type="text" name="currentDistrict" id="districtField" readonly></div>
-      <div class="form-group"><label>বিভাগ</label><input type="text" name="currentDivision" id="divisionField" readonly></div>
-      <div class="form-group"><label>গ্রাম / মহল্লা</label><input type="text" name="currentVillage" placeholder="গ্রাম বা মহল্লার নাম"></div>
-      <div class="form-group"><label>ডাকঘর</label><input type="text" name="currentPostOffice" placeholder="ডাকঘরের নাম"></div>
-      <div class="form-group">
-        <label>ইউনিয়ন / পৌরসভা</label>
-        <select name="currentUnion" id="unionSelect">
-          <option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option>
-        </select>
+      <div style="border-top:1px dashed #cbd9e6;margin:1rem 0"></div>
+      <h3 style="color:#0e4d64;margin-bottom:.8rem">স্থায়ী ঠিকানা</h3>
+      <div class="grid-2">
+        <div class="form-group"><label>গ্রাম / মহল্লা, বাড়ি নং / রোড নং <span class="required-star">*</span></label><input name="permanentVillage" required placeholder="গ্রাম/মহল্লা, বাড়ি নং, রোড নং ইত্যাদি"></div>
+        <div class="form-group"><label>পোস্ট অফিস <span class="required-star">*</span></label><input name="permanentPostOffice" required placeholder="ডাকঘরের নাম ও পোস্ট কোড (থাকলে)"></div>
+        <div class="form-group"><label>থানা / উপজেলা <span class="required-star">*</span></label><select name="permanentThana" id="permanentThanaSelect" required><option value="">-- থানা / উপজেলা নির্বাচন করুন --</option></select></div>
+        <div class="form-group"><label>জেলা</label><input type="text" name="permanentDistrict" id="permanentDistrictField" readonly required></div>
+        <div class="form-group"><label>বিভাগ</label><input type="text" name="permanentDivision" id="permanentDivisionField" readonly required></div>
       </div>
-      <div class="form-group">
-        <label>ওয়ার্ড নম্বর</label>
-        <select name="currentWard">
-          <option value="">-- ওয়ার্ড নির্বাচন করুন --</option>
-          <option value="1">১</option><option value="2">২</option><option value="3">৩</option>
-          <option value="4">৪</option><option value="5">৫</option><option value="6">৬</option>
-          <option value="7">৭</option><option value="8">৮</option><option value="9">৯</option>
-          <option value="10">১০</option><option value="11">১১</option><option value="12">১২</option>
-          <option value="13">১৩</option><option value="14">১৪</option><option value="15">১৫</option>
-          <option value="16">১৬</option><option value="17">১৭</option><option value="18">১৮</option>
-          <option value="19">১৯</option><option value="20">২০</option>
-        </select>
-      </div>
-      <div class="form-group"><label>স্থায়ী জেলা <span class="optional">ঐচ্ছিক</span></label><input type="text" name="permanentDistrict"></div>
+      <div class="note">দুই ঠিকানার গ্রাম/বাড়ি/রোড, পোস্ট অফিস ও থানা/উপজেলা পূরণ করা বাধ্যতামূলক। থানা/উপজেলা নির্বাচন করলে জেলা ও বিভাগ স্বয়ংক্রিয়ভাবে বসবে। পোস্ট অফিসের নাম লিখে সংশ্লিষ্ট থানা নির্বাচন করুন।</div>
     </div>
 
     <!-- ৪. অভিভাবক -->
@@ -195,7 +184,7 @@ textarea{min-height:80px;resize:vertical}
     <!-- ৫. শারীরিক -->
     <div class="section-title"><i class="fas fa-ruler"></i> ৫. শারীরিক তথ্য</div>
     <div class="card grid-2">
-      <div class="form-group"><label>উচ্চতা <span class="required-star">*</span></label><input name="height" required placeholder="ফুট/ইঞ্চি বা সেমি"></div>
+      <div class="form-group"><label>উচ্চতা <span class="required-star">*</span></label><select name="height" id="heightSelect" required onchange="toggleOtherHeight()"><option value="">-- উচ্চতা নির্বাচন করুন --</option><option>৪ ফুট ৬ ইঞ্চি</option><option>৪ ফুট ৭ ইঞ্চি</option><option>৪ ফুট ৮ ইঞ্চি</option><option>৪ ফুট ৯ ইঞ্চি</option><option>৪ ফুট ১০ ইঞ্চি</option><option>৪ ফুট ১১ ইঞ্চি</option><option>৫ ফুট</option><option>৫ ফুট ১ ইঞ্চি</option><option>৫ ফুট ২ ইঞ্চি</option><option>৫ ফুট ৩ ইঞ্চি</option><option>৫ ফুট ৪ ইঞ্চি</option><option>৫ ফুট ৫ ইঞ্চি</option><option>৫ ফুট ৬ ইঞ্চি</option><option>৫ ফুট ৭ ইঞ্চি</option><option>৫ ফুট ৮ ইঞ্চি</option><option>৫ ফুট ৯ ইঞ্চি</option><option>৫ ফুট ১০ ইঞ্চি</option><option>৫ ফুট ১১ ইঞ্চি</option><option>৬ ফুট</option><option>৬ ফুট ১ ইঞ্চি</option><option>৬ ফুট ২ ইঞ্চি</option><option>৬ ফুট ৩ ইঞ্চি</option><option>৬ ফুট ৪ ইঞ্চি</option><option>৬ ফুট ৫ ইঞ্চি</option><option>৬ ফুট ৬ ইঞ্চি</option><option value="অন্যান্য">অন্যান্য</option></select><input id="otherHeight" name="otherHeight" class="hidden" placeholder="উচ্চতা লিখুন (যেমন ১৬৫ সেমি)" style="margin-top:.5rem"></div>
       <div class="form-group"><label>ওজন <span class="optional">ঐচ্ছিক</span></label><input name="weight"></div>
       <div class="form-group"><label>গায়ের রং <span class="required-star">*</span></label>
         <select name="complexion" required>
@@ -204,7 +193,7 @@ textarea{min-height:80px;resize:vertical}
           <option>উজ্জ্বল শ্যামলা</option><option>শ্যামলা</option><option>কালো</option>
         </select>
       </div>
-      <div class="form-group"><label>শারীরিক সমস্যা? <span class="required-star">*</span></label>
+      <div class="form-group"><label>দীর্ঘস্থায়ী অসুস্থতা ও শারীরিক সমস্যা আছে কি? <span class="required-star">*</span></label>
         <div class="radio-group">
           <label><input type="radio" name="physicalProblem" value="না" checked onchange="togglePhysicalDetail()"> না</label>
           <label><input type="radio" name="physicalProblem" value="হ্যাঁ" onchange="togglePhysicalDetail()"> হ্যাঁ</label>
@@ -220,8 +209,10 @@ textarea{min-height:80px;resize:vertical}
       <div class="form-group"><label>পিতার পেশা <span class="required-star">*</span></label><input name="fatherJob" required></div>
       <div class="form-group"><label>মাতার নাম <span class="required-star">*</span></label><input name="motherName" required></div>
       <div class="form-group"><label>মাতার পেশা <span class="required-star">*</span></label><input name="motherJob" required></div>
-      <div class="form-group"><label>ভাই <span class="required-star">*</span></label><input type="number" name="brothers" required min="0" value="0"></div>
-      <div class="form-group"><label>বোন <span class="required-star">*</span></label><input type="number" name="sisters" required min="0" value="0"></div>
+      <div class="form-group"><label>ভাই <span class="required-star">*</span></label><input type="number" name="brothers" id="brothersCount" required min="0" value="0" placeholder="ভাই না থাকলে শূন্য লিখুন"></div>
+      <div class="form-group"><label>বোন <span class="required-star">*</span></label><input type="number" name="sisters" id="sistersCount" required min="0" value="0" placeholder="বোন না থাকলে শূন্য লিখুন"></div>
+      <div class="form-group conditional-section" id="brotherProfessionWrap"><label>ভাইদের পেশা</label><textarea name="brotherProfession" placeholder="ভাইদের পেশা লিখুন"></textarea></div>
+      <div class="form-group conditional-section" id="sisterProfessionWrap"><label>বোনদের পেশা</label><textarea name="sisterProfession" placeholder="বোনদের পেশা লিখুন"></textarea></div>
       <div class="form-group">
         <label id="siblingPositionLabel">ভাইদের মধ্যে আপনি কততম?</label>
         <select name="siblingPosition" id="siblingPosition">
@@ -239,8 +230,9 @@ textarea{min-height:80px;resize:vertical}
       <div class="grid-2">
         <div class="form-group"><label>৫ ওয়াক্ত সালাত? <span class="required-star">*</span></label>
           <div class="radio-group"><label><input type="radio" name="salah" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="salah" value="না"> না</label></div></div>
-        <div class="form-group"><label>পর্দা/দাড়ি? <span class="required-star">*</span></label>
-          <div class="radio-group"><label><input type="radio" name="parda" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="parda" value="না"> না</label></div></div>
+        <div class="form-group"><label id="pardaLabel">দাড়ি রাখেন? <span class="required-star">*</span></label>
+          <div class="radio-group"><label><input type="radio" name="parda" value="হ্যাঁ" required onchange="togglePardaDetail()"> হ্যাঁ</label><label><input type="radio" name="parda" value="না" onchange="togglePardaDetail()"> না</label></div>
+          <div id="pardaDetailWrap" class="conditional-section"><label>বিবরণ</label><textarea name="pardaDetail" placeholder="বিস্তারিত লিখুন"></textarea></div></div>
         <div class="form-group"><label>মাহরাম? <span class="required-star">*</span></label>
           <div class="radio-group"><label><input type="radio" name="mahram" value="হ্যাঁ" checked> হ্যাঁ</label><label><input type="radio" name="mahram" value="না"> না</label></div></div>
         <div class="form-group"><label>হারাম বর্জন? <span class="required-star">*</span></label>
@@ -252,30 +244,32 @@ textarea{min-height:80px;resize:vertical}
     <!-- ৮. মাযহাব ও শিক্ষা -->
     <div class="section-title"><i class="fas fa-book-open"></i> ৮. মাযহাব ও শিক্ষা</div>
     <div class="card">
-      <div class="form-group"><label>মাযহাব</label>
+      <div class="form-group"><label>ফিকহ অনুসরণ</label>
         <div class="radio-group">
-          <label><input type="radio" name="mazhab" value="হানাফী" checked> হানাফী</label>
-          <label><input type="radio" name="mazhab" value="শাফেয়ী"> শাফেয়ী</label>
-          <label><input type="radio" name="mazhab" value="মালেকী"> মালেকী</label>
-          <label><input type="radio" name="mazhab" value="হাম্বলী"> হাম্বলী</label>
-          <label><input type="radio" name="mazhab" value="আহলে হাদীস"> আহলে হাদীস</label>
-          <label><input type="radio" name="mazhab" value="অন্যান্য"> অন্যান্য</label>
+          <label><input type="radio" name="mazhab" value="হানাফী" checked onchange="toggleFiqhDetail()"> হানাফী</label>
+          <label><input type="radio" name="mazhab" value="শাফেয়ী" onchange="toggleFiqhDetail()"> শাফেয়ী</label>
+          <label><input type="radio" name="mazhab" value="মালেকী" onchange="toggleFiqhDetail()"> মালেকী</label>
+          <label><input type="radio" name="mazhab" value="হাম্বলী" onchange="toggleFiqhDetail()"> হাম্বলী</label>
+          <label><input type="radio" name="mazhab" value="আহলে হাদীস" onchange="toggleFiqhDetail()"> আহলে হাদীস</label>
+          <label><input type="radio" name="mazhab" value="অন্যান্য" onchange="toggleFiqhDetail()"> অন্যান্য</label>
         </div>
+        <div id="fiqhDetailWrap" class="conditional-section"><label>বিবরণ</label><textarea name="fiqhDetail" placeholder="আপনার অনুসৃত ফিকহ সম্পর্কে লিখুন"></textarea></div>
       </div>
-      <div class="form-group"><label>শিক্ষার ধরন</label>
-        <div class="radio-group">
-          <label><input type="radio" name="educationType" value="কওমি" checked> কওমি</label>
-          <label><input type="radio" name="educationType" value="আলিয়া"> আলিয়া</label>
-          <label><input type="radio" name="educationType" value="জেনারেল"> জেনারেল</label>
-          <label><input type="radio" name="educationType" value="স্বশিক্ষিত"> স্বশিক্ষিত</label>
+      <div class="form-group"><label>শিক্ষার ধরন (একাধিক নির্বাচন করা যাবে)</label>
+        <div class="checkbox-group" id="educationTypeChoices">
+          <label><input type="checkbox" name="educationType" value="কওমি"> কওমি</label>
+          <label><input type="checkbox" name="educationType" value="আলিয়া"> আলিয়া</label>
+          <label><input type="checkbox" name="educationType" value="জেনারেল"> জেনারেল</label>
+          <label><input type="checkbox" name="educationType" value="স্বশিক্ষিত"> স্বশিক্ষিত</label>
+          <label><input type="checkbox" name="educationType" value="লেখাপড়া করা হয়নি" id="noFormalEducation"> লেখাপড়া করা হয়নি</label>
         </div>
       </div>
       <div class="form-group" id="educationQualificationsWrap">
         <label id="educationQualificationsLabel">শিক্ষাগত যোগ্যতা (প্রযোজ্যগুলো নির্বাচন করুন)</label>
         <div class="checkbox-group" id="educationQualifications"></div>
-        <div class="note">শিক্ষার ধরন অনুযায়ী যোগ্যতার তালিকা পরিবর্তিত হবে। একাধিক যোগ্যতা নির্বাচন করতে পারবেন।</div>
+        <div class="note">নির্বাচিত শিক্ষার ধরনগুলোর যোগ্যতা একসাথে দেখাবে; একাধিক যোগ্যতা নির্বাচন করতে পারবেন।</div>
       </div>
-      <div class="form-group"><label>অতিরিক্ত শিক্ষাগত বিবরণ <span class="optional">ঐচ্ছিক</span></label><textarea name="educationDetail" placeholder="প্রতিষ্ঠানের নাম, বিভাগ, ফলাফল বা অন্যান্য তথ্য"></textarea></div>
+      <div class="form-group" id="educationDetailWrap"><label>অতিরিক্ত শিক্ষাগত বিবরণ <span class="optional">ঐচ্ছিক</span></label><textarea name="educationDetail" placeholder="প্রতিষ্ঠানের নাম, বিভাগ, ফলাফল বা অন্যান্য তথ্য"></textarea></div>
     </div>
 
     <!-- ৯. অর্থনৈতিক -->
@@ -297,24 +291,32 @@ textarea{min-height:80px;resize:vertical}
       <div id="groomMarital" class="conditional-section active">
         <label style="font-weight:600;display:block;margin-bottom:.4rem">পাত্রের বৈবাহিক অবস্থা</label>
         <div class="radio-group">
-          <label><input type="radio" name="groomMaritalStatus" value="অবিবাহিত" checked> অবিবাহিত</label>
-          <label><input type="radio" name="groomMaritalStatus" value="বৈবাহিক সম্পর্ক বিচ্ছিন্ন"> বিচ্ছিন্ন</label>
-          <label><input type="radio" name="groomMaritalStatus" value="স্ত্রী মৃত্যুবরণ"> স্ত্রী মৃত্যু</label>
-          <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ১ স্ত্রী"> ১ স্ত্রী</label>
+          <label><input type="radio" name="groomMaritalStatus" value="অবিবাহিত" checked onchange="toggleChildrenFields()"> অবিবাহিত</label>
+          <label><input type="radio" name="groomMaritalStatus" value="বৈবাহিক সম্পর্ক বিচ্ছিন্ন" onchange="toggleChildrenFields()"> বিচ্ছিন্ন</label>
+          <label><input type="radio" name="groomMaritalStatus" value="স্ত্রী মৃত্যুবরণ" onchange="toggleChildrenFields()"> স্ত্রী মৃত্যু (বিপত্নিক)</label>
+          <label><input type="radio" name="groomMaritalStatus" value="বর্তমানে ১ স্ত্রী" onchange="toggleChildrenFields()"> বর্তমানে ১ স্ত্রী</label>
         </div>
       </div>
       <div id="brideMarital" class="conditional-section">
         <label style="font-weight:600;display:block;margin-bottom:.4rem">পাত্রীর বৈবাহিক অবস্থা</label>
         <div class="radio-group">
-          <label><input type="radio" name="brideMaritalStatus" value="অবিবাহিতা"> অবিবাহিতা</label>
-          <label><input type="radio" name="brideMaritalStatus" value="তালাকপ্রাপ্তা"> তালাকপ্রাপ্তা</label>
-          <label><input type="radio" name="brideMaritalStatus" value="বিধবা"> বিধবা</label>
+          <label><input type="radio" name="brideMaritalStatus" value="অবিবাহিতা" checked onchange="toggleChildrenFields()"> অবিবাহিতা</label>
+          <label><input type="radio" name="brideMaritalStatus" value="তালাকপ্রাপ্তা" onchange="toggleChildrenFields()"> তালাকপ্রাপ্তা</label>
+          <label><input type="radio" name="brideMaritalStatus" value="বিধবা" onchange="toggleChildrenFields()"> বিধবা</label>
         </div>
+      </div>
+      <div id="childrenCountFields" class="conditional-section" style="margin-top:1rem;padding:1rem;background:#eef7f3;border:1px solid #cfe5df;border-radius:12px">
+        <div style="font-weight:700;color:#0e4d64;margin-bottom:.6rem">সন্তানদের তথ্য</div>
+        <div class="grid-2">
+          <div class="form-group"><label for="childrenBoys">ছেলের সংখ্যা</label><input type="number" id="childrenBoys" name="childrenBoys" min="0" max="30" step="1" value="0" disabled></div>
+          <div class="form-group"><label for="childrenGirls">মেয়ের সংখ্যা</label><input type="number" id="childrenGirls" name="childrenGirls" min="0" max="30" step="1" value="0" disabled></div>
+        </div>
+        <div class="note">অবিবাহিত/অবিবাহিতা নির্বাচন করলে এই অংশটি দেখা যাবে না। অন্য বৈবাহিক অবস্থা নির্বাচন করলে ছেলে ও মেয়ের সংখ্যা লিখুন; সন্তান না থাকলে ০ দিন।</div>
       </div>
     </div>
 
     <!-- ১১. জীবনসঙ্গীর চাহিদা -->
-    <div class="section-title"><i class="fas fa-heartbeat"></i> ১১. জীবনসঙ্গীর চাহিদা</div>
+    <div class="section-title" id="partnerPreferenceTitle"><i class="fas fa-heartbeat"></i> ১১. কেমন পাত্রী চান?</div>
     <div class="card">
       <div class="grid-2">
         <div class="form-group"><label>বয়স</label><input name="prefAge" placeholder="যেমন: ২০-২৮"></div>
@@ -387,6 +389,7 @@ let pendingBiodataData = null;
 // লোকেশন ডেটা অনলাইন পূর্ণাঙ্গ উৎস থেকে লোড হবে; পুরোনো অসম্পূর্ণ BD_GEO অবজেক্ট বাদ।
 async function initGeoSelect() {
   const tSel = document.getElementById('thanaSelect');
+  const pSel = document.getElementById('permanentThanaSelect');
   const uSel = document.getElementById('unionSelect');
   const districtField = document.getElementById('districtField');
   const divisionField = document.getElementById('divisionField');
@@ -452,7 +455,7 @@ async function initGeoSelect() {
 
   if (!geoRows.length) {
     tSel.innerHTML = '<option value="">লোকেশন তালিকা লোড হয়নি—পেজ রিফ্রেশ করুন</option>';
-    tSel.disabled = true;
+    tSel.disabled = true; pSel.disabled = true;
     const note = document.createElement('div');
     note.className = 'alert alert-error';
     note.id = 'geoLoadError';
@@ -474,27 +477,32 @@ async function initGeoSelect() {
   }
 
   geoRows.sort((a, b) => a.thana.localeCompare(b.thana, 'bn'));
-  tSel.innerHTML = '<option value="">-- থানা / উপজেলা নির্বাচন করুন --</option>' +
-    geoRows.map((r, i) =>
-      `<option value="${r.thana.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" data-index="${i}">${r.thana} — ${r.district}</option>`
-    ).join('');
+  const options = '<option value="">-- থানা / উপজেলা নির্বাচন করুন --</option>' +
+    geoRows.map((r, i) => `<option value="${escapeHtml(r.thana)}" data-index="${i}">${escapeHtml(r.thana)} — ${escapeHtml(r.district)}</option>`).join('');
+  tSel.innerHTML = options;
+  pSel.innerHTML = options;
   tSel.disabled = false;
+  pSel.disabled = false;
 
-  tSel.addEventListener('change', () => {
-    const row = geoRows[Number(tSel.selectedOptions[0]?.dataset.index)];
-    districtField.value = row?.district || '';
-    divisionField.value = row?.division || '';
-
-    if (!row) {
-      uSel.innerHTML = '<option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option>';
-      return;
-    }
-
-    const unions = row.unions || [];
-    uSel.innerHTML = '<option value="">-- ইউনিয়ন / পৌরসভা নির্বাচন করুন --</option>' +
-      unions.map(name => `<option value="${name.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">${name}</option>`).join('') +
-      '<option value="অন্যান্য">অন্যান্য / তালিকায় নেই</option>';
-  });
+  const bindAddressSelect = (select, districtEl, divisionEl, unionEl=null) => {
+    select.addEventListener('change', () => {
+      const row = geoRows[Number(select.selectedOptions[0]?.dataset.index)];
+      districtEl.value = row?.district || '';
+      divisionEl.value = row?.division || '';
+      if (unionEl) {
+        if (!row) {
+          unionEl.innerHTML = '<option value="">-- আগে থানা / উপজেলা নির্বাচন করুন --</option>';
+          return;
+        }
+        const unions = row.unions || [];
+        unionEl.innerHTML = '<option value="">-- ইউনিয়ন / পৌরসভা নির্বাচন করুন --</option>' +
+          unions.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('') +
+          '<option value="অন্যান্য">অন্যান্য / তালিকায় নেই</option>';
+      }
+    });
+  };
+  bindAddressSelect(tSel, districtField, divisionField, uSel);
+  bindAddressSelect(pSel, document.getElementById('permanentDistrictField'), document.getElementById('permanentDivisionField'));
 }
 
 function updateSiblingPositionLabel() {
@@ -513,18 +521,36 @@ const EDUCATION_QUALIFICATIONS = {
   'জেনারেল': ['প্রাথমিক','JSC / অষ্টম শ্রেণি','SSC / দাখিল সমমান','HSC / আলিম সমমান','ডিপ্লোমা','স্নাতক (অনার্স)','স্নাতক (পাস)','মাস্টার্স','এমফিল','পিএইচডি'],
   'স্বশিক্ষিত': ['কুরআন শিক্ষা','হাদিস শিক্ষা','আরবি ভাষা','ইসলামি বই অধ্যয়ন','অন্যান্য স্বশিক্ষা']
 };
-function renderEducationQualifications(selected=[]) {
-  const type=document.querySelector('[name="educationType"]:checked')?.value || 'কওমি';
-  const wrap=document.getElementById('educationQualifications');
-  if(!wrap)return;
-  const options=EDUCATION_QUALIFICATIONS[type] || [];
-  wrap.innerHTML=options.map((name,i)=>`<label><input type="checkbox" name="educationQualifications" value="${escapeHtml(name)}" ${selected.map(String).includes(name)?'checked':''}> ${escapeHtml(name)}</label>`).join('');
-  const applicant=document.querySelector('[name="applicantType"]:checked')?.value || 'male';
-  const gender=(applicant==='male'||applicant==='boy_khunsha')?'পুরুষ':'নারী';
-  document.getElementById('educationQualificationsLabel').textContent=`${type} ${gender} শিক্ষার যোগ্যতা (প্রযোজ্যগুলো নির্বাচন করুন)`;
+function selectedEducationTypes() {
+  return Array.from(document.querySelectorAll('[name="educationType"]:checked')).map(x => x.value);
 }
-document.querySelectorAll('[name="educationType"]').forEach(el=>el.addEventListener('change',()=>renderEducationQualifications([])));
-document.querySelectorAll('[name="applicantType"]').forEach(el=>el.addEventListener('change',()=>renderEducationQualifications(Array.from(document.querySelectorAll('[name="educationQualifications"]:checked')).map(x=>x.value))));
+function renderEducationQualifications(selected=[]) {
+  const types = selectedEducationTypes();
+  const noStudy = types.includes('লেখাপড়া করা হয়নি');
+  const all = [];
+  types.filter(t => t !== 'লেখাপড়া করা হয়নি').forEach(t => (EDUCATION_QUALIFICATIONS[t] || []).forEach(v => { if (!all.includes(v)) all.push(v); }));
+  const wrap = document.getElementById('educationQualificationsWrap');
+  const box = document.getElementById('educationQualifications');
+  wrap.classList.toggle('hidden', noStudy || !all.length);
+  document.getElementById('educationDetailWrap').classList.toggle('hidden', noStudy);
+  box.innerHTML = all.map(name => `<label><input type="checkbox" name="educationQualifications" value="${escapeHtml(name)}" ${selected.map(String).includes(name) ? 'checked' : ''}> ${escapeHtml(name)}</label>`).join('');
+  const applicant = document.querySelector('[name="applicantType"]:checked')?.value || 'male';
+  const gender = (applicant === 'male' || applicant === 'boy_khunsha') ? 'পুরুষ' : 'নারী';
+  document.getElementById('educationQualificationsLabel').textContent = `${types.filter(t=>t!=='লেখাপড়া করা হয়নি').join(' + ')} ${gender} শিক্ষার যোগ্যতা (প্রযোজ্যগুলো নির্বাচন করুন)`;
+}
+document.querySelectorAll('[name="educationType"]').forEach(el => el.addEventListener('change', () => {
+  if (el.value === 'লেখাপড়া করা হয়নি' && el.checked) {
+    document.querySelectorAll('[name="educationType"]').forEach(x => { if (x !== el) x.checked = false; });
+    document.querySelectorAll('[name="educationQualifications"]').forEach(x => x.checked = false);
+  } else if (el.checked) {
+    document.getElementById('noFormalEducation').checked = false;
+  }
+  renderEducationQualifications([]);
+}));
+document.querySelectorAll('[name="applicantType"]').forEach(el => el.addEventListener('change', () => {
+  renderEducationQualifications(Array.from(document.querySelectorAll('[name="educationQualifications"]:checked')).map(x=>x.value));
+  updateGenderSpecificLabels();
+}));
 renderEducationQualifications();
 
 // ============ প্রারম্ভিক প্রস্তুতি ============
@@ -547,12 +573,34 @@ renderEducationQualifications();
 
   await geoPromise;
   toggleGenderSections();
+  toggleChildrenFields();
   updateSiblingPositionLabel();
+  updateGenderSpecificLabels();
+  togglePardaDetail();
+  toggleFiqhDetail();
+  updateSiblingProfessionFields();
 })();;
 
 // ============ বয়স গণনা ============
+function bnToEnDigits(value) {
+  return String(value || '').replace(/[০-৯]/g, d => String('০১২৩৪৫৬৭৮৯'.indexOf(d)));
+}
+function formatDobInput(input) {
+  let digits = bnToEnDigits(input.value).replace(/\D/g, '').slice(0, 8);
+  if (digits.length > 4) digits = digits.slice(0,2) + '-' + digits.slice(2,4) + '-' + digits.slice(4);
+  else if (digits.length > 2) digits = digits.slice(0,2) + '-' + digits.slice(2);
+  input.value = digits;
+}
+function dobISO(value) {
+  const m = bnToEnDigits(value).match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  if (!m) return '';
+  const day=+m[1], month=+m[2], year=+m[3];
+  const d=new Date(Date.UTC(year,month-1,day));
+  if (d.getUTCFullYear()!==year || d.getUTCMonth()!==month-1 || d.getUTCDate()!==day) return '';
+  return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
 function calculateAge() {
-  const dob = document.querySelector('[name="dob"]').value;
+  const dob = dobISO(document.querySelector('[name="dob"]').value);
   const el = document.getElementById('ageField');
   if (!dob) { el.value = ''; return; }
   const d = new Date(dob + 'T00:00:00');
@@ -570,7 +618,67 @@ function toggleGenderSections() {
   const isBride = t === 'female' || t === 'girl_khunsha';
   document.getElementById('groomMarital').classList.toggle('active', isGroom);
   document.getElementById('brideMarital').classList.toggle('active', isBride);
+  toggleChildrenFields();
 }
+
+function toggleChildrenFields() {
+  const applicantType = document.querySelector('[name="applicantType"]:checked')?.value || 'male';
+  const isGroom = applicantType === 'male' || applicantType === 'boy_khunsha';
+  const status = document.querySelector(`[name="${isGroom ? 'groomMaritalStatus' : 'brideMaritalStatus'}"]:checked`)?.value || '';
+  const isUnmarried = status === 'অবিবাহিত' || status === 'অবিবাহিতা';
+  const wrap = document.getElementById('childrenCountFields');
+  const boys = document.getElementById('childrenBoys');
+  const girls = document.getElementById('childrenGirls');
+  const show = !isUnmarried && Boolean(status);
+  wrap.classList.toggle('active', show);
+  [boys, girls].forEach(input => {
+    input.disabled = !show;
+    input.required = show;
+    if (!show) input.value = '0';
+  });
+}
+
+function updateGenderSpecificLabels() {
+  const type=document.querySelector('[name="applicantType"]:checked')?.value || 'male';
+  const female=type==='female' || type==='girl_khunsha';
+  document.getElementById('pardaLabel').innerHTML=(female?'পর্দা করেন?':'দাড়ি রাখেন?')+' <span class="required-star">*</span>';
+  document.getElementById('partnerPreferenceTitle').innerHTML='<i class="fas fa-heartbeat"></i> ১১. '+(female?'কেমন পাত্র চান?':'কেমন পাত্রী চান?');
+}
+function togglePardaDetail() {
+  const value=document.querySelector('[name="parda"]:checked')?.value;
+  const wrap=document.getElementById('pardaDetailWrap');
+  const field=wrap.querySelector('textarea');
+  wrap.classList.toggle('active',value==='হ্যাঁ');
+  field.required=value==='হ্যাঁ';
+  field.disabled=value!=='হ্যাঁ';
+  if(value!=='হ্যাঁ') field.value='';
+}
+function toggleFiqhDetail() {
+  const value=document.querySelector('[name="mazhab"]:checked')?.value;
+  const wrap=document.getElementById('fiqhDetailWrap');
+  const field=wrap.querySelector('textarea');
+  wrap.classList.toggle('active',value==='অন্যান্য');
+  field.required=value==='অন্যান্য';
+  field.disabled=value!=='অন্যান্য';
+  if(value!=='অন্যান্য') field.value='';
+}
+function toggleOtherHeight() {
+  const other=document.getElementById('heightSelect').value==='অন্যান্য';
+  document.getElementById('otherHeight').classList.toggle('hidden',!other);
+  document.getElementById('otherHeight').required=other;
+}
+function updateSiblingProfessionFields() {
+  const brothers=Number(document.getElementById('brothersCount').value||0);
+  const sisters=Number(document.getElementById('sistersCount').value||0);
+  const bw=document.getElementById('brotherProfessionWrap'), sw=document.getElementById('sisterProfessionWrap');
+  bw.classList.toggle('active',brothers>0); sw.classList.toggle('active',sisters>0);
+  bw.querySelector('textarea').required=brothers>0; sw.querySelector('textarea').required=sisters>0;
+  bw.querySelector('textarea').disabled=brothers===0; sw.querySelector('textarea').disabled=sisters===0;
+  if(brothers===0) bw.querySelector('textarea').value='';
+  if(sisters===0) sw.querySelector('textarea').value='';
+}
+document.getElementById('brothersCount').addEventListener('input',updateSiblingProfessionFields);
+document.getElementById('sistersCount').addEventListener('input',updateSiblingProfessionFields);
 
 function togglePhysicalDetail() {
   const v = document.querySelector('[name="physicalProblem"]:checked')?.value;
@@ -595,7 +703,7 @@ function normalizeBdPhone(value) {
 function collectBiodataData() {
   const fd = new FormData(registrationForm);
   const data = {};
-  const skip = new Set(['accountFullName','accountPhone','accountEmail','accountPassword','accountPassword2','consentTruth','consentCancel','consentStorage']);
+  const skip = new Set(['accountFullName','accountPhone','accountEmail','accountPassword','accountPassword2','consentTruth','consentCancel','consentStorage','otherHeight']);
   fd.forEach((value,key) => {
     if (skip.has(key)) return;
     if (Object.prototype.hasOwnProperty.call(data,key)) {
@@ -603,6 +711,7 @@ function collectBiodataData() {
       data[key].push(value);
     } else data[key] = value;
   });
+  if (data.height === 'অন্যান্য') data.height = document.getElementById('otherHeight').value.trim();
   return data;
 }
 
@@ -620,6 +729,8 @@ function getRegistrationValidation() {
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showFormError('ইমেইল ঠিকানাটি সঠিক নয়।');
   if (password.length < 8) return showFormError('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।');
   if (password !== password2) return showFormError('দুইবার দেওয়া পাসওয়ার্ড একই নয়।');
+  if (!dobISO(form.querySelector('[name="dob"]').value)) return showFormError('জন্ম তারিখ দিন-মাস-সাল আকারে সঠিকভাবে লিখুন (যেমন ২৫-০৮-২০০০)।');
+  if (document.getElementById('heightSelect').value === 'অন্যান্য' && !document.getElementById('otherHeight').value.trim()) return showFormError('অনুগ্রহ করে আপনার উচ্চতা লিখুন।');
   const age = parseInt(document.getElementById('ageField').value,10);
   const applicantType = form.querySelector('[name="applicantType"]:checked')?.value || 'male';
   const isGroom = applicantType === 'male' || applicantType === 'boy_khunsha';
@@ -640,21 +751,21 @@ function showFormError(message) {
 }
 
 const FIELD_LABELS = {
- applicantType:'আবেদনকারীর ধরন',fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',ageField:'বয়স',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',telegram:'Telegram',
- currentVillage:'গ্রাম / মহল্লা',currentPostOffice:'ডাকঘর',currentUnion:'ইউনিয়ন / পৌরসভা',currentWard:'ওয়ার্ড',currentThana:'থানা / উপজেলা',currentDistrict:'জেলা',currentDivision:'বিভাগ',permanentDistrict:'স্থায়ী জেলা',
- guardianName:'অভিভাবকের নাম',guardianRelation:'সম্পর্ক',guardianPhone:'অভিভাবকের মোবাইল',height:'উচ্চতা',weight:'ওজন',complexion:'গায়ের রং',physicalProblem:'শারীরিক সমস্যা',physicalProblemDetail:'শারীরিক সমস্যার বিবরণ',
- fatherName:'পিতার নাম',fatherJob:'পিতার পেশা',motherName:'মাতার নাম',motherJob:'মাতার পেশা',brothers:'ভাই',sisters:'বোন',siblingPosition:'ভাই/বোনদের মধ্যে অবস্থান',
- salah:'৫ ওয়াক্ত সালাত',parda:'পর্দা / দাড়ি',mahram:'মাহরাম',avoidHaram:'হারাম বর্জন',ownDeeniDetail:'নিজের দ্বীনী অবস্থা',mazhab:'মাযহাব',educationType:'শিক্ষার ধরন',educationQualifications:'শিক্ষাগত যোগ্যতা',educationDetail:'অতিরিক্ত শিক্ষাগত বিবরণ',
- economicStatus:'অর্থনৈতিক অবস্থা',incomeSource:'আয়ের উৎস',groomMaritalStatus:'পাত্রের বৈবাহিক অবস্থা',brideMaritalStatus:'পাত্রীর বৈবাহিক অবস্থা',prefAge:'প্রত্যাশিত বয়স',prefHeight:'প্রত্যাশিত উচ্চতা',prefArea:'প্রত্যাশিত এলাকা',prefEducation:'প্রত্যাশিত শিক্ষা',extraRequirements:'অতিরিক্ত চাহিদা'
+ applicantType:'আবেদনকারীর ধরন',fullName:'পূর্ণ নাম',dob:'জন্ম তারিখ',ageField:'বয়স',nid:'NID',mobile:'মোবাইল',whatsapp:'WhatsApp',alternatePhone:'বিকল্প মোবাইল',
+ currentVillage:'বর্তমান ঠিকানা: গ্রাম/বাড়ি/রোড',currentPostOffice:'বর্তমান পোস্ট অফিস',currentUnion:'বর্তমান ইউনিয়ন / পৌরসভা',currentWard:'বর্তমান ওয়ার্ড',currentThana:'বর্তমান থানা / উপজেলা',currentDistrict:'বর্তমান জেলা',currentDivision:'বর্তমান বিভাগ',permanentVillage:'স্থায়ী ঠিকানা: গ্রাম/বাড়ি/রোড',permanentPostOffice:'স্থায়ী পোস্ট অফিস',permanentThana:'স্থায়ী থানা / উপজেলা',permanentDistrict:'স্থায়ী জেলা',permanentDivision:'স্থায়ী বিভাগ',
+ guardianName:'অভিভাবকের নাম',guardianRelation:'সম্পর্ক',guardianPhone:'অভিভাবকের মোবাইল',height:'উচ্চতা',weight:'ওজন',complexion:'গায়ের রং',physicalProblem:'দীর্ঘস্থায়ী অসুস্থতা ও শারীরিক সমস্যা',physicalProblemDetail:'শারীরিক সমস্যার বিবরণ',
+ fatherName:'পিতার নাম',fatherJob:'পিতার পেশা',motherName:'মাতার নাম',motherJob:'মাতার পেশা',brothers:'ভাই',brotherProfession:'ভাইদের পেশা',sisters:'বোন',sisterProfession:'বোনদের পেশা',siblingPosition:'ভাই/বোনদের মধ্যে অবস্থান',
+ salah:'৫ ওয়াক্ত সালাত',parda:'পর্দা / দাড়ি',pardaDetail:'পর্দা / দাড়ির বিবরণ',mahram:'মাহরাম',avoidHaram:'হারাম বর্জন',ownDeeniDetail:'নিজের দ্বীনী অবস্থা',mazhab:'ফিকহ অনুসরণ',fiqhDetail:'ফিকহ অনুসরণের বিবরণ',educationType:'শিক্ষার ধরন',educationQualifications:'শিক্ষাগত যোগ্যতা',educationDetail:'অতিরিক্ত শিক্ষাগত বিবরণ',
+ economicStatus:'অর্থনৈতিক অবস্থা',incomeSource:'আয়ের উৎস',groomMaritalStatus:'পাত্রের বৈবাহিক অবস্থা',brideMaritalStatus:'পাত্রীর বৈবাহিক অবস্থা',childrenBoys:'ছেলের সংখ্যা',childrenGirls:'মেয়ের সংখ্যা',prefAge:'প্রত্যাশিত বয়স',prefHeight:'প্রত্যাশিত উচ্চতা',prefArea:'প্রত্যাশিত এলাকা',prefEducation:'প্রত্যাশিত শিক্ষা',extraRequirements:'অতিরিক্ত চাহিদা'
 };
 const SECTION_KEYS = [
- ['ব্যক্তিগত পরিচিতি',['applicantType','fullName','dob','ageField','nid','mobile','whatsapp','telegram']],
- ['ঠিকানা',['currentVillage','currentPostOffice','currentUnion','currentWard','currentThana','currentDistrict','currentDivision','permanentDistrict']],
+ ['ব্যক্তিগত পরিচিতি',['applicantType','fullName','dob','ageField','nid','mobile','whatsapp','alternatePhone']],
+ ['ঠিকানা',['currentVillage','currentPostOffice','currentUnion','currentWard','currentThana','currentDistrict','currentDivision','permanentVillage','permanentPostOffice','permanentThana','permanentDistrict','permanentDivision']],
  ['অভিভাবক ও শারীরিক তথ্য',['guardianName','guardianRelation','guardianPhone','height','weight','complexion','physicalProblem','physicalProblemDetail']],
- ['পারিবারিক তথ্য',['fatherName','fatherJob','motherName','motherJob','brothers','sisters','siblingPosition']],
- ['দ্বীনী অবস্থা',['salah','parda','mahram','avoidHaram','ownDeeniDetail','mazhab']],
+ ['পারিবারিক তথ্য',['fatherName','fatherJob','motherName','motherJob','brothers','brotherProfession','sisters','sisterProfession','siblingPosition']],
+ ['দ্বীনী অবস্থা',['salah','parda','pardaDetail','mahram','avoidHaram','ownDeeniDetail','mazhab','fiqhDetail']],
  ['শিক্ষা ও অর্থনৈতিক তথ্য',['educationType','educationQualifications','educationDetail','economicStatus','incomeSource']],
- ['বৈবাহিক অবস্থা ও জীবনসঙ্গীর চাহিদা',['groomMaritalStatus','brideMaritalStatus','prefAge','prefHeight','prefArea','prefEducation','extraRequirements']]
+ ['বৈবাহিক অবস্থা ও সন্তানদের তথ্য',['groomMaritalStatus','brideMaritalStatus','childrenBoys','childrenGirls','prefAge','prefHeight','prefArea','prefEducation','extraRequirements']]
 ];
 function prettyValue(value) {
  if (value===null || value===undefined || value==='') return '';
@@ -754,7 +865,7 @@ document.getElementById('confirmRegisterBtn').addEventListener('click',async()=>
   if(metaError)console.warn('Member code metadata update:',metaError.message);
   const {data:inserted,error:bioError}=await sb.from('biodata_records').insert({
     biodata_code:'TEMP',user_id:user.id,applicant_type:account.applicantType,
-    full_name:account.fullName,dob:biodata.dob,
+    full_name:account.fullName,dob:dobISO(biodata.dob),
     current_division:biodata.currentDivision||null,current_district:biodata.currentDistrict||null,
     permanent_district:biodata.permanentDistrict||null,
     marital_status:account.isGroom?(biodata.groomMaritalStatus||'অবিবাহিত'):(biodata.brideMaritalStatus||'অবিবাহিতা'),
