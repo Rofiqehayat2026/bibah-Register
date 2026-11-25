@@ -206,7 +206,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 .permission-quick-grid label{font-size:.78rem;line-height:1.3;min-height:2.5em;margin-bottom:5px}
 .permission-quick-grid input,.permission-quick-grid select{min-height:38px!important;padding:7px 9px!important;font-size:.86rem;border-radius:8px!important}
 .permission-submit .btn{width:100%;min-height:38px;padding:7px 9px;font-size:.86rem;white-space:nowrap}
-.admin-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:-5px 0 18px}
+.admin-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:-5px 0 18px}
 .summary-card{display:flex;align-items:center;gap:10px;min-width:0;padding:12px 13px;border:1px solid #e7e0cc;border-radius:13px;background:linear-gradient(145deg,#fff,#fbf8ef);box-shadow:0 4px 13px rgba(93,74,31,.055)}
 .summary-icon{width:35px;height:35px;flex:0 0 35px;display:grid;place-items:center;border-radius:10px;background:#f1ead7;color:#80652d}
 .summary-card small{display:block;color:#766b53;font-size:.74rem;line-height:1.3}
@@ -216,12 +216,12 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 
 
 /* Login history stays at the bottom and remains collapsed until opened */
-.security-history-bottom{max-width:1240px;margin:26px auto 8px;padding:0;border:1px solid #dce8e2;border-radius:12px;background:#fff;box-shadow:0 5px 18px rgba(19,68,53,.045);line-height:1.0}
-.security-history-bottom summary{cursor:pointer;list-style:none;padding:14px 16px;color:#145a45;font-weight:700;display:flex;align-items:center;gap:9px;line-height:1.0}
-.security-history-bottom summary::-webkit-details-marker{display:none}
-.security-history-bottom summary:after{content:'+';margin-left:auto;font-size:1.2rem}
-.security-history-bottom[open] summary:after{content:'−'}
-.security-history-content{padding:0 16px 12px;line-height:1.0}
+.security-history-card{line-height:1.0}
+#panel-security-history details>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:10px 12px;color:#145a45;font-weight:700;line-height:1.0;border-radius:9px;background:#f6f8f3}
+#panel-security-history details>summary::-webkit-details-marker{display:none}
+#panel-security-history details>summary:after{content:'+';margin-left:auto;font-size:1.2rem}
+#panel-security-history details[open]>summary:after{content:'−'}
+.security-history-content{padding:10px 4px 2px;line-height:1.0}
 .security-history-content .perm-row{line-height:1.0;padding:9px 0}
 .request-card-details{line-height:1.0;margin-top:9px}
 .request-card-details p{line-height:1.0;margin:7px 0}
@@ -264,6 +264,8 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 
   <section id="adminSummary" class="admin-summary" aria-label="ড্যাশবোর্ড সারাংশ">
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-users"></i></span><div><small>মোট সদস্য</small><strong id="sumMembers">—</strong></div></div>
+    <div class="summary-card"><span class="summary-icon"><i class="fas fa-heart"></i></span><div><small>বিবাহ সম্পন্ন</small><strong id="sumMarried">—</strong></div></div>
+    <div class="summary-card"><span class="summary-icon"><i class="fas fa-user-clock"></i></span><div><small>বিবাহ সম্পন্ন হিসেবে চিহ্নিত নয়</small><strong id="sumNotMarried">—</strong></div></div>
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-hourglass-half"></i></span><div><small>অপেক্ষমাণ বায়োডাটা</small><strong id="sumPending">—</strong></div></div>
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-circle-check"></i></span><div><small>অনুমোদিত বায়োডাটা</small><strong id="sumApproved">—</strong></div></div>
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-envelope-open-text"></i></span><div><small>অপেক্ষমাণ অনুরোধ</small><strong id="sumRequests">—</strong></div></div>
@@ -282,6 +284,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
     <button class="tab-btn role-super hidden" id="tabSiteContent" data-tab="site-content"><i class="fas fa-bullhorn"></i> নোটিশ ও লিংক</button>
     <button class="tab-btn role-audit hidden" id="tabAudit" data-tab="audit"><i class="fas fa-clipboard-list"></i> অডিট লগ</button>
+    <button class="tab-btn" id="tabSecurityHistory" data-tab="security-history"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</button>
   </div>
 
   <div class="tab-panel active" id="panel-home">
@@ -424,12 +427,18 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="btn btn-secondary mb-2" onclick="loadAuditLogs()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
     <div id="auditLogsList">লোড হচ্ছে...</div>
   </div>
+
+  <div class="tab-panel" id="panel-security-history">
+    <div class="section-title"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</div>
+    <div class="card security-history-card">
+      <details id="securityHistoryDetails">
+        <summary><i class="fas fa-clock"></i> লগইন ও নিরাপত্তা কার্যক্রমের বিস্তারিত দেখুন</summary>
+        <div id="securityHistoryContent" class="security-history-content">বিস্তারিত দেখতে উপরের শিরোনামে টাচ করুন।</div>
+      </details>
+    </div>
+  </div>
 </div>
 
-<details id="securityHistoryDetails" class="security-history-bottom">
-  <summary><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</summary>
-  <div id="securityHistoryContent" class="security-history-content">লোড হচ্ছে...</div>
-</details>
 
 <div id="detailModal" class="modal">
   <div class="modal-box">
@@ -467,6 +476,20 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 let currentSession = null;
 let currentProfile = null;
 
+async function getMarriageStatusMap(ids){
+  const unique=[...new Set((ids||[]).filter(Boolean))];
+  if(!unique.length)return new Map();
+  const {data,error}=await sb.rpc('get_public_biodata_marriage_statuses',{p_biodata_ids:unique});
+  if(error){console.warn('Marriage status lookup:',error.message);return new Map();}
+  return new Map((data||[]).map(x=>[x.biodata_id,!!x.marriage_completed]));
+}
+function marriageStatusBadge(completed){
+  return completed
+    ? '<span class="badge badge-verified"><i class="fas fa-heart"></i> বিবাহ সম্পন্ন</span>'
+    : '<span class="badge" style="background:#f1f3f2;color:#58665f">এখনো বিবাহ সম্পন্ন হিসেবে চিহ্নিত নয়</span>';
+}
+
+
 function updateDashboardClock(){
   const now=new Date();
   const time=document.getElementById('clockTime');
@@ -478,15 +501,18 @@ updateDashboardClock();
 setInterval(updateDashboardClock,1000);
 
 async function loadAdminSummary(){
-  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value==null?'—':Number(value).toLocaleString('en-US');};
-  const jobs=[
-    sb.from('profiles').select('*',{count:'exact',head:true}),
-    sb.from('biodata_records').select('id',{count:'exact',head:true}).eq('status','pending'),
-    sb.from('biodata_records').select('id',{count:'exact',head:true}).eq('status','approved'),
-    sb.from('access_requests').select('id',{count:'exact',head:true}).eq('status','pending')
-  ];
-  const results=await Promise.all(jobs.map(q=>q));
-  ['sumMembers','sumPending','sumApproved','sumRequests'].forEach((id,i)=>set(id,results[i].error?null:results[i].count));
+  const ids=['sumMembers','sumMarried','sumNotMarried','sumPending','sumApproved','sumRequests'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='…';});
+  const {data,error}=await sb.rpc('admin_get_dashboard_summary');
+  if(error){
+    console.error('Admin summary RPC failed:',error);
+    ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—';});
+    RH.toast('ড্যাশবোর্ডের সারাংশ লোড হয়নি। Supabase-এ marriage-completion-dashboard.sql চালান।',false);
+    return;
+  }
+  const row=Array.isArray(data)?data[0]:data;
+  const values={sumMembers:row?.total_members,sumMarried:row?.marriage_completed,sumNotMarried:row?.marriage_not_completed,sumPending:row?.pending_biodata,sumApproved:row?.approved_biodata,sumRequests:row?.pending_requests};
+  Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value==null?'—':Number(value).toLocaleString('en-US');});
 }
 
 (async function init() {
@@ -506,7 +532,6 @@ async function loadAdminSummary(){
   document.body.classList.toggle('member-page',pageName==='member.html');
   document.body.classList.toggle('admin-page',pageName==='admin-panel.html');
   await recordSecurityEventOnce('login', {device: navigator.userAgent.slice(0,240)});
-  await loadSecurityHistory();
 
   if (currentRole === 'member') {
     try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
@@ -611,12 +636,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
-    if (btn.dataset.tab === 'account') { await loadMemberAccount(); await loadSecurityHistory(); }
+    if (btn.dataset.tab === 'account') await loadMemberAccount();
     if (btn.dataset.tab === 'admin-requests') { if (can('access_requests.view')) await loadAdminRequests(); await loadAdminViewPermissions(); }
     if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata(btn.dataset.pendingStatus || 'pending');
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
     if (btn.dataset.tab === 'site-content') await loadSiteContentAdmin();
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
+    if (btn.dataset.tab === 'security-history') await loadSecurityHistory();
   });
 });
 
@@ -719,6 +745,8 @@ async function loadHome() {
     return;
   }
 
+  const ownMarriageMap = await getMarriageStatusMap([data.id]);
+  const ownMarriageBadge = marriageStatusBadge(ownMarriageMap.get(data.id)===true);
   const statusBadge = {
     pending: '<span class="badge badge-pending">অ্যাডমিন যাচাইয়ের অপেক্ষায়</span>',
     approved: '<span class="badge badge-verified">✅ অনুমোদিত</span>',
@@ -742,6 +770,7 @@ async function loadHome() {
           ${RH.esc(data.biodata_code)}
         </div>
         <div style="margin-top:.5rem">${statusBadge}</div>
+        <div style="margin-top:.4rem">${ownMarriageBadge}</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:.85rem;color:#45748a">জমা দেওয়ার তারিখ</div>
@@ -805,6 +834,7 @@ async function loadBrowse() {
     return;
   }
 
+  const marriageMap = await getMarriageStatusMap(data.map(x=>x.biodata_id));
   el.innerHTML = data.map(b => {
     const typeLabel = {
       male: 'পাত্র', female: 'পাত্রী',
@@ -824,6 +854,7 @@ async function loadBrowse() {
           <div>
             <span class="code-badge">${RH.esc(b.biodata_code_masked)}</span>
             <span class="code-badge" style="background:#e8f3f0;color:#0f5132;margin-left:.3rem">${typeLabel}</span>
+            <span style="display:inline-block;margin:.25rem 0 0 .25rem">${marriageStatusBadge(marriageMap.get(b.biodata_id)===true)}</span>
           </div>
           <div>${btnHtml}</div>
         </div>
@@ -973,6 +1004,7 @@ async function loadApproved() {
     return;
   }
 
+  const marriageMap = await getMarriageStatusMap(data.map(x=>x.biodata_id));
   el.innerHTML = data.map(b => `
     <div class="access-card">
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;align-items:center">
@@ -981,6 +1013,7 @@ async function loadApproved() {
           <span style="color:#45748a;font-size:.9rem;margin-left:.7rem">
             ${RH.esc(b.current_district || '')} • ${RH.esc(b.current_division || '')}
           </span>
+          <div style="margin-top:5px">${marriageStatusBadge(marriageMap.get(b.biodata_id)===true)}</div>
         </div>
         <button class="btn" style="padding:.5rem 1rem;font-size:.9rem" onclick="showDetail('${b.biodata_id}')">
           <i class="fas fa-eye"></i> বিস্তারিত
@@ -1018,6 +1051,8 @@ async function showDetail(biodataId) {
   }
 
   const b = data[0];
+  const marriageMap = await getMarriageStatusMap([b.id]);
+  const marriageBadge = marriageStatusBadge(marriageMap.get(b.id)===true);
   const fd = b.form_data || {};
   const row = (label, val) => {
     const out = RH.fmtVal(val);
@@ -1028,6 +1063,7 @@ async function showDetail(biodataId) {
     <div style="background:#f0f9f6;padding:1rem;border-radius:12px;margin-bottom:1rem;text-align:center">
       <div style="font-size:1.6rem;font-weight:700;color:#1e7e5e;font-family:monospace">${RH.esc(b.biodata_code)}</div>
       <div style="color:#45748a;font-size:.88rem">বায়োডাটা আইডি</div>
+      <div style="margin-top:8px">${marriageBadge}</div>
     </div>
 
     <div class="section-title"><i class="fas fa-user"></i> ব্যক্তিগত</div>
@@ -1169,6 +1205,7 @@ async function loadDashboardRole() {
 }
 
 function applyRoleUI() {
+  const summary=document.getElementById('adminSummary'); if(summary)summary.classList.toggle('hidden',currentRole==='member');
   const names = {member:'সদস্য',admin:'অ্যাডমিন',super_admin:'সুপার অ্যাডমিন'};
   document.getElementById('dashboardHeading').innerHTML = `<i class="fas fa-user-circle"></i> ${names[currentRole]} ড্যাশবোর্ড`;
   const chip = document.getElementById('roleChip');
@@ -1287,6 +1324,8 @@ async function loadAdminBiodata(status = 'pending') {
         : '<div class="alert alert-info">আগে অনুমোদিত কোনো বায়োডাটা পাওয়া যায়নি।</div>';
     return;
   }
+  const marriageMap = await getMarriageStatusMap(data.map(x=>x.id));
+  window.currentAdminBiodataStatus=status;
   const showValue = value => {
     if (value === null || value === undefined || value === '') return '—';
     if (typeof value === 'object') return JSON.stringify(value, null, 2);
@@ -1301,6 +1340,8 @@ async function loadAdminBiodata(status = 'pending') {
       `<div class="preview-row"><div class="lbl">${RH.esc(key)}</div><div class="val" style="white-space:pre-wrap">${RH.esc(showValue(value))}</div></div>`
     ).join('');
     const badge = status === 'approved' ? '<span class="badge badge-verified">অনুমোদিত</span>' : status === 'revision_requested' ? '<span class="badge badge-rejected">সংশোধন প্রয়োজন</span>' : '<span class="badge badge-pending">যাচাই অপেক্ষমাণ</span>'; 
+    const isMarried=marriageMap.get(b.id)===true;
+    const marriageControl=`<div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">${marriageStatusBadge(isMarried)}<button class="btn btn-small ${isMarried?'btn-secondary':'btn-warning'}" onclick="setMarriageCompleted('${b.id}',${!isMarried})">${isMarried?'বিবাহ সম্পন্ন নয় করুন':'বিবাহ সম্পন্ন হিসেবে চিহ্নিত করুন'}</button></div>`;
     const actions = `<div class="admin-actions mt-1">
       <button class="admin-print-btn" onclick="printAdminBiodata('${b.id}')"><i class="fas fa-print"></i> A4 বায়োডাটা / প্রিন্ট</button>
       ${status === 'pending' || status === 'approved' ? `<button class="btn btn-small" onclick="reviewBiodata('${b.id}','approved')">যাচাই করে অনুমোদন</button>
@@ -1313,11 +1354,24 @@ async function loadAdminBiodata(status = 'pending') {
       </div>
       <div><strong>${RH.esc(b.full_name||'নাম পাওয়া যায়নি')}</strong></div>
       <div class="muted-small">${RH.esc(b.applicant_type||'—')} | ${RH.esc(b.current_division||'—')} | ${RH.esc(b.current_district||'—')} | ${RH.fmtDate(b.created_at)}</div>
+      ${marriageControl}
       ${details ? `<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;color:#0e4d64">সম্পূর্ণ ফরমের তথ্য দেখুন</summary><div style="margin-top:8px">${details}</div></details>` : ''}
       ${actions}
     </div>`;
   }).join('');
 }
+async function setMarriageCompleted(id,completed){
+  if(!can('biodata.verify')&&!can('biodata.update'))return RH.toast('বিবাহের অবস্থা পরিবর্তনের অনুমতি নেই।',false);
+  const label=completed?'বিবাহ সম্পন্ন':'বিবাহ সম্পন্ন নয়';
+  if(!confirm(`এই বায়োডাটাকে “${label}” হিসেবে চিহ্নিত করবেন?`))return;
+  const {data,error}=await sb.rpc('admin_set_biodata_marriage_status',{p_biodata_id:id,p_completed:completed});
+  if(error)return RH.toast('অবস্থা পরিবর্তন হয়নি: '+error.message,false);
+  RH.toast('বিবাহের অবস্থা আপডেট হয়েছে।');
+  await loadAdminSummary();
+  if(document.getElementById('adminMemberSearchInput')?.value.trim())await searchAdminMembers();
+  else await loadAdminBiodata(window.currentAdminBiodataStatus||'approved');
+}
+
 async function searchAdminMembers() {
   if (!can('biodata.verify') && !can('biodata.view_all')) return RH.toast('অনুমতি নেই।',false);
   const q=(document.getElementById('adminMemberSearchInput')?.value||'').trim();
@@ -1327,6 +1381,7 @@ async function searchAdminMembers() {
   const {data,error}=await sb.rpc('admin_search_biodata_members',{p_query:q});
   if(error){el.innerHTML=`<div class="alert alert-error">খোঁজা যায়নি: ${RH.esc(error.message)}</div>`;return;}
   if(!data?.length){el.innerHTML='<div class="alert alert-info">কোনো সদস্য পাওয়া যায়নি।</div>';return;}
+  const marriageMap=await getMarriageStatusMap(data.map(x=>x.id));
   el.innerHTML=data.map(m=>{
     adminBiodataCache[m.id]=m;
     const fd=m.form_data&&typeof m.form_data==='object'?m.form_data:{};
@@ -1334,6 +1389,7 @@ async function searchAdminMembers() {
     return `<div class="card" style="margin:.6rem 0;padding:12px">
       <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong>${RH.esc(m.full_name||'নাম নেই')} — ${RH.esc(m.biodata_code||'কোড নেই')}</strong><span class="badge">${RH.esc(m.status||'')}</span></div>
       <div class="muted-small">মোবাইল: ${RH.esc(m.phone||'—')} | ${RH.esc(m.current_district||'—')}, ${RH.esc(m.current_division||'—')}</div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">${marriageStatusBadge(marriageMap.get(m.id)===true)}<button class="btn btn-small btn-warning" onclick="setMarriageCompleted('${m.id}',${marriageMap.get(m.id)!==true})">${marriageMap.get(m.id)===true?'বিবাহ সম্পন্ন নয় করুন':'বিবাহ সম্পন্ন হিসেবে চিহ্নিত করুন'}</button></div>
       ${details?`<details style="margin-top:8px"><summary style="cursor:pointer;color:#0e4d64;font-weight:700">বায়োডাটার তথ্য দেখুন</summary>${details}</details>`:''}
       <div class="admin-actions mt-1"><button class="admin-print-btn" onclick="printAdminBiodata('${m.id}')"><i class="fas fa-print"></i> A4 প্রিন্ট</button>${['pending','approved'].includes(m.status)?`<button class="btn btn-small btn-warning" onclick="requestBiodataRevision('${m.id}')">সংশোধনের জন্য ফেরত পাঠান</button>`:''}</div>
     </div>`;
