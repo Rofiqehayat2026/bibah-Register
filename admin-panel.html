@@ -214,6 +214,25 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 @media(max-width:760px){.admin-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.summary-card{padding:10px}.summary-card strong{font-size:1.15rem}}
 @media(max-width:380px){.permission-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.permission-quick-grid label{font-size:.72rem}.summary-card{gap:7px}.summary-icon{width:30px;height:30px;flex-basis:30px}}
 
+
+/* Login history stays at the bottom and remains collapsed until opened */
+.security-history-bottom{max-width:1240px;margin:26px auto 8px;padding:0;border:1px solid #dce8e2;border-radius:12px;background:#fff;box-shadow:0 5px 18px rgba(19,68,53,.045);line-height:1.0}
+.security-history-bottom summary{cursor:pointer;list-style:none;padding:14px 16px;color:#145a45;font-weight:700;display:flex;align-items:center;gap:9px;line-height:1.0}
+.security-history-bottom summary::-webkit-details-marker{display:none}
+.security-history-bottom summary:after{content:'+';margin-left:auto;font-size:1.2rem}
+.security-history-bottom[open] summary:after{content:'−'}
+.security-history-content{padding:0 16px 12px;line-height:1.0}
+.security-history-content .perm-row{line-height:1.0;padding:9px 0}
+.request-card-details{line-height:1.0;margin-top:9px}
+.request-card-details p{line-height:1.0;margin:7px 0}
+.request-card-details .muted-small{line-height:1.0}
+.request-card-details .countdown-wrap{line-height:1.0}
+.request-card-details .admin-actions{line-height:1.0}
+#adminRequestsList .admin-actions{line-height:1.0}
+#adminRequestsList .admin-actions .btn{line-height:1.0}
+#adminRequestsList .countdown-wrap{line-height:1.0}
+#adminRequestsList .countdown{line-height:1.0}
+
 </style>
 </head>
 <body class="admin-page">
@@ -318,7 +337,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   <div class="tab-panel" id="panel-account">
     <div class="section-title"><i class="fas fa-user-shield"></i> আমার অ্যাকাউন্ট ও নিরাপত্তা</div>
     <div class="card" id="memberAccountCard">অ্যাকাউন্টের তথ্য লোড হচ্ছে...</div>
-    <div class="card"><h3 style="margin-top:0;color:#145a45"><i class="fas fa-shield-alt"></i> সাম্প্রতিক নিরাপত্তা কার্যক্রম</h3><div id="memberSecurityHistory">লোড হচ্ছে...</div></div>
     <div class="card">
       <h3 style="margin:0 0 .6rem;color:#145a45"><i class="fas fa-key"></i> পাসওয়ার্ড পরিবর্তন</h3>
       <p class="text-muted">বর্তমান পাসওয়ার্ড যাচাই করে নতুন পাসওয়ার্ড সেট করুন। কমপক্ষে ৮ অক্ষর ব্যবহার করুন।</p>
@@ -333,7 +351,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   </div>
 
   <div class="tab-panel" id="panel-admin-requests">
-    <div class="card"><h3 style="margin-top:0;color:#145a45"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</h3><div id="adminSecurityHistory">লোড হচ্ছে...</div></div>
     <div class="section-title"><i class="fas fa-clipboard-check"></i> বিস্তারিত বায়োডাটা দেখার আবেদন</div>
     <div class="alert alert-info">অ্যাডমিন অনুমোদন করলে আবেদনকারী সর্বোচ্চ ২৪ ঘণ্টার জন্য বায়োডাটা দেখতে পারবেন। প্রয়োজনে এডমিন আবার মেয়াদ বাড়াতে পারবেন।</div>
     <div class="card">
@@ -408,6 +425,11 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <div id="auditLogsList">লোড হচ্ছে...</div>
   </div>
 </div>
+
+<details id="securityHistoryDetails" class="security-history-bottom">
+  <summary><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</summary>
+  <div id="securityHistoryContent" class="security-history-content">লোড হচ্ছে...</div>
+</details>
 
 <div id="detailModal" class="modal">
   <div class="modal-box">
@@ -549,7 +571,7 @@ async function refreshAdminPendingNotifications(){
   }
   if(can('access_requests.view')){
     jobs.push((async()=>{
-      const {data,error}=await sb.rpc('admin_list_access_requests');
+      const {data,error}=await sb.rpc('admin_list_access_requests_display');
       if(error)console.warn('Access request notification:',error);
       else counts.requests=Array.isArray(data)?data.filter(x=>x.status==='pending').length:0;
     })());
@@ -632,7 +654,7 @@ async function recordSecurityEventOnce(eventType, details={}){
   sessionStorage.setItem(key,'1');
 }
 async function loadSecurityHistory(){
-  const el=document.getElementById(currentRole==='member'?'memberSecurityHistory':'adminSecurityHistory');
+  const el=document.getElementById('securityHistoryContent');
   if(!el||!currentSession?.user?.id)return;
   const {data,error}=await sb.from('user_security_events').select('event_type,details,created_at').eq('user_id',currentSession.user.id).order('created_at',{ascending:false}).limit(8);
   if(error){el.innerHTML='<div class="muted-small">নিরাপত্তা ইতিহাস দেখাতে SQL সেটআপ প্রয়োজন।</div>';return;}
@@ -1188,7 +1210,7 @@ async function loadAdminRequests() {
   const el = document.getElementById('adminRequestsList');
   if (!can('access_requests.view')) { el.innerHTML = '<div class="alert alert-error">আবেদন দেখার অনুমতি নেই।</div>'; return; }
   el.innerHTML = 'লোড হচ্ছে...';
-  const {data, error} = await sb.rpc('admin_list_access_requests');
+  const {data, error} = await sb.rpc('admin_list_access_requests_display');
   if (error) { el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`; return; }
   if (!data?.length) { el.innerHTML = '<div class="alert alert-info">কোনো আবেদন পাওয়া যায়নি।</div>'; return; }
 
@@ -1202,12 +1224,14 @@ async function loadAdminRequests() {
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <strong>আবেদন #${RH.esc(r.id.slice(0,8))}</strong><span class="badge ${r.status==='approved'?'badge-verified':r.status==='pending'?'badge-pending':'badge-rejected'}">${badge}</span>
       </div>
-      <p class="muted-small">বায়োডাটা ID: <span class="id-short">${RH.esc(r.biodata_id)}</span></p>
-      <p class="muted-small">আবেদনকারী: <span class="id-short">${RH.esc(r.requester_user_id)}</span></p>
-      <p class="muted-small">মালিক: <span class="id-short">${RH.esc(r.owner_user_id)}</span></p>
-      ${r.message ? `<p><strong>বার্তা:</strong> ${RH.esc(r.message)}</p>` : ''}
-      ${r.admin_note ? `<p class="note">${RH.esc(r.admin_note)}</p>` : ''}
-      <div class="muted-small">জমা: ${RH.fmtDate(r.created_at)} ${r.expires_at ? '| মেয়াদ: '+RH.fmtDate(r.expires_at):''}</div>
+      <div class="request-card-details">
+        <p class="muted-small"><strong>সদস্য নিবন্ধন আইডি:</strong> <span class="id-short">${RH.esc(r.member_registration_code || 'তথ্য পাওয়া যায়নি')}</span></p>
+        <p class="muted-small"><strong>আবেদনকারী:</strong> ${RH.esc(r.requester_name || 'নাম পাওয়া যায়নি')}</p>
+        <p class="muted-small"><strong>মালিক:</strong> ${RH.esc(r.owner_name || 'নাম পাওয়া যায়নি')}</p>
+        ${r.message ? `<p><strong>বার্তা:</strong> ${RH.esc(r.message)}</p>` : ''}
+        ${r.admin_note ? `<p class="note">${RH.esc(r.admin_note)}</p>` : ''}
+        <div class="muted-small">জমা: ${RH.fmtDate(r.created_at)} ${r.expires_at ? '| মেয়াদ: '+RH.fmtDate(r.expires_at):''}</div>
+      </div>
       ${r.status === 'approved' && r.expires_at ? `<div class="countdown-wrap" data-expires="${r.expires_at}" style="margin-top:.5rem">${renderCountdown(r.expires_at)}</div>` : ''}
       <div class="admin-actions mt-1">${buttons || '<span class="muted-small">এখানে কোনো কার্যকর অনুমতি নেই।</span>'}</div>
     </div>`;
