@@ -200,15 +200,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 @media(prefers-reduced-motion:no-preference){.card,.candidate-card,.btn{transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease}}
 
 </style>
-<style>
-/* ===== Mobile-first refinements and interaction overlays ===== */
-.container{width:100%;max-width:1480px;margin:0 auto;padding-left:300px;padding-right:clamp(12px,2.2vw,30px)}
-@media(max-width:850px){body{padding:0!important}.container{padding:12px 12px 28px!important;margin:0!important;width:100%!important}.header-bar{position:sticky;top:0;z-index:900;border-radius:0 0 16px 16px;margin:0 -12px 16px!important;padding:10px 12px!important;gap:8px!important;background:rgba(255,255,255,.97);backdrop-filter:blur(12px)}.header-bar h1{font-size:1.08rem!important;line-height:1.25;min-width:0!important}.dashboard-clock{min-width:0!important;padding:5px 8px!important}.dashboard-clock strong{font-size:.88rem!important}.dashboard-clock small{font-size:.65rem!important}.header-bar .btn{font-size:.78rem!important;padding:7px 9px!important}.header-bar>div:last-child{gap:6px!important}.header-bar #userInfo{display:none!important}.tabs{width:min(86vw,310px)!important;padding:18px 14px 28px!important}.tab-btn{min-height:46px!important;font-size:.94rem!important}.card{padding:14px!important;border-radius:15px!important;margin-bottom:12px!important}.section-title{font-size:1.02rem!important}.grid-2,.grid-3{grid-template-columns:1fr!important}.admin-actions{display:flex;flex-wrap:wrap;gap:7px}.admin-actions .btn{flex:1 1 auto}.modal{padding:8px!important;align-items:flex-end!important}.modal-box{width:100%!important;max-width:none!important;max-height:92dvh!important;overflow:auto!important;border-radius:20px 20px 12px 12px!important;padding:14px!important}.admin-table-wrap{overflow-x:auto!important}.admin-table{min-width:650px}.security-history-details{margin:18px 12px 30px!important}}
-@media(max-width:420px){.header-bar>a{display:none!important}.header-bar h1{font-size:1rem!important}.dashboard-clock{display:none!important}.header-bar .btn{padding:7px 8px!important}.tab-btn{padding:11px!important}.card h3{font-size:1rem!important}}
-.admin-notification-scrim{position:fixed;inset:0;z-index:1998;background:rgba(9,28,22,.55);backdrop-filter:blur(3px)}.admin-notification-scrim[hidden]{display:none!important}.admin-notification-panel{position:fixed!important;z-index:1999!important;left:50%!important;top:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;width:min(520px,calc(100vw - 28px))!important;max-height:min(76dvh,680px)!important;overflow:auto!important;padding:18px!important;border-radius:20px!important;box-shadow:0 24px 80px rgba(0,0,0,.28)!important}.admin-notification-panel[hidden]{display:none!important}.notification-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:-18px;background:#fff;padding:0 0 10px;z-index:2}.notification-heading h3{margin:0!important}.notification-close{width:36px;height:36px;border:0;border-radius:50%;background:#f1f4ef;color:#355342;font-size:25px;line-height:1;cursor:pointer}.admin-notification-row{align-items:flex-start!important;flex-wrap:wrap}.admin-notification-row .btn{flex-shrink:0}.notification-open{overflow:hidden!important}
-.security-history-details{max-width:1100px;margin:22px auto 36px;padding:0 16px;border:1px solid #e2e8dc;border-radius:16px;background:#fff;box-shadow:0 8px 25px rgba(25,55,35,.05)}.security-history-details summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;cursor:pointer;color:#174d39;font-weight:700}.security-history-details summary::-webkit-details-marker{display:none}.security-history-details summary small{color:#87958a;font-weight:500}.security-history-content{padding:0 16px 14px}.security-event-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:12px 0;border-top:1px solid #edf0e9}.security-event-row time{white-space:nowrap;color:#718174;font-size:.8rem}.permission-export-choice{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid #e5ddc5;border-radius:12px;background:#fffdf6;margin:8px 0 12px}.permission-export-choice input{width:18px;height:18px;margin-top:3px;accent-color:#176b4b}.permission-export-choice small{display:block;color:#7c8176;font-weight:400}.detail-toolbar{display:flex;justify-content:flex-end;margin-bottom:10px}.export-denied{display:inline-flex;align-items:center;gap:7px;color:#8b6a2d;background:#fbf6e9;border:1px solid #eadfbe;border-radius:10px;padding:8px 12px;font-size:.85rem}.biodata-a4-sheet{position:relative;isolation:isolate;background:#fff;border:1px solid #e4e8de;border-radius:12px;padding:18px;overflow:hidden;box-shadow:0 8px 28px rgba(20,50,35,.06)}.biodata-a4-header{text-align:center;border-bottom:2px solid #c49a45;padding:0 0 10px;margin-bottom:12px}.a4-brand{font-size:20px;font-weight:800;color:#14513a}.a4-subtitle{font-size:12px;color:#78623a}.a4-code{display:inline-block;margin-top:5px;padding:3px 12px;border:1px solid #d9c38e;border-radius:30px;font-family:monospace;color:#745a20;font-weight:700}.biodata-a4-sheet .section-title{margin:13px 0 5px!important;padding:5px 8px!important;border-left:3px solid #c49a45!important;background:#f6f5ed!important;color:#23513c!important}.biodata-a4-sheet .preview-row{display:grid;grid-template-columns:minmax(105px,28%) 1fr;gap:10px;padding:5px 8px;border-bottom:1px solid #eef0e9;font-size:.88rem}.biodata-a4-sheet .preview-row .lbl{color:#647468;font-weight:600}.biodata-a4-sheet .preview-row .val{color:#263a2e;overflow-wrap:anywhere}.biodata-watermark{position:absolute;z-index:-1;left:50%;top:48%;transform:translate(-50%,-50%) rotate(-28deg);width:130%;text-align:center;color:#176b4b;opacity:.08;font-size:24px;font-weight:800;white-space:nowrap;pointer-events:none}.a4-footer{margin-top:12px;padding-top:7px;border-top:1px solid #d9dfd4;text-align:center;color:#7b806f;font-size:9px}
-@media print{body *{visibility:hidden!important}body.biodata-export-allowed #biodataA4Sheet,body.biodata-export-allowed #biodataA4Sheet *{visibility:visible!important}.biodata-a4-sheet{user-select:none!important;position:absolute!important;left:0!important;top:0!important;width:194mm!important;min-height:280mm!important;max-height:280mm!important;overflow:hidden!important;border:0!important;box-shadow:none!important;border-radius:0!important}.biodata-watermark{opacity:.12!important}}
-</style>
 </head>
 <body class="member-page">
 <div class="container">
@@ -224,9 +215,8 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
         <button id="adminNotificationBell" class="admin-notification-bell" type="button" onclick="toggleAdminNotificationPanel()" aria-haspopup="true" aria-expanded="false" aria-controls="adminNotificationPanel" title="পেন্ডিং নোটিফিকেশন">
           <i class="fas fa-bell bell-icon"></i><span>নোটিফিকেশন</span><span id="adminNotificationCount" class="admin-notification-count" hidden>0</span>
         </button>
-        <div id="adminNotificationScrim" class="admin-notification-scrim" hidden onclick="closeAdminNotificationPanel()"></div>
-        <div id="adminNotificationPanel" class="admin-notification-panel" hidden role="dialog" aria-modal="true" aria-label="পেন্ডিং নোটিফিকেশন">
-          <div class="notification-heading"><h3><i class="fas fa-bell"></i> পেন্ডিং নোটিফিকেশন</h3><button type="button" class="notification-close" onclick="closeAdminNotificationPanel()" aria-label="বন্ধ করুন">×</button></div>
+        <div id="adminNotificationPanel" class="admin-notification-panel" hidden role="dialog" aria-label="পেন্ডিং নোটিফিকেশন">
+          <h3><i class="fas fa-bell"></i> পেন্ডিং নোটিফিকেশন</h3>
           <div id="adminNotificationItems"><div class="admin-notification-empty">নোটিফিকেশন লোড হচ্ছে...</div></div>
           <div id="adminNotificationUpdated" class="admin-notification-foot"></div>
         </div>
@@ -306,6 +296,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   <div class="tab-panel" id="panel-account">
     <div class="section-title"><i class="fas fa-user-shield"></i> আমার অ্যাকাউন্ট ও নিরাপত্তা</div>
     <div class="card" id="memberAccountCard">অ্যাকাউন্টের তথ্য লোড হচ্ছে...</div>
+    <div class="card"><h3 style="margin-top:0;color:#145a45"><i class="fas fa-shield-alt"></i> সাম্প্রতিক নিরাপত্তা কার্যক্রম</h3><div id="memberSecurityHistory">লোড হচ্ছে...</div></div>
     <div class="card">
       <h3 style="margin:0 0 .6rem;color:#145a45"><i class="fas fa-key"></i> পাসওয়ার্ড পরিবর্তন</h3>
       <p class="text-muted">বর্তমান পাসওয়ার্ড যাচাই করে নতুন পাসওয়ার্ড সেট করুন। কমপক্ষে ৮ অক্ষর ব্যবহার করুন।</p>
@@ -320,6 +311,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   </div>
 
   <div class="tab-panel" id="panel-admin-requests">
+    <div class="card"><h3 style="margin-top:0;color:#145a45"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</h3><div id="adminSecurityHistory">লোড হচ্ছে...</div></div>
     <div class="section-title"><i class="fas fa-clipboard-check"></i> বিস্তারিত বায়োডাটা দেখার আবেদন</div>
     <div class="alert alert-info">অ্যাডমিন অনুমোদন করলে আবেদনকারী সর্বোচ্চ ২৪ ঘণ্টার জন্য বায়োডাটা দেখতে পারবেন। প্রয়োজনে এডমিন আবার মেয়াদ বাড়াতে পারবেন।</div>
     <div class="card">
@@ -333,7 +325,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
         <div class="form-group"><label for="permissionHours">অনুমতির সময় (ঘণ্টা)</label><select id="permissionHours"><option value="24">২৪ ঘণ্টা</option><option value="12">১২ ঘণ্টা</option><option value="6">৬ ঘণ্টা</option><option value="1">১ ঘণ্টা</option></select></div>
         <div class="form-group" style="display:flex;align-items:end"><button class="btn" onclick="grantBiodataView()"><i class="fas fa-key"></i> অনুমতি দিন</button></div>
       </div>
-      <label class="permission-export-choice"><input type="checkbox" id="permissionAllowExport"> <span><strong>প্রিন্ট / PDF সংরক্ষণের অনুমতি</strong><small>এটি আলাদা অনুমতি। ডিফল্টভাবে বন্ধ থাকবে।</small></span></label>
       <button class="btn btn-secondary btn-small" onclick="loadAdminViewPermissions()"><i class="fas fa-rotate"></i> অনুমতিগুলো রিফ্রেশ</button>
       <div id="adminViewPermissions" class="mt-2">লোড হচ্ছে...</div>
     </div>
@@ -398,12 +389,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   </div>
 </div>
 
-<details id="securityHistoryDetails" class="security-history-details">
-  <summary><span><i class="fas fa-clock-rotate-left"></i> লগইন ও নিরাপত্তা ইতিহাস</span><small>বিস্তারিত দেখতে চাপ দিন</small></summary>
-  <div id="memberSecurityHistory" class="security-history-content" hidden>লোড হচ্ছে...</div>
-  <div id="adminSecurityHistory" class="security-history-content" hidden>লোড হচ্ছে...</div>
-</details>
-
 <div id="detailModal" class="modal">
   <div class="modal-box">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
@@ -444,7 +429,7 @@ function updateDashboardClock(){
   const now=new Date();
   const time=document.getElementById('clockTime');
   const date=document.getElementById('clockDate');
-  if(time)time.textContent=new Intl.DateTimeFormat('bn-BD',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);
+  if(time)time.textContent=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);
   if(date)date.textContent=new Intl.DateTimeFormat('bn-BD',{timeZone:'Asia/Dhaka',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
 }
 updateDashboardClock();
@@ -454,8 +439,8 @@ setInterval(updateDashboardClock,1000);
   currentSession = await RH.getSession();
   if (!currentSession) { location.replace('login.html'); return; }
   currentProfile = await RH.getProfile();
-  document.getElementById('userInfo').innerHTML =
-    `<i class="fas fa-user"></i> ${RH.esc(currentProfile?.full_name || currentSession.user.email)}`;
+  const displayName = currentProfile?.full_name || currentProfile?.name || currentProfile?.display_name || currentSession.user.user_metadata?.full_name || currentSession.user.user_metadata?.name || currentSession.user.email || 'ব্যবহারকারী';
+  document.getElementById('userInfo').textContent = displayName;
 
   const ok = await loadDashboardRole();
   if (!ok) return;
@@ -466,7 +451,7 @@ setInterval(updateDashboardClock,1000);
   document.body.classList.toggle('member-page',pageName==='member.html');
   document.body.classList.toggle('admin-page',pageName==='admin-panel.html');
   await recordSecurityEventOnce('login', {device: navigator.userAgent.slice(0,240)});
-  if (currentRole === 'member') { const a=document.getElementById('memberSecurityHistory'); if(a)a.hidden=true; } else { const a=document.getElementById('adminSecurityHistory'); if(a)a.hidden=true; }
+  await loadSecurityHistory();
 
   if (currentRole === 'member') {
     try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
@@ -485,34 +470,18 @@ setInterval(updateDashboardClock,1000);
   }
 })();
 
-document.addEventListener('keydown',e=>{
-  if(document.getElementById('detailModal')?.classList.contains('show') && document.getElementById('biodataA4Sheet') && !document.body.classList.contains('biodata-export-allowed') && (e.ctrlKey||e.metaKey) && ['p','s'].includes(e.key.toLowerCase())){
-    e.preventDefault();RH.toast('এই বায়োডাটা প্রিন্ট/PDF করার অনুমতি নেই।',false);
-  }
-});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAdminNotificationPanel();closeDetail();}});
-document.addEventListener('toggle',function(e){
-  if(e.target?.id==='securityHistoryDetails' && e.target.open)loadSecurityHistory();
-},true);
-
 function toggleAdminNotificationPanel(){
   const panel=document.getElementById('adminNotificationPanel');
   const bell=document.getElementById('adminNotificationBell');
-  const scrim=document.getElementById('adminNotificationScrim');
   if(!panel||!bell)return;
   panel.hidden=!panel.hidden;
-  if(scrim)scrim.hidden=panel.hidden;
-  document.body.classList.toggle('notification-open',!panel.hidden);
   bell.setAttribute('aria-expanded',String(!panel.hidden));
   if(!panel.hidden) refreshAdminPendingNotifications().catch(console.warn);
 }
 function closeAdminNotificationPanel(){
   const panel=document.getElementById('adminNotificationPanel');
   const bell=document.getElementById('adminNotificationBell');
-  const scrim=document.getElementById('adminNotificationScrim');
   if(panel)panel.hidden=true;
-  if(scrim)scrim.hidden=true;
-  document.body.classList.remove('notification-open');
   if(bell)bell.setAttribute('aria-expanded','false');
 }
 async function openAdminPendingTab(tab,status){
@@ -632,12 +601,11 @@ async function recordSecurityEventOnce(eventType, details={}){
 async function loadSecurityHistory(){
   const el=document.getElementById(currentRole==='member'?'memberSecurityHistory':'adminSecurityHistory');
   if(!el||!currentSession?.user?.id)return;
-  el.hidden=false;
-  const {data,error}=await sb.from('user_security_events').select('event_type,details,created_at').eq('user_id',currentSession.user.id).order('created_at',{ascending:false}).limit(12);
+  const {data,error}=await sb.from('user_security_events').select('event_type,details,created_at').eq('user_id',currentSession.user.id).order('created_at',{ascending:false}).limit(8);
   if(error){el.innerHTML='<div class="muted-small">নিরাপত্তা ইতিহাস দেখাতে SQL সেটআপ প্রয়োজন।</div>';return;}
   if(!data?.length){el.innerHTML='<div class="muted-small">এখনো কোনো নিরাপত্তা কার্যক্রম নেই।</div>';return;}
   const labels={login:'লগইন',password_changed:'পাসওয়ার্ড পরিবর্তন'};
-  el.innerHTML=data.map(x=>`<div class="security-event-row"><div><strong>${labels[x.event_type]||RH.esc(x.event_type)}</strong><div class="muted-small">${x.details?.device?RH.esc(x.details.device.slice(0,180)):'ডিভাইসের তথ্য নেই'}</div></div><time>${RH.fmtDate(x.created_at)}</time></div>`).join('');
+  el.innerHTML=data.map(x=>`<div class="perm-row"><div><strong>${labels[x.event_type]||RH.esc(x.event_type)}</strong><div class="muted-small">${x.details?.device?RH.esc(x.details.device.slice(0,95))+'…':''}</div></div><small>${RH.fmtDate(x.created_at)}</small></div>`).join('');
 }
 
 async function changeMemberPassword(){
@@ -1001,12 +969,7 @@ async function showDetail(biodataId) {
     return out ? `<div class="preview-row"><div class="lbl">${label}</div><div class="val">${out}</div></div>` : '';
   };
 
-  const canExport=!!b.allow_export;
-  document.body.classList.toggle('biodata-export-allowed',canExport);
   document.getElementById('detailContent').innerHTML = `
-    <div class="detail-toolbar">${canExport?'<button type="button" class="btn" onclick="printPermittedBiodata()"><i class="fas fa-print"></i> A4 প্রিন্ট / PDF</button>':'<span class="export-denied"><i class="fas fa-lock"></i> প্রিন্ট/PDF অনুমতি নেই</span>'}</div>
-    <div id="biodataA4Sheet" class="biodata-a4-sheet">
-    <div class="biodata-a4-header"><div class="a4-brand">জান্নাতের পথে</div><div class="a4-subtitle">সাথীর সন্ধানে · বায়োডাটা</div><div class="a4-code">${RH.esc(b.biodata_code)}</div></div>
     <div style="background:#f0f9f6;padding:1rem;border-radius:12px;margin-bottom:1rem;text-align:center">
       <div style="font-size:1.6rem;font-weight:700;color:#1e7e5e;font-family:monospace">${RH.esc(b.biodata_code)}</div>
       <div style="color:#45748a;font-size:.88rem">বায়োডাটা আইডি</div>
@@ -1019,38 +982,17 @@ async function showDetail(biodataId) {
     ${row('জেলা', b.current_district)}
     ${row('স্থায়ী জেলা', b.permanent_district)}
     ${row('বৈবাহিক অবস্থা', b.marital_status)}
-    ${row('মোবাইল', fd.mobile || fd.whatsapp)}
+    ${row('মোবাইল', fd.whatsapp || fd.mobile)}
     ${row('WhatsApp', fd.whatsapp)}
     ${row('Telegram', fd.telegram)}
 
-    <div class="section-title"><i class="fas fa-map-marker-alt"></i> ঠিকানা</div>
-    ${row('বর্তমান ঠিকানা', [fd.currentVillage,fd.currentPostOffice,fd.currentUnion,fd.currentWard,fd.currentThana,fd.currentDistrict,fd.currentDivision].filter(Boolean).join('، '))}
-    ${row('স্থায়ী জেলা', b.permanent_district || fd.permanentDistrict)}
-    ${row('স্থায়ী ঠিকানা', [fd.permanentVillage,fd.permanentPostOffice,fd.permanentUnion,fd.permanentWard,fd.permanentThana].filter(Boolean).join('، '))}
-
-    <div class="section-title"><i class="fas fa-users"></i> অভিভাবক ও পারিবারিক</div>
-    ${row('অভিভাবক', fd.guardianName)}
-    ${row('সম্পর্ক', fd.guardianRelation)}
-    ${row('অভিভাবকের মোবাইল', fd.guardianPhone)}
+    <div class="section-title"><i class="fas fa-users"></i> পারিবারিক</div>
     ${row('পিতার নাম', fd.fatherName)}
     ${row('পিতার পেশা', fd.fatherJob)}
     ${row('মাতার নাম', fd.motherName)}
     ${row('মাতার পেশা', fd.motherJob)}
     ${row('ভাই', fd.brothers)}
     ${row('বোন', fd.sisters)}
-    ${row('ভাই-বোনের মধ্যে অবস্থান', fd.siblingPosition)}
-
-    <div class="section-title"><i class="fas fa-heartbeat"></i> শারীরিক তথ্য</div>
-    ${row('উচ্চতা', fd.height)}
-    ${row('ওজন', fd.weight)}
-    ${row('গায়ের রং', fd.complexion)}
-    ${row('শারীরিক সমস্যা', fd.physicalProblemDetail || fd.physicalProblem)}
-
-    <div class="section-title"><i class="fas fa-graduation-cap"></i> শিক্ষা ও পেশা</div>
-    ${row('শিক্ষার ধরন', fd.educationType)}
-    ${row('শিক্ষাগত যোগ্যতা', fd.educationQualifications || fd.educationDetail)}
-    ${row('অর্থনৈতিক অবস্থা', fd.economicStatus)}
-    ${row('আয়ের উৎস / পেশা', fd.incomeSource)}
 
     <div class="section-title"><i class="fas fa-mosque"></i> দ্বীনী অবস্থা</div>
     ${row('৫ ওয়াক্ত সালাত', fd.salah)}
@@ -1067,28 +1009,11 @@ async function showDetail(biodataId) {
     ${row('এলাকা', fd.prefArea)}
     ${row('শিক্ষা', fd.prefEducation)}
     ${row('অতিরিক্ত', fd.extraRequirements)}
-    <div class="a4-footer">এই বায়োডাটা ব্যক্তিগত ও গোপনীয়। অনুমোদিত ব্যবহার ব্যতীত শেয়ার করা নিষেধ।</div>
-    </div>
   `;
-  const sheet=document.getElementById('biodataA4Sheet');
-  if(sheet){const stamp=document.createElement('div');stamp.className='biodata-watermark';stamp.textContent=`দেখছেন: ${currentProfile?.full_name||currentSession?.user?.phone||'অনুমোদিত সদস্য'} · ${new Date().toLocaleString('bn-BD')}`;sheet.appendChild(stamp);}
 }
-
-function printPermittedBiodata(){
-  const sheet=document.getElementById('biodataA4Sheet');
-  if(!sheet)return RH.toast('বায়োডাটা লোড হয়নি।',false);
-  const printWindow=window.open('','_blank','width=900,height=1100');
-  if(!printWindow)return RH.toast('প্রিন্ট উইন্ডো খোলা যায়নি। পপ-আপ অনুমতি দিন।',false);
-  const styles=[...document.querySelectorAll('style')].map(x=>x.innerHTML).join('\n');
-  printWindow.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>বায়োডাটা</title><style>${styles}
-@page{size:A4;margin:8mm}html,body{margin:0!important;padding:0!important;background:#fff!important}.biodata-a4-sheet{zoom:.82;width:236mm!important;min-height:342mm!important;max-height:342mm!important;overflow:hidden!important;box-shadow:none!important;border:0!important;margin:0!important;padding:8mm!important;position:relative!important;break-inside:avoid!important}.detail-toolbar{display:none!important}.biodata-watermark{opacity:.12!important;font-size:18pt!important}.preview-row{padding:3px 5px!important}.section-title{margin:7px 0 3px!important;font-size:10pt!important}.a4-footer{position:absolute;bottom:5mm!important}</style></head><body class="biodata-export-allowed">${sheet.outerHTML}<script>window.onload=()=>{window.print();window.onafterprint=()=>window.close()}<\/script></body></html>`);
-  printWindow.document.close();
-}
-
 
 function closeDetail() {
   document.getElementById('detailModal').classList.remove('show');
-  document.body.classList.remove('biodata-export-allowed');
 }
 
 // ============ কাউন্টডাউন ============
@@ -1378,14 +1303,8 @@ async function grantBiodataView() {
   if(!confirm(`${viewer} কে ${target}-এর বায়োডাটা ${hours} ঘণ্টা দেখার অনুমতি দেবেন?`))return;
   const {data,error}=await sb.rpc('admin_grant_biodata_view',{p_viewer_code:viewer,p_biodata_code:target,p_hours:hours});
   if(error)return RH.toast('অনুমতি দেওয়া যায়নি: '+error.message,false);
-  const allowExport=!!document.getElementById('permissionAllowExport')?.checked;
-  if(data && allowExport){
-    const {error:exportError}=await sb.rpc('admin_set_biodata_view_export_permission',{p_permission_id:data,p_allow_export:true});
-    if(exportError){RH.toast('দেখার অনুমতি হয়েছে, তবে প্রিন্ট/PDF অনুমতি চালু হয়নি: '+exportError.message,false);}
-  }
-  RH.toast(allowExport?'দেখা ও প্রিন্ট/PDF-এর অনুমতি দেওয়া হয়েছে।':'শুধু দেখার অনুমতি দেওয়া হয়েছে।');
+  RH.toast('সাময়িক দেখার অনুমতি দেওয়া হয়েছে।');
   document.getElementById('permissionViewerCode').value='';document.getElementById('permissionTargetCode').value='';
-  const exportBox=document.getElementById('permissionAllowExport');if(exportBox)exportBox.checked=false;
   await loadAdminViewPermissions();
 }
 async function loadAdminViewPermissions() {
@@ -1398,24 +1317,13 @@ async function loadAdminViewPermissions() {
   el.innerHTML=data.map(p=>{
     const active=!p.revoked_at && new Date(p.expires_at)>new Date();
     return `<div class="card" style="padding:12px;margin:.6rem 0"><strong>${RH.esc(p.viewer_code)} (${RH.esc(p.viewer_name||'')})</strong> → <strong>${RH.esc(p.target_code)} (${RH.esc(p.target_name||'')})</strong>
-      <div class="muted-small">মেয়াদ: ${RH.fmtDate(p.expires_at)} | ${active?'সক্রিয়':p.revoked_at?'বাতিল':'মেয়াদ শেষ'} | ${p.allow_export?'প্রিন্ট/PDF: অনুমোদিত':'প্রিন্ট/PDF: বন্ধ'}</div>
-      ${active?`<div class="admin-actions mt-1"><button class="btn btn-small ${p.allow_export?'btn-warning':'btn-secondary'}" onclick="setBiodataExportPermission('${p.id}',${!p.allow_export})">${p.allow_export?'প্রিন্ট/PDF বন্ধ করুন':'প্রিন্ট/PDF অনুমতি দিন'}</button></div>`:''}
+      <div class="muted-small">মেয়াদ: ${RH.fmtDate(p.expires_at)} | ${active?'সক্রিয়':p.revoked_at?'বাতিল':'মেয়াদ শেষ'}</div>
       ${active && p.expires_at ? `<div class="countdown-wrap" data-expires="${p.expires_at}" style="margin-top:.5rem">${renderCountdown(p.expires_at)}</div>` : ''}
       ${!p.revoked_at?`<div class="admin-actions mt-1"><button class="btn btn-small btn-warning" onclick="extendBiodataView('${p.id}')">${active?'আরও সময় দিন':'আবার অনুমতি দিন'}</button><button class="btn btn-small btn-danger" onclick="revokeBiodataView('${p.id}')">অনুমতি বাতিল</button></div>`:''}
     </div>`;
   }).join('');
   startAllCountdowns();
 }
-async function setBiodataExportPermission(id,allow){
-  if(!can('access_requests.approve'))return RH.toast('প্রিন্ট/PDF অনুমতি পরিবর্তনের অধিকার নেই।',false);
-  const message=allow?'এই সদস্যকে প্রিন্ট/PDF সংরক্ষণের অনুমতি দেবেন?':'প্রিন্ট/PDF সংরক্ষণের অনুমতি বাতিল করবেন?';
-  if(!confirm(message))return;
-  const {error}=await sb.rpc('admin_set_biodata_view_export_permission',{p_permission_id:id,p_allow_export:allow});
-  if(error)return RH.toast('অনুমতি পরিবর্তন হয়নি: '+error.message,false);
-  RH.toast(allow?'প্রিন্ট/PDF অনুমতি চালু হয়েছে।':'প্রিন্ট/PDF অনুমতি বন্ধ হয়েছে।');
-  await loadAdminViewPermissions();
-}
-
 async function extendBiodataView(id) {
   const raw=prompt('আর কত ঘণ্টার জন্য নতুন করে অনুমতি দেবেন? (১–২৪)','24');if(raw===null)return;
   const hours=Number(raw);if(!Number.isInteger(hours)||hours<1||hours>24)return RH.toast('১ থেকে ২৪ ঘণ্টা লিখুন।',false);
