@@ -293,6 +293,25 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     </div>
   </div>
 
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeDashboardSidebar()"></div>
+  <div class="tabs" id="dashboardSidebar">
+    <div class="sidebar-brand"><span class="brand-icon"><i class="fas fa-mosque"></i></span><div><strong>জান্নাতের পথে</strong><small>প্রশাসনিক নিয়ন্ত্রণ কেন্দ্র</small></div></div>
+    <button class="tab-btn role-admin hidden" id="tabAdminHome" data-tab="admin-home"><i class="fas fa-chart-pie"></i> ড্যাশবোর্ড ও পরিসংখ্যান</button>
+    <button class="tab-btn active role-member" data-tab="home"><i class="fas fa-home"></i> হোম</button>
+    <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
+    <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
+    <button class="tab-btn role-member" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
+    <button class="tab-btn role-member" data-tab="saved"><i class="fas fa-bookmark"></i> সংরক্ষিত বায়োডাটা</button>
+    <button class="tab-btn role-member" data-tab="account"><i class="fas fa-user-cog"></i> আমার অ্যাকাউন্ট</button>
+    <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
+    <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
+    <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
+    <button class="tab-btn role-super hidden" id="tabSiteContent" data-tab="site-content"><i class="fas fa-bullhorn"></i> নোটিশ ও লিংক</button>
+    <button class="tab-btn role-audit hidden" id="tabAudit" data-tab="audit"><i class="fas fa-clipboard-list"></i> অডিট লগ</button>
+    <button class="tab-btn" id="tabSecurityHistory" data-tab="security-history"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</button>
+  </div>
+
+  <div class="tab-panel" id="panel-admin-home">
   <section id="adminSummary" class="admin-summary" aria-label="ড্যাশবোর্ড সারাংশ">
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-users"></i></span><div><small>মোট সদস্য</small><strong id="sumMembers">—</strong></div></div>
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-heart"></i></span><div><small>বিবাহ সম্পন্ন</small><strong id="sumMarried">—</strong></div></div>
@@ -311,21 +330,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <div class="card" id="backupGuidanceCard"><h3 style="margin-top:0;color:#0e4d64"><i class="fas fa-database"></i> ডেটা ব্যাকআপ ও পুনরুদ্ধার</h3><div class="alert alert-info"><strong>গুরুত্বপূর্ণ:</strong> CSV রিপোর্ট কেবল পরিসংখ্যানের এক্সপোর্ট—এটি পূর্ণাঙ্গ ডেটাবেজ ব্যাকআপ নয়। পূর্ণ ব্যাকআপ ও রিস্টোর Supabase Dashboard-এর Database Backup/PITR সুবিধা থেকে পরিচালনা করতে হবে।</div><ol style="padding-left:1.25rem;margin:.4rem 0;color:#405969"><li>Supabase Dashboard → Project → Database → Backups-এ ব্যাকআপের অবস্থা যাচাই করুন।</li><li>প্রয়োজনীয় প্ল্যান অনুযায়ী automated backup/PITR চালু রাখুন।</li><li>রিস্টোরের আগে বর্তমান ডেটার আলাদা ব্যাকআপ নিন এবং সম্ভব হলে staging project-এ পরীক্ষা করুন।</li></ol><button class="btn btn-secondary btn-small" type="button" onclick="exportSmartReport()"><i class="fas fa-file-csv"></i> পরিসংখ্যান CSV এক্সপোর্ট</button></div>
   </section>
 
-  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeDashboardSidebar()"></div>
-  <div class="tabs" id="dashboardSidebar">
-    <div class="sidebar-brand"><span class="brand-icon"><i class="fas fa-mosque"></i></span><div><strong>জান্নাতের পথে</strong><small>প্রশাসনিক নিয়ন্ত্রণ কেন্দ্র</small></div></div>
-    <button class="tab-btn active role-member" data-tab="home"><i class="fas fa-home"></i> হোম</button>
-    <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
-    <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
-    <button class="tab-btn role-member" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
-    <button class="tab-btn role-member" data-tab="saved"><i class="fas fa-bookmark"></i> সংরক্ষিত বায়োডাটা</button>
-    <button class="tab-btn role-member" data-tab="account"><i class="fas fa-user-cog"></i> আমার অ্যাকাউন্ট</button>
-    <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
-    <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
-    <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
-    <button class="tab-btn role-super hidden" id="tabSiteContent" data-tab="site-content"><i class="fas fa-bullhorn"></i> নোটিশ ও লিংক</button>
-    <button class="tab-btn role-audit hidden" id="tabAudit" data-tab="audit"><i class="fas fa-clipboard-list"></i> অডিট লগ</button>
-    <button class="tab-btn" id="tabSecurityHistory" data-tab="security-history"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</button>
   </div>
 
   <div class="tab-panel active" id="panel-home">
@@ -626,7 +630,6 @@ async function loadAdminSummary(){
   const ok = await loadDashboardRole();
   if (!ok) return;
   applyRoleUI();
-  if(currentRole!=='member') { await loadAdminSummary(); if(can('dashboard.view')||can('users.view')) await loadAdminSmartDashboard(); }
   const pageName=location.pathname.split('/').pop().toLowerCase();
   if(pageName==='member.html' && currentRole!=='member'){location.replace('admin-panel.html');return;}
   if(pageName==='admin-panel.html' && currentRole==='member'){location.replace('member.html');return;}
@@ -728,12 +731,15 @@ function closeDashboardSidebar(){document.body.classList.remove('sidebar-open');
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
+    const targetPanel = document.getElementById('panel-' + btn.dataset.tab);
+    if (!targetPanel || btn.classList.contains('hidden')) return;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    targetPanel.classList.add('active');
     closeDashboardSidebar();
 
+    if (btn.dataset.tab === 'admin-home') { await loadAdminSummary(); if(currentRole==='super_admin'||can('dashboard.view')||can('users.view')) await loadAdminSmartDashboard(); }
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
@@ -1345,6 +1351,8 @@ function applyRoleUI() {
   document.getElementById('tabSuperAdmin').classList.toggle('hidden', currentRole !== 'super_admin');
   document.getElementById('tabSiteContent').classList.toggle('hidden', currentRole !== 'super_admin');
   document.getElementById('tabAudit').classList.toggle('hidden', !can('audit_logs.view'));
+
+  document.getElementById('tabAdminHome').classList.toggle('hidden', currentRole !== 'super_admin' && !can('dashboard.view') && !can('users.view'));
 
   if (currentRole !== 'member') {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
