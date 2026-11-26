@@ -265,6 +265,9 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 .security-device-details>summary::-webkit-details-marker{display:none}
 .security-device-details[open]>summary{border-bottom:1px solid #e2ebe5;border-radius:8px 8px 0 0!important}
 .security-device-value{padding:11px 12px;color:#405969;font-family:ui-monospace,Consolas,monospace;font-size:.82rem;line-height:1.65;overflow-wrap:anywhere;word-break:break-word;user-select:text}
+
+/* Smart dashboard additions */
+.smart-dashboard{margin:0 0 20px}.smart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.smart-card{background:#fff;border:1px solid #dce7ef;border-radius:14px;padding:14px;box-shadow:0 4px 15px rgba(12,45,62,.05)}.smart-card small{display:block;color:#587487}.smart-card strong{display:block;font-size:1.45rem;color:#0e4d64;margin-top:3px}.smart-bars{display:grid;gap:10px}.smart-bar-row{display:grid;grid-template-columns:110px 1fr 48px;gap:8px;align-items:center;font-size:.88rem}.smart-bar-track{height:12px;background:#edf3f6;border-radius:20px;overflow:hidden}.smart-bar-fill{height:100%;background:linear-gradient(90deg,#1e7e5e,#68b99a);border-radius:20px;min-width:2px}.smart-actions{display:flex;gap:8px;flex-wrap:wrap}.saved-biodata-btn{background:#fff7e8;color:#8a5b00;border:1px solid #f0d59c}.saved-biodata-btn.is-saved{background:#eaf7ef;color:#17603a;border-color:#c8e8d2}@media(max-width:700px){.smart-grid{grid-template-columns:1fr}.smart-bar-row{grid-template-columns:82px 1fr 38px}}
 </style>
 </head>
 <body class="admin-page">
@@ -299,6 +302,14 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <div class="summary-card"><span class="summary-icon"><i class="fas fa-envelope-open-text"></i></span><div><small>অপেক্ষমাণ অনুরোধ</small><strong id="sumRequests">—</strong></div></div>
   </section>
 
+  <section id="smartAdminDashboard" class="smart-dashboard role-admin hidden">
+    <div class="header-bar" style="margin:10px 0 12px;padding-bottom:10px"><h2 style="font-size:1.25rem;margin:0;color:#0e4d64"><i class="fas fa-chart-line"></i> স্মার্ট প্রশাসনিক বিশ্লেষণ</h2><div class="smart-actions"><button class="btn btn-secondary btn-small" onclick="loadAdminSmartDashboard()"><i class="fas fa-rotate"></i> রিফ্রেশ</button><button class="btn btn-small" onclick="exportSmartReport()"><i class="fas fa-file-csv"></i> রিপোর্ট CSV</button></div></div>
+    <div id="smartAdminAlerts" class="alert alert-info">স্মার্ট অ্যালার্ট প্রস্তুত হচ্ছে...</div>
+    <div class="smart-grid" id="smartAdminMetrics"><div class="smart-card"><small>লোড হচ্ছে</small><strong>—</strong></div></div>
+    <div class="card"><h3 style="margin-top:0;color:#0e4d64">দৈনিক / সাপ্তাহিক / মাসিক কার্যক্রম</h3><div id="smartAdminChart" class="smart-bars">পরিসংখ্যান লোড হচ্ছে...</div></div>
+    <div class="card"><h3 style="margin-top:0;color:#0e4d64">প্রোফাইল ভিউ ও নিরাপত্তা পর্যবেক্ষণ</h3><div id="smartAdminInsights" class="smart-grid"><div class="alert alert-info">তথ্য লোড হচ্ছে...</div></div><p class="muted-small">ব্যক্তিগত দর্শকের পরিচয় প্রকাশ করা হয় না; শুধু সামগ্রিক পরিসংখ্যান দেখানো হয়।</p></div>
+  </section>
+
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeDashboardSidebar()"></div>
   <div class="tabs" id="dashboardSidebar">
     <div class="sidebar-brand"><span class="brand-icon"><i class="fas fa-mosque"></i></span><div><strong>জান্নাতের পথে</strong><small>প্রশাসনিক নিয়ন্ত্রণ কেন্দ্র</small></div></div>
@@ -306,6 +317,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
     <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
     <button class="tab-btn role-member" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
+    <button class="tab-btn role-member" data-tab="saved"><i class="fas fa-bookmark"></i> সংরক্ষিত বায়োডাটা</button>
     <button class="tab-btn role-member" data-tab="account"><i class="fas fa-user-cog"></i> আমার অ্যাকাউন্ট</button>
     <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
     <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
@@ -317,6 +329,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 
   <div class="tab-panel active" id="panel-home">
     <div id="biodataStatusCard" class="card">লোড হচ্ছে...</div>
+    <div id="profileCompletenessCard" class="card hidden"></div>
     <div class="section-title"><i class="fas fa-bell"></i> নোটিফিকেশন</div>
     <div id="notificationsList">লোড হচ্ছে...</div>
   </div>
@@ -363,6 +376,11 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 
   <div class="tab-panel" id="panel-approved">
     <div id="approvedList">লোড হচ্ছে...</div>
+  </div>
+
+  <div class="tab-panel" id="panel-saved">
+    <div class="section-title"><i class="fas fa-bookmark"></i> আমার সংরক্ষিত বায়োডাটা</div>
+    <div id="savedBiodataList" class="alert alert-info">লোড হচ্ছে...</div>
   </div>
 
   <div class="tab-panel" id="panel-account">
@@ -535,6 +553,25 @@ function updateDashboardClock(){
 updateDashboardClock();
 setInterval(updateDashboardClock,1000);
 
+
+// ===== SMART ADMIN DASHBOARD =====
+let smartAnalyticsRows=[];
+let smartSummaryRow=null;
+const smartBn=n=>Number(n||0).toLocaleString('bn-BD');
+function smartMetric(label,value,icon){return `<div class="smart-card"><small><i class="fas ${icon}"></i> ${label}</small><strong>${smartBn(value)}</strong></div>`;}
+async function loadAdminSmartDashboard(){
+ const root=document.getElementById('smartAdminDashboard');if(!root||currentRole==='member')return;root.classList.remove('hidden');
+ const alertEl=document.getElementById('smartAdminAlerts'),metrics=document.getElementById('smartAdminMetrics'),chart=document.getElementById('smartAdminChart'),insights=document.getElementById('smartAdminInsights');
+ const [summary,analytics,views]=await Promise.all([sb.rpc('admin_get_dashboard_summary'),sb.rpc('admin_get_analytics'),sb.rpc('admin_get_profile_view_analytics')]);
+ if(summary.error)console.warn('Smart summary:',summary.error);else smartSummaryRow=Array.isArray(summary.data)?summary.data[0]:summary.data;
+ if(analytics.error){console.warn('Smart analytics:',analytics.error);chart.innerHTML=`<div class="alert alert-info">বিশ্লেষণ ফাংশন পাওয়া যায়নি বা অনুমতি নেই। SQL সেটআপ স্ক্রিপ্ট চালানোর পর রিফ্রেশ করুন।</div>`;smartAnalyticsRows=[];}else{smartAnalyticsRows=Array.isArray(analytics.data)?analytics.data:[];}
+ const s=smartSummaryRow||{};metrics.innerHTML=[smartMetric('মোট সদস্য',s.total_members,'fa-users'),smartMetric('বিবাহ সম্পন্ন',s.marriage_completed,'fa-heart'),smartMetric('অপেক্ষমাণ বায়োডাটা',s.pending_biodata,'fa-hourglass-half'),smartMetric('অনুমোদিত বায়োডাটা',s.approved_biodata,'fa-circle-check'),smartMetric('অপেক্ষমাণ অনুরোধ',s.pending_requests,'fa-envelope-open-text'),smartMetric('বিবাহ বাকি',s.marriage_not_completed,'fa-user-clock')].join('');
+ const pending=Number(s.pending_biodata||0)+Number(s.pending_requests||0);alertEl.className='alert '+(pending?'alert-info':'alert-success');alertEl.innerHTML=pending?`<strong><i class="fas fa-bell"></i> আপনার মনোযোগ প্রয়োজন:</strong> ${smartBn(s.pending_biodata)}টি বায়োডাটা যাচাই এবং ${smartBn(s.pending_requests)}টি বিস্তারিত দেখার আবেদন অপেক্ষমাণ।`:'<strong><i class="fas fa-check-circle"></i> সব ঠিক আছে!</strong> বর্তমানে কোনো অপেক্ষমাণ বায়োডাটা বা আবেদন নেই।';
+ if(smartAnalyticsRows.length){const max=Math.max(1,...smartAnalyticsRows.map(x=>Number(x.new_members||0)),...smartAnalyticsRows.map(x=>Number(x.new_biodata||0)));chart.innerHTML=smartAnalyticsRows.map(x=>`<div style="border-bottom:1px solid #edf2f5;padding:8px 0"><strong>${RH.esc(x.period_name||'সময়কাল')}</strong><div class="smart-bar-row"><span>নতুন সদস্য</span><div class="smart-bar-track"><div class="smart-bar-fill" style="width:${Math.max(1,100*Number(x.new_members||0)/max)}%"></div></div><b>${smartBn(x.new_members)}</b></div><div class="smart-bar-row"><span>নতুন বায়োডাটা</span><div class="smart-bar-track"><div class="smart-bar-fill" style="width:${Math.max(1,100*Number(x.new_biodata||0)/max)}%"></div></div><b>${smartBn(x.new_biodata)}</b></div><div class="muted-small">অনুমোদিত ${smartBn(x.approved_biodata)} · অনুরোধ ${smartBn(x.access_requests)} · পেমেন্ট ${smartBn(x.approved_payments)} · ৳${smartBn(x.payment_total)}</div></div>`).join('');}else if(!analytics.error)chart.innerHTML='<div class="alert alert-info">এখনো কোনো পরিসংখ্যান নেই।</div>';
+ if(views.error){console.warn('Profile view analytics:',views.error);insights.innerHTML='<div class="alert alert-info">প্রোফাইল ভিউ বিশ্লেষণের SQL ফাংশন এখনো সেটআপ হয়নি।</div>';}else{const v=Array.isArray(views.data)?views.data[0]:views.data||{};insights.innerHTML=[smartMetric('মোট প্রোফাইল ভিউ',v.total_views,'fa-eye'),smartMetric('গত ৭ দিনের ভিউ',v.views_7d,'fa-calendar-week'),smartMetric('ভিন্ন দর্শক',v.unique_viewers,'fa-user-check')].join('');}
+}
+function exportSmartReport(){if(!smartAnalyticsRows.length&&!smartSummaryRow)return RH.toast('রিপোর্টের তথ্য পাওয়া যায়নি।',false);const rows=[['সময়কাল','নতুন সদস্য','নতুন বায়োডাটা','অনুমোদিত বায়োডাটা','আবেদন','অনুমোদিত পেমেন্ট','পেমেন্ট মোট'],...smartAnalyticsRows.map(x=>[x.period_name,x.new_members,x.new_biodata,x.approved_biodata,x.access_requests,x.approved_payments,x.payment_total])];rows.push([]);rows.push(['সারাংশ','মোট সদস্য',smartSummaryRow?.total_members,'বিবাহ সম্পন্ন',smartSummaryRow?.marriage_completed,'অপেক্ষমাণ বায়োডাটা',smartSummaryRow?.pending_biodata]);const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='smart-admin-report-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);}
+
 async function loadAdminSummary(){
   const ids=['sumMembers','sumMarried','sumNotMarried','sumPending','sumApproved','sumRequests'];
   const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value==null?'—':Number(value).toLocaleString('bn-BD');};
@@ -566,7 +603,7 @@ async function loadAdminSummary(){
   const ok = await loadDashboardRole();
   if (!ok) return;
   applyRoleUI();
-  if(currentRole!=='member') await loadAdminSummary();
+  if(currentRole!=='member') { await loadAdminSummary(); if(can('dashboard.view')||can('users.view')) await loadAdminSmartDashboard(); }
   const pageName=location.pathname.split('/').pop().toLowerCase();
   if(pageName==='member.html' && currentRole!=='member'){location.replace('admin-panel.html');return;}
   if(pageName==='admin-panel.html' && currentRole==='member'){location.replace('member.html');return;}
@@ -576,7 +613,7 @@ async function loadAdminSummary(){
 
   if (currentRole === 'member') {
     try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
-    await Promise.all([loadHome(), loadNotifications()]);
+    await Promise.all([loadHome(), loadNotifications(), loadProfileCompleteness(), loadSavedBiodata()]);
   } else {
     if (can('access_requests.view')) await loadAdminRequests();
     if (can('access_requests.view') || can('access_requests.approve') || can('access_requests.extend')) await loadAdminViewPermissions();
@@ -872,6 +909,8 @@ async function loadBrowse() {
     return;
   }
 
+  const {data:savedRows}=await sb.from('saved_biodata').select('biodata_id').eq('user_id',currentSession.user.id);
+  const savedIds=new Set((savedRows||[]).map(x=>x.biodata_id));
   el.innerHTML = data.map(b => {
     const typeLabel = {
       male: 'পাত্র', female: 'পাত্রী',
@@ -892,7 +931,7 @@ async function loadBrowse() {
             <span class="code-badge">${RH.esc(b.biodata_code_masked)}</span>
             <span class="code-badge" style="background:#e8f3f0;color:#0f5132;margin-left:.3rem">${typeLabel}</span>
           </div>
-          <div>${btnHtml}</div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">${btnHtml}<button class="btn btn-small saved-biodata-btn ${savedIds.has(b.biodata_id)?'is-saved':''}" onclick="toggleSavedBiodata('${b.biodata_id}',this)">${savedIds.has(b.biodata_id)?'<i class="fas fa-check"></i> সংরক্ষিত':'<i class="fas fa-bookmark"></i> সংরক্ষণ'}</button></div>
         </div>
         <div class="grid-2 mt-1" style="font-size:.88rem">
           <div class="info-row"><strong>বয়স:</strong> ${b.age || '—'} বছর</div>
@@ -905,6 +944,24 @@ async function loadBrowse() {
         </div>
       </div>`;
   }).join('');
+}
+async function toggleSavedBiodata(biodataId,button){
+ if(!currentSession?.user?.id)return RH.toast('আবার লগইন করুন।',false);
+ const {data:existing,error:readError}=await sb.from('saved_biodata').select('id').eq('user_id',currentSession.user.id).eq('biodata_id',biodataId).maybeSingle();
+ if(readError)return RH.toast('সংরক্ষণের অবস্থা যাচাই করা যায়নি: '+readError.message,false);
+ if(existing){const {error}=await sb.from('saved_biodata').delete().eq('id',existing.id);if(error)return RH.toast('সংরক্ষণ থেকে সরানো যায়নি: '+error.message,false);if(button){button.classList.remove('is-saved');button.innerHTML='<i class="fas fa-bookmark"></i> সংরক্ষণ';}RH.toast('সংরক্ষিত তালিকা থেকে সরানো হয়েছে।');}
+ else{const {error}=await sb.from('saved_biodata').insert({user_id:currentSession.user.id,biodata_id:biodataId});if(error)return RH.toast('সংরক্ষণ করা যায়নি: '+error.message,false);if(button){button.classList.add('is-saved');button.innerHTML='<i class="fas fa-check"></i> সংরক্ষিত';}RH.toast('বায়োডাটা সংরক্ষণ হয়েছে।');}
+}
+async function loadSavedBiodata(){
+ const el=document.getElementById('savedBiodataList');if(!el||!currentSession?.user?.id)return;el.innerHTML='লোড হচ্ছে...';
+ const {data:saved,error}=await sb.from('saved_biodata').select('id,biodata_id,created_at').eq('user_id',currentSession.user.id).order('created_at',{ascending:false});
+ if(error){el.innerHTML=`<div class="alert alert-error">সংরক্ষিত তালিকা লোড হয়নি: ${RH.esc(error.message)}</div>`;return;}if(!saved?.length){el.innerHTML='<div class="alert alert-info">এখনো কোনো বায়োডাটা সংরক্ষণ করেননি। প্রার্থী খুঁজুন ট্যাব থেকে সংরক্ষণ করতে পারবেন।</div>';return;}
+ const {data:all,error:e}=await sb.rpc('list_public_biodatas',{p_gender:null,p_division:null,p_limit:100,p_offset:0});if(e){el.innerHTML=`<div class="alert alert-error">তালিকা দেখানো যাচ্ছে না: ${RH.esc(e.message)}</div>`;return;}const ids=new Set(saved.map(x=>x.biodata_id));const rows=(all||[]).filter(x=>ids.has(x.biodata_id));if(!rows.length){el.innerHTML='<div class="alert alert-info">সংরক্ষিত প্রোফাইলগুলো বর্তমানে প্রকাশ্য তালিকায় নেই।</div>';return;}el.innerHTML=rows.map(b=>`<div class="candidate-card"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong class="code-badge">${RH.esc(b.biodata_code_masked||'বায়োডাটা')}</strong><button class="btn btn-small btn-secondary" onclick="toggleSavedBiodata('${b.biodata_id}');loadSavedBiodata()">তালিকা থেকে সরান</button></div><div class="grid-2 mt-1"><div class="info-row">বয়স: ${b.age||'—'} বছর</div><div class="info-row">বিভাগ: ${RH.esc(b.current_division||'—')}</div><div class="info-row">জেলা: ${RH.esc(b.current_district||'—')}</div><div class="info-row">শিক্ষা: ${RH.esc(b.education_type||'—')}</div></div><div class="mt-1"><button class="btn btn-small" onclick="openRequest('${b.biodata_id}')">বিস্তারিত দেখার অনুরোধ</button></div></div>`).join('');
+}
+async function loadProfileCompleteness(){
+ const el=document.getElementById('profileCompletenessCard');if(!el||!currentSession?.user?.id)return;
+ const {data,error}=await sb.from('biodata_records').select('id,full_name,dob,current_division,current_district,permanent_district,marital_status,form_data,status').eq('user_id',currentSession.user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+ if(error||!data){el.classList.add('hidden');return;}const fd=data.form_data&&typeof data.form_data==='object'?data.form_data:{};const fields=[data.full_name,data.dob,data.current_division,data.current_district,data.permanent_district,data.marital_status,fd.fatherName,fd.motherName,fd.educationType,fd.salah,fd.parda,fd.prefAgeFrom||fd.prefAge,fd.prefArea,fd.extraRequirements];const done=fields.filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='').length;const pct=Math.round(done/fields.length*100);el.classList.remove('hidden');el.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><strong><i class="fas fa-chart-pie"></i> বায়োডাটা পূর্ণতার স্কোর</strong><strong style="color:#1e7e5e">${pct}%</strong></div><div class="smart-bar-track" style="height:14px;margin:9px 0"><div class="smart-bar-fill" style="width:${pct}%"></div></div><small class="text-muted">${done} / ${fields.length}টি গুরুত্বপূর্ণ তথ্য পূরণ করা হয়েছে। অসম্পূর্ণ তথ্য সম্পন্ন করলে প্রোফাইল আরও কার্যকর হবে।</small>`;
 }
 document.getElementById('searchBtn').addEventListener('click', loadBrowse);
 
@@ -1085,6 +1142,8 @@ async function showDetail(biodataId) {
   }
 
   const b = data[0];
+  // নিরাপদ RPC: কেবল বৈধ সাময়িক অনুমতি থাকলেই ভিউ রেকর্ড হবে।
+  sb.rpc('record_biodata_profile_view',{p_biodata_id:biodataId}).then(({error})=>{if(error)console.warn('Profile view tracking:',error);}).catch(console.warn);
   const fd = b.form_data || {};
   const row = (label, val) => {
     const out = RH.fmtVal(val);
