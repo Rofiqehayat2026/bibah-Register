@@ -199,6 +199,48 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 }
 @media(prefers-reduced-motion:no-preference){.card,.candidate-card,.btn{transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease}}
 
+
+/* Compact permission controls and dashboard summary */
+.permission-quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(144px,1fr));gap:10px;align-items:end;margin:12px 0 8px}
+.permission-quick-grid .form-group{min-width:0;margin:0}
+.permission-quick-grid label{font-size:.78rem;line-height:1.3;min-height:2.5em;margin-bottom:5px}
+.permission-quick-grid input,.permission-quick-grid select{min-height:38px!important;padding:7px 9px!important;font-size:.86rem;border-radius:8px!important}
+.permission-submit .btn{width:100%;min-height:38px;padding:7px 9px;font-size:.86rem;white-space:nowrap}
+.admin-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:-5px 0 18px}
+.summary-card{display:flex;align-items:center;gap:10px;min-width:0;padding:12px 13px;border:1px solid #e7e0cc;border-radius:13px;background:linear-gradient(145deg,#fff,#fbf8ef);box-shadow:0 4px 13px rgba(93,74,31,.055)}
+.summary-icon{width:35px;height:35px;flex:0 0 35px;display:grid;place-items:center;border-radius:10px;background:#f1ead7;color:#80652d}
+.summary-card small{display:block;color:#766b53;font-size:.74rem;line-height:1.3}
+.summary-card strong{display:block;color:#174c37;font-size:1.3rem;line-height:1.35;font-variant-numeric:tabular-nums}
+@media(max-width:760px){.admin-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.summary-card{padding:10px}.summary-card strong{font-size:1.15rem}}
+@media(max-width:380px){.permission-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.permission-quick-grid label{font-size:.72rem}.summary-card{gap:7px}.summary-icon{width:30px;height:30px;flex-basis:30px}}
+
+
+/* Login history stays at the bottom and remains collapsed until opened */
+.security-history-card{line-height:1.0}
+#panel-security-history details>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:10px 12px;color:#145a45;font-weight:700;line-height:1.0;border-radius:9px;background:#f6f8f3}
+#panel-security-history details>summary::-webkit-details-marker{display:none}
+#panel-security-history details>summary:after{content:'+';margin-left:auto;font-size:1.2rem}
+#panel-security-history details[open]>summary:after{content:'−'}
+.security-history-content{padding:10px 4px 2px;line-height:1.0}
+.security-history-content .perm-row{line-height:1.0;padding:9px 0}
+.request-card-details{line-height:1.0;margin-top:9px}
+.request-card-details p{line-height:1.0;margin:7px 0}
+.request-card-details .muted-small{line-height:1.0}
+.request-card-details .countdown-wrap{line-height:1.0}
+.request-card-details .admin-actions{line-height:1.0}
+#adminRequestsList .admin-actions{line-height:1.0}
+#adminRequestsList .admin-actions .btn{line-height:1.0}
+#adminRequestsList .countdown-wrap{line-height:1.0}
+#adminRequestsList .countdown{line-height:1.0}
+
+
+/* অফার ছবি প্রিভিউ ও আপলোড অগ্রগতি */
+.promo-image-preview{margin-top:10px;padding:12px;border:1px dashed #b9cbd6;border-radius:12px;background:#f7fafc;min-height:72px}
+.promo-image-preview img{display:block;width:min(100%,520px);max-height:190px;object-fit:contain;object-position:left center;border-radius:9px;background:#eaf0f3;margin-top:8px}
+.promo-upload-track{height:9px;background:#e2eaf0;border-radius:20px;overflow:hidden;margin-top:8px}
+.promo-upload-fill{height:100%;width:0;background:linear-gradient(90deg,#1e7e5e,#38a789);transition:width .15s}
+.promo-upload-status{font-size:.85rem;color:#456579;margin-top:5px}
+
 </style>
 </head>
 <body class="admin-page">
@@ -228,6 +270,13 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     </div>
   </div>
 
+  <section id="adminSummary" class="admin-summary" aria-label="ড্যাশবোর্ড সারাংশ">
+    <div class="summary-card"><span class="summary-icon"><i class="fas fa-users"></i></span><div><small>মোট সদস্য</small><strong id="sumMembers">—</strong></div></div>
+    <div class="summary-card"><span class="summary-icon"><i class="fas fa-hourglass-half"></i></span><div><small>অপেক্ষমাণ বায়োডাটা</small><strong id="sumPending">—</strong></div></div>
+    <div class="summary-card"><span class="summary-icon"><i class="fas fa-circle-check"></i></span><div><small>অনুমোদিত বায়োডাটা</small><strong id="sumApproved">—</strong></div></div>
+    <div class="summary-card"><span class="summary-icon"><i class="fas fa-envelope-open-text"></i></span><div><small>অপেক্ষমাণ অনুরোধ</small><strong id="sumRequests">—</strong></div></div>
+  </section>
+
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeDashboardSidebar()"></div>
   <div class="tabs" id="dashboardSidebar">
     <div class="sidebar-brand"><span class="brand-icon"><i class="fas fa-mosque"></i></span><div><strong>জান্নাতের পথে</strong><small>প্রশাসনিক নিয়ন্ত্রণ কেন্দ্র</small></div></div>
@@ -241,6 +290,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="tab-btn role-super hidden" id="tabSuperAdmin" data-tab="super-admin"><i class="fas fa-user-shield"></i> অ্যাডমিন পরিচালনা</button>
     <button class="tab-btn role-super hidden" id="tabSiteContent" data-tab="site-content"><i class="fas fa-bullhorn"></i> নোটিশ ও লিংক</button>
     <button class="tab-btn role-audit hidden" id="tabAudit" data-tab="audit"><i class="fas fa-clipboard-list"></i> অডিট লগ</button>
+    <button class="tab-btn" id="tabSecurityHistory" data-tab="security-history"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</button>
   </div>
 
   <div class="tab-panel active" id="panel-home">
@@ -296,7 +346,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   <div class="tab-panel" id="panel-account">
     <div class="section-title"><i class="fas fa-user-shield"></i> আমার অ্যাকাউন্ট ও নিরাপত্তা</div>
     <div class="card" id="memberAccountCard">অ্যাকাউন্টের তথ্য লোড হচ্ছে...</div>
-    <div class="card"><h3 style="margin-top:0;color:#145a45"><i class="fas fa-shield-alt"></i> সাম্প্রতিক নিরাপত্তা কার্যক্রম</h3><div id="memberSecurityHistory">লোড হচ্ছে...</div></div>
     <div class="card">
       <h3 style="margin:0 0 .6rem;color:#145a45"><i class="fas fa-key"></i> পাসওয়ার্ড পরিবর্তন</h3>
       <p class="text-muted">বর্তমান পাসওয়ার্ড যাচাই করে নতুন পাসওয়ার্ড সেট করুন। কমপক্ষে ৮ অক্ষর ব্যবহার করুন।</p>
@@ -311,19 +360,16 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
   </div>
 
   <div class="tab-panel" id="panel-admin-requests">
-    <div class="card"><h3 style="margin-top:0;color:#145a45"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</h3><div id="adminSecurityHistory">লোড হচ্ছে...</div></div>
     <div class="section-title"><i class="fas fa-clipboard-check"></i> বিস্তারিত বায়োডাটা দেখার আবেদন</div>
     <div class="alert alert-info">অ্যাডমিন অনুমোদন করলে আবেদনকারী সর্বোচ্চ ২৪ ঘণ্টার জন্য বায়োডাটা দেখতে পারবেন। প্রয়োজনে এডমিন আবার মেয়াদ বাড়াতে পারবেন।</div>
     <div class="card">
       <h3 style="margin-top:0;color:#0e4d64">সাময়িক বায়োডাটা দেখার অনুমতি</h3>
       <p class="muted-small">প্রথম ঘরে যিনি দেখবেন তাঁর সদস্য কোড, দ্বিতীয় ঘরে যার বায়োডাটা দেখবেন তাঁর কোড দিন। প্রতিবার সর্বোচ্চ ২৪ ঘণ্টা।</p>
-      <div class="grid-2">
-        <div class="form-group"><label for="permissionViewerCode">যিনি দেখবেন (সদস্য কোড)</label><input id="permissionViewerCode" placeholder="M000001"></div>
-        <div class="form-group"><label for="permissionTargetCode">যার বায়োডাটা দেখবেন (সদস্য কোড)</label><input id="permissionTargetCode" placeholder="F000001"></div>
-      </div>
-      <div class="grid-2">
-        <div class="form-group"><label for="permissionHours">অনুমতির সময় (ঘণ্টা)</label><select id="permissionHours"><option value="24">২৪ ঘণ্টা</option><option value="12">১২ ঘণ্টা</option><option value="6">৬ ঘণ্টা</option><option value="1">১ ঘণ্টা</option></select></div>
-        <div class="form-group" style="display:flex;align-items:end"><button class="btn" onclick="grantBiodataView()"><i class="fas fa-key"></i> অনুমতি দিন</button></div>
+      <div class="permission-quick-grid">
+        <div class="form-group"><label for="permissionViewerCode">যিনি দেখবেন (সদস্য কোড)</label><input id="permissionViewerCode" placeholder="M000001" autocomplete="off"></div>
+        <div class="form-group"><label for="permissionTargetCode">যার বায়োডাটা দেখবেন (সদস্য কোড)</label><input id="permissionTargetCode" placeholder="F000001" autocomplete="off"></div>
+        <div class="form-group"><label for="permissionHours">অনুমতির সময় (ঘণ্টা)</label><select id="permissionHours"><option value="4" selected>৪ ঘণ্টা</option><option value="12">১২ ঘণ্টা</option><option value="6">৬ ঘণ্টা</option><option value="1">১ ঘণ্টা</option><option value="24">২৪ ঘণ্টা</option></select></div>
+        <div class="form-group permission-submit"><label>&nbsp;</label><button class="btn" onclick="grantBiodataView()"><i class="fas fa-key"></i> অনুমতি দিন</button></div>
       </div>
       <button class="btn btn-secondary btn-small" onclick="loadAdminViewPermissions()"><i class="fas fa-rotate"></i> অনুমতিগুলো রিফ্রেশ</button>
       <div id="adminViewPermissions" class="mt-2">লোড হচ্ছে...</div>
@@ -379,15 +425,14 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
       <div class="grid-2"><label><input id="noticePinned" type="checkbox"> উপরে পিন করুন</label><label><input id="noticePublish" type="checkbox" checked> সংরক্ষণের সঙ্গে প্রকাশ করুন</label></div>
       <div class="admin-actions mt-2"><button class="btn" onclick="saveSiteNotice()">সংরক্ষণ করুন</button><button class="btn btn-secondary" onclick="resetNoticeForm()">ফর্ম পরিষ্কার</button></div>
     </div><div class="card"><h3 style="margin-top:0;color:#0e4d64">গুরুত্বপূর্ণ ওয়েবসাইট লিংক</h3><input type="hidden" id="siteLinkEditId"><div class="form-group"><label>লিংকের নাম</label><input id="siteLinkTitle" placeholder="যেমন: জাতীয় তথ্য বাতায়ন"></div><div class="form-group"><label>URL</label><input id="siteLinkUrl" type="url" placeholder="https://..."></div><div class="grid-2"><div class="form-group"><label>ক্রম</label><input id="siteLinkOrder" type="number" value="10"></div><label><input id="siteLinkActive" type="checkbox" checked> সক্রিয়</label></div><div class="admin-actions"><button class="btn" onclick="saveSiteLink()">লিংক সংরক্ষণ</button><button class="btn btn-secondary" onclick="resetSiteLinkForm()">পরিষ্কার</button></div><div id="siteLinksAdmin" class="mt-2"></div></div></div>
-    <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><h3 style="margin:0;color:#0e4d64">প্রকাশিত ও পুরোনো নোটিশ</h3><button class="btn btn-secondary btn-small" onclick="loadSiteContentAdmin()">রিফ্রেশ</button></div><div id="siteNoticesAdmin" class="mt-2">লোড হচ্ছে...</div></div>
-
+    <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><h3 style="margin:0;color:#0e4d64">প্রকাশিত ও পুরোনো নোটিশ</h3><button class="btn btn-secondary btn-small" onclick="loadSiteContentAdmin();loadSitePromotionsAdmin()">রিফ্রেশ</button></div><div id="siteNoticesAdmin" class="mt-2">লোড হচ্ছে...</div></div>
     <div class="card" style="margin-top:16px">
       <h3 style="margin-top:0;color:#0e4d64"><i class="fas fa-images"></i> অফার / বিশেষ ঘোষণা স্লাইডার</h3>
       <p class="muted-small">ছবি আপলোড করে শিরোনাম, বিবরণ, অফারের শুরু ও শেষের সময় নির্ধারণ করুন। নির্ধারিত সময়ের মধ্যে প্রকাশিত অফার মেইন পেজে কাউন্টডাউনসহ স্লাইডারে দেখাবে।</p>
       <input type="hidden" id="promoEditId"><input type="hidden" id="promoExistingImage">
       <div class="grid-2">
         <div class="form-group"><label>অফারের শিরোনাম</label><input id="promoTitle" maxlength="180" placeholder="যেমন: বিশেষ বিবাহ সেবা অফার"></div>
-        <div class="form-group"><label>অফারের ছবি</label><input id="promoImageFile" type="file" accept="image/png,image/jpeg,image/webp"></div>
+        <div class="form-group"><label>অফারের ছবি <span class="muted-small">(JPG, PNG বা WebP · সর্বোচ্চ ৫ MB)</span></label><input id="promoImageFile" type="file" accept="image/png,image/jpeg,image/webp"><div id="promoImagePreview" class="promo-image-preview muted-small" aria-live="polite">ছবি নির্বাচন করলে এখানে প্রিভিউ দেখা যাবে।</div></div>
       </div>
       <div class="form-group"><label>বিস্তারিত</label><textarea id="promoDescription" maxlength="2000" placeholder="অফারের বিস্তারিত লিখুন"></textarea></div>
       <div class="grid-2">
@@ -399,8 +444,7 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
         <div class="form-group"><label>লিংকের লেখা</label><input id="promoLinkLabel" placeholder="বিস্তারিত দেখুন"></div>
       </div>
       <div class="grid-2"><div class="form-group"><label>স্লাইডের ক্রম</label><input id="promoSortOrder" type="number" value="10"></div><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><label><input id="promoPublished" type="checkbox" checked> প্রকাশ করুন</label></div></div>
-      <div id="promoImagePreview" class="muted-small"></div>
-      <div class="admin-actions"><button class="btn" onclick="saveSitePromotion()">অফার সংরক্ষণ</button><button class="btn btn-secondary" onclick="resetPromotionForm()">ফর্ম পরিষ্কার</button></div>
+      <div class="admin-actions"><button id="savePromotionBtn" class="btn" onclick="saveSitePromotion()">অফার সংরক্ষণ</button><button class="btn btn-secondary" onclick="resetPromotionForm()">ফর্ম পরিষ্কার</button></div>
       <div id="sitePromotionsAdmin" class="mt-2">অফার লোড হচ্ছে...</div>
     </div>
   </div>
@@ -410,7 +454,18 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="btn btn-secondary mb-2" onclick="loadAuditLogs()"><i class="fas fa-rotate"></i> রিফ্রেশ</button>
     <div id="auditLogsList">লোড হচ্ছে...</div>
   </div>
+
+  <div class="tab-panel" id="panel-security-history">
+    <div class="section-title"><i class="fas fa-shield-alt"></i> অ্যাকাউন্টের সাম্প্রতিক লগইন</div>
+    <div class="card security-history-card">
+      <details id="securityHistoryDetails">
+        <summary><i class="fas fa-clock"></i> লগইন ও নিরাপত্তা কার্যক্রমের বিস্তারিত দেখুন</summary>
+        <div id="securityHistoryContent" class="security-history-content">বিস্তারিত দেখতে উপরের শিরোনামে টাচ করুন।</div>
+      </details>
+    </div>
+  </div>
 </div>
+
 
 <div id="detailModal" class="modal">
   <div class="modal-box">
@@ -452,29 +507,41 @@ function updateDashboardClock(){
   const now=new Date();
   const time=document.getElementById('clockTime');
   const date=document.getElementById('clockDate');
-  if(time)time.textContent=new Intl.DateTimeFormat('bn-BD',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);
+  if(time)time.textContent=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);
   if(date)date.textContent=new Intl.DateTimeFormat('bn-BD',{timeZone:'Asia/Dhaka',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
 }
 updateDashboardClock();
 setInterval(updateDashboardClock,1000);
 
+async function loadAdminSummary(){
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value==null?'—':Number(value).toLocaleString('en-US');};
+  const jobs=[
+    sb.from('profiles').select('*',{count:'exact',head:true}),
+    sb.from('biodata_records').select('id',{count:'exact',head:true}).eq('status','pending'),
+    sb.from('biodata_records').select('id',{count:'exact',head:true}).eq('status','approved'),
+    sb.from('access_requests').select('id',{count:'exact',head:true}).eq('status','pending')
+  ];
+  const results=await Promise.all(jobs.map(q=>q));
+  ['sumMembers','sumPending','sumApproved','sumRequests'].forEach((id,i)=>set(id,results[i].error?null:results[i].count));
+}
+
 (async function init() {
   currentSession = await RH.getSession();
   if (!currentSession) { location.replace('login.html'); return; }
   currentProfile = await RH.getProfile();
-  document.getElementById('userInfo').innerHTML =
-    `<i class="fas fa-user"></i> ${RH.esc(currentProfile?.full_name || currentSession.user.email)}`;
+  const displayName = currentProfile?.full_name || currentProfile?.name || currentProfile?.display_name || currentSession.user.user_metadata?.full_name || currentSession.user.user_metadata?.name || currentSession.user.email || 'ব্যবহারকারী';
+  document.getElementById('userInfo').textContent = displayName;
 
   const ok = await loadDashboardRole();
   if (!ok) return;
   applyRoleUI();
+  if(currentRole!=='member') await loadAdminSummary();
   const pageName=location.pathname.split('/').pop().toLowerCase();
   if(pageName==='member.html' && currentRole!=='member'){location.replace('admin-panel.html');return;}
   if(pageName==='admin-panel.html' && currentRole==='member'){location.replace('member.html');return;}
   document.body.classList.toggle('member-page',pageName==='member.html');
   document.body.classList.toggle('admin-page',pageName==='admin-panel.html');
   await recordSecurityEventOnce('login', {device: navigator.userAgent.slice(0,240)});
-  await loadSecurityHistory();
 
   if (currentRole === 'member') {
     try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
@@ -539,7 +606,7 @@ async function refreshAdminPendingNotifications(){
   }
   if(can('access_requests.view')){
     jobs.push((async()=>{
-      const {data,error}=await sb.rpc('admin_list_access_requests');
+      const {data,error}=await sb.rpc('admin_list_access_requests_display');
       if(error)console.warn('Access request notification:',error);
       else counts.requests=Array.isArray(data)?data.filter(x=>x.status==='pending').length:0;
     })());
@@ -579,12 +646,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'browse') await loadBrowse();
     if (btn.dataset.tab === 'requests') await loadMyRequests();
     if (btn.dataset.tab === 'approved') await loadApproved();
-    if (btn.dataset.tab === 'account') { await loadMemberAccount(); await loadSecurityHistory(); }
+    if (btn.dataset.tab === 'account') await loadMemberAccount();
     if (btn.dataset.tab === 'admin-requests') { if (can('access_requests.view')) await loadAdminRequests(); await loadAdminViewPermissions(); }
     if (btn.dataset.tab === 'admin-biodata') await loadAdminBiodata(btn.dataset.pendingStatus || 'pending');
     if (btn.dataset.tab === 'super-admin') await loadAdminMatrix();
-    if (btn.dataset.tab === 'site-content') await loadSiteContentAdmin();
+    if (btn.dataset.tab === 'site-content') { await loadSiteContentAdmin(); await loadSitePromotionsAdmin(); }
     if (btn.dataset.tab === 'audit') await loadAuditLogs();
+    if (btn.dataset.tab === 'security-history') await loadSecurityHistory();
   });
 });
 
@@ -622,7 +690,7 @@ async function recordSecurityEventOnce(eventType, details={}){
   sessionStorage.setItem(key,'1');
 }
 async function loadSecurityHistory(){
-  const el=document.getElementById(currentRole==='member'?'memberSecurityHistory':'adminSecurityHistory');
+  const el=document.getElementById('securityHistoryContent');
   if(!el||!currentSession?.user?.id)return;
   const {data,error}=await sb.from('user_security_events').select('event_type,details,created_at').eq('user_id',currentSession.user.id).order('created_at',{ascending:false}).limit(8);
   if(error){el.innerHTML='<div class="muted-small">নিরাপত্তা ইতিহাস দেখাতে SQL সেটআপ প্রয়োজন।</div>';return;}
@@ -1163,7 +1231,7 @@ function applyRoleUI() {
 // ================= SUPER ADMIN: SITE NOTICES & LINKS =================
 function requireSuperAdmin(){if(currentRole!=='super_admin'){RH.toast('শুধু সুপার অ্যাডমিন এই কাজ করতে পারবেন।',false);return false;}return true;}
 function resetNoticeForm(){['noticeEditId','noticeTitle','noticeBody','noticeExpires','noticeUrl','noticeLinkLabel'].forEach(id=>document.getElementById(id).value='');document.getElementById('noticeType').value='normal';document.getElementById('noticePinned').checked=false;document.getElementById('noticePublish').checked=true;}
-async function loadSiteContentAdmin(){if(!requireSuperAdmin())return;const el=document.getElementById('siteNoticesAdmin');el.textContent='লোড হচ্ছে...';const [n,l]=await Promise.all([sb.from('site_notices').select('*').order('created_at',{ascending:false}).limit(100),sb.from('site_links').select('*').order('sort_order',{ascending:true})]);if(n.error){el.innerHTML=`<div class="alert alert-error">নোটিশ টেবিল পাওয়া যায়নি: ${RH.esc(n.error.message)}<br>আগে Supabase SQL চালান।</div>`;return;}el.innerHTML=n.data?.length?n.data.map(x=>`<div class="card" style="padding:12px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong>${RH.esc(x.title)}</strong><span class="badge ${x.is_published?'badge-verified':'badge-pending'}">${x.is_published?'প্রকাশিত':'খসড়া'}</span></div><div class="muted-small">${RH.esc(x.notice_type)} · ${x.is_pinned?'পিন করা':'সাধারণ'} · ${x.published_at?RH.fmtDate(x.published_at):'প্রকাশ হয়নি'}</div><p>${RH.esc(x.body||'')}</p><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteNotice('${x.id}')">সম্পাদনা</button><button class="btn btn-small" onclick="toggleSiteNotice('${x.id}',${!x.is_published})">${x.is_published?'আনপাবলিশ':'প্রকাশ'}</button><button class="btn btn-small btn-danger" onclick="deleteSiteNotice('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="alert alert-info">এখনো কোনো নোটিশ তৈরি হয়নি।</div>';const le=document.getElementById('siteLinksAdmin');if(l.error){le.innerHTML=`<div class="alert alert-error">লিংক লোড হয়নি: ${RH.esc(l.error.message)}</div>`;return;}le.innerHTML=l.data?.length?l.data.map(x=>`<div class="perm-row"><div><strong>${RH.esc(x.title)}</strong><div class="muted-small">${RH.esc(x.url)} · ${x.is_active?'সক্রিয়':'বন্ধ'}</div></div><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteLink('${x.id}')">সম্পাদনা</button><button class="btn btn-small btn-danger" onclick="deleteSiteLink('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="muted-small">কোনো লিংক নেই।</div>';window.siteNoticesCache=n.data||[];window.siteLinksCache=l.data||[];await loadSitePromotionsAdmin();}
+async function loadSiteContentAdmin(){if(!requireSuperAdmin())return;const el=document.getElementById('siteNoticesAdmin');el.textContent='লোড হচ্ছে...';const [n,l]=await Promise.all([sb.from('site_notices').select('*').order('created_at',{ascending:false}).limit(100),sb.from('site_links').select('*').order('sort_order',{ascending:true})]);if(n.error){el.innerHTML=`<div class="alert alert-error">নোটিশ টেবিল পাওয়া যায়নি: ${RH.esc(n.error.message)}<br>আগে Supabase SQL চালান।</div>`;return;}el.innerHTML=n.data?.length?n.data.map(x=>`<div class="card" style="padding:12px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong>${RH.esc(x.title)}</strong><span class="badge ${x.is_published?'badge-verified':'badge-pending'}">${x.is_published?'প্রকাশিত':'খসড়া'}</span></div><div class="muted-small">${RH.esc(x.notice_type)} · ${x.is_pinned?'পিন করা':'সাধারণ'} · ${x.published_at?RH.fmtDate(x.published_at):'প্রকাশ হয়নি'}</div><p>${RH.esc(x.body||'')}</p><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteNotice('${x.id}')">সম্পাদনা</button><button class="btn btn-small" onclick="toggleSiteNotice('${x.id}',${!x.is_published})">${x.is_published?'আনপাবলিশ':'প্রকাশ'}</button><button class="btn btn-small btn-danger" onclick="deleteSiteNotice('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="alert alert-info">এখনো কোনো নোটিশ তৈরি হয়নি।</div>';const le=document.getElementById('siteLinksAdmin');if(l.error){le.innerHTML=`<div class="alert alert-error">লিংক লোড হয়নি: ${RH.esc(l.error.message)}</div>`;return;}le.innerHTML=l.data?.length?l.data.map(x=>`<div class="perm-row"><div><strong>${RH.esc(x.title)}</strong><div class="muted-small">${RH.esc(x.url)} · ${x.is_active?'সক্রিয়':'বন্ধ'}</div></div><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSiteLink('${x.id}')">সম্পাদনা</button><button class="btn btn-small btn-danger" onclick="deleteSiteLink('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="muted-small">কোনো লিংক নেই।</div>';window.siteNoticesCache=n.data||[];window.siteLinksCache=l.data||[];}
 async function saveSiteNotice(){if(!requireSuperAdmin())return;const title=document.getElementById('noticeTitle').value.trim(),body=document.getElementById('noticeBody').value.trim(),id=document.getElementById('noticeEditId').value;if(!title||!body)return RH.toast('শিরোনাম ও বিস্তারিত লিখুন।',false);const url=document.getElementById('noticeUrl').value.trim();if(url&&!/^https?:\/\//i.test(url))return RH.toast('লিংক অবশ্যই http:// অথবা https:// দিয়ে শুরু হবে।',false);const pub=document.getElementById('noticePublish').checked;const row={title,body,link_url:url||null,link_label:document.getElementById('noticeLinkLabel').value.trim()||null,notice_type:document.getElementById('noticeType').value,is_pinned:document.getElementById('noticePinned').checked,is_published:pub,expires_at:document.getElementById('noticeExpires').value?new Date(document.getElementById('noticeExpires').value).toISOString():null,updated_at:new Date().toISOString()};if(pub&&!id)row.published_at=new Date().toISOString();if(id&&pub)row.published_at=window.siteNoticesCache?.find(x=>x.id===id)?.published_at||new Date().toISOString();const q=id?sb.from('site_notices').update(row).eq('id',id):sb.from('site_notices').insert({...row,created_by:currentSession.user.id});const {error}=await q;if(error)return RH.toast('সংরক্ষণ ব্যর্থ: '+error.message,false);RH.toast('নোটিশ সংরক্ষণ হয়েছে।');resetNoticeForm();await loadSiteContentAdmin();}
 function editSiteNotice(id){const x=window.siteNoticesCache?.find(n=>n.id===id);if(!x)return;document.getElementById('noticeEditId').value=x.id;document.getElementById('noticeTitle').value=x.title;document.getElementById('noticeBody').value=x.body||'';document.getElementById('noticeType').value=x.notice_type;document.getElementById('noticeUrl').value=x.link_url||'';document.getElementById('noticeLinkLabel').value=x.link_label||'';document.getElementById('noticePinned').checked=!!x.is_pinned;document.getElementById('noticePublish').checked=!!x.is_published;document.getElementById('noticeExpires').value=x.expires_at?new Date(x.expires_at).toISOString().slice(0,16):'';document.getElementById('noticeTitle').scrollIntoView({behavior:'smooth'});}
 async function toggleSiteNotice(id,pub){if(!requireSuperAdmin())return;const row={is_published:pub,updated_at:new Date().toISOString()};if(pub)row.published_at=new Date().toISOString();const {error}=await sb.from('site_notices').update(row).eq('id',id);if(error)return RH.toast(error.message,false);await loadSiteContentAdmin();}
@@ -1173,21 +1241,26 @@ async function saveSiteLink(){if(!requireSuperAdmin())return;const title=documen
 function editSiteLink(id){const x=window.siteLinksCache?.find(l=>l.id===id);if(!x)return;document.getElementById('siteLinkEditId').value=x.id;document.getElementById('siteLinkTitle').value=x.title;document.getElementById('siteLinkUrl').value=x.url;document.getElementById('siteLinkOrder').value=x.sort_order;document.getElementById('siteLinkActive').checked=!!x.is_active;}
 async function deleteSiteLink(id){if(!requireSuperAdmin()||!confirm('এই লিংক মুছবেন?'))return;const {error}=await sb.from('site_links').delete().eq('id',id);if(error)return RH.toast(error.message,false);await loadSiteContentAdmin();}
 
-
 // ================= SUPER ADMIN: OFFER / PROMOTION SLIDER =================
-function resetPromotionForm(){['promoEditId','promoExistingImage','promoTitle','promoDescription','promoStartsAt','promoEndsAt','promoLinkUrl','promoLinkLabel','promoImageFile'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('promoSortOrder').value='10';document.getElementById('promoPublished').checked=true;document.getElementById('promoImagePreview').textContent='';}
+let promoPreviewObjectUrl=null;
+function renderPromotionImagePreview(src,caption='ছবির প্রিভিউ'){const box=document.getElementById('promoImagePreview');if(!box)return;if(!src){box.textContent='ছবি নির্বাচন করলে এখানে প্রিভিউ দেখা যাবে।';return;}box.innerHTML=`<div><strong>${RH.esc(caption)}</strong></div><img src="${RH.esc(src)}" alt="অফারের ছবির প্রিভিউ" onerror="this.style.display='none'"><div class="promo-upload-status">ছবিটি স্লাইডারে এই অনুপাতে প্রদর্শিত হবে।</div>`;}
+function handlePromotionImageChange(){const input=document.getElementById('promoImageFile'),file=input.files?.[0];if(promoPreviewObjectUrl){URL.revokeObjectURL(promoPreviewObjectUrl);promoPreviewObjectUrl=null;}if(!file){const old=document.getElementById('promoExistingImage').value;return renderPromotionImagePreview(old,old?'বর্তমান আপলোড করা ছবি':'ছবি নির্বাচন করলে এখানে প্রিভিউ দেখা যাবে।');}if(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024){input.value='';return RH.toast('JPG, PNG বা WebP ছবি দিন (সর্বোচ্চ ৫ MB)।',false);}promoPreviewObjectUrl=URL.createObjectURL(file);renderPromotionImagePreview(promoPreviewObjectUrl,`নতুন ছবির প্রিভিউ: ${file.name}`);}
+function resetPromotionForm(){if(promoPreviewObjectUrl){URL.revokeObjectURL(promoPreviewObjectUrl);promoPreviewObjectUrl=null;}['promoEditId','promoExistingImage','promoTitle','promoDescription','promoStartsAt','promoEndsAt','promoLinkUrl','promoLinkLabel','promoImageFile'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('promoSortOrder').value='10';document.getElementById('promoPublished').checked=true;renderPromotionImagePreview('');const btn=document.getElementById('savePromotionBtn');if(btn){btn.disabled=false;btn.textContent='অফার সংরক্ষণ';}}
 function localDateTimeInput(v){if(!v)return '';const d=new Date(v);return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
+async function uploadPromotionImageWithProgress(file,path){const {data:sessionData,error:sessionError}=await sb.auth.getSession();if(sessionError)throw sessionError;const token=sessionData?.session?.access_token;if(!token)throw new Error('লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।');const url=`${sb.supabaseUrl}/storage/v1/object/site-promotions/${path.split('/').map(encodeURIComponent).join('/')}`;return await new Promise((resolve,reject)=>{const xhr=new XMLHttpRequest();const preview=document.getElementById('promoImagePreview');preview.insertAdjacentHTML('beforeend','<div class="promo-upload-track"><div id="promoUploadFill" class="promo-upload-fill"></div></div><div id="promoUploadStatus" class="promo-upload-status">আপলোড প্রস্তুত হচ্ছে...</div>');xhr.open('POST',url);xhr.setRequestHeader('Authorization',`Bearer ${token}`);xhr.setRequestHeader('apikey',sb.supabaseKey);xhr.setRequestHeader('Content-Type',file.type);xhr.setRequestHeader('x-upsert','false');xhr.upload.onprogress=e=>{if(!e.lengthComputable)return;const pct=Math.round(e.loaded/e.total*100);const fill=document.getElementById('promoUploadFill'),status=document.getElementById('promoUploadStatus');if(fill)fill.style.width=pct+'%';if(status)status.textContent=`ছবি আপলোড হচ্ছে: ${pct}%`;};xhr.onload=()=>{if(xhr.status>=200&&xhr.status<300){preview.insertAdjacentHTML('beforeend','<div class="promo-upload-status">ছবি আপলোড সম্পন্ন হয়েছে।</div>');resolve();}else{let message=xhr.responseText;try{message=JSON.parse(message).message||message;}catch{}reject(new Error(message||`Upload failed (${xhr.status})`));}};xhr.onerror=()=>reject(new Error('নেটওয়ার্ক সমস্যার কারণে ছবি আপলোড হয়নি।'));xhr.onabort=()=>reject(new Error('ছবি আপলোড বাতিল হয়েছে।'));xhr.send(file);});}
 async function loadSitePromotionsAdmin(){if(!requireSuperAdmin())return;const el=document.getElementById('sitePromotionsAdmin');if(!el)return;el.textContent='অফার লোড হচ্ছে...';const {data,error}=await sb.from('site_promotions').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:false});if(error){el.innerHTML=`<div class="alert alert-error">অফার টেবিল পাওয়া যায়নি: ${RH.esc(error.message)}<br>প্রথমে অফার স্লাইডারের SQL চালান।</div>`;return;}window.sitePromotionsCache=data||[];el.innerHTML=data?.length?data.map(x=>`<div class="perm-row"><div style="display:flex;gap:10px;align-items:center;min-width:0"><img src="${RH.esc(x.image_url)}" alt="" style="width:74px;height:55px;object-fit:cover;border-radius:8px"><div><strong>${RH.esc(x.title)}</strong><div class="muted-small">${RH.esc(x.starts_at)} → ${RH.esc(x.ends_at)} · ${x.is_published?'প্রকাশিত':'খসড়া'}</div></div></div><div class="admin-actions"><button class="btn btn-small btn-secondary" onclick="editSitePromotion('${x.id}')">সম্পাদনা</button><button class="btn btn-small btn-danger" onclick="deleteSitePromotion('${x.id}')">মুছুন</button></div></div>`).join(''):'<div class="muted-small">এখনো কোনো অফার তৈরি হয়নি।</div>';}
-async function saveSitePromotion(){if(!requireSuperAdmin())return;const id=document.getElementById('promoEditId').value,title=document.getElementById('promoTitle').value.trim(),description=document.getElementById('promoDescription').value.trim(),start=document.getElementById('promoStartsAt').value,end=document.getElementById('promoEndsAt').value,file=document.getElementById('promoImageFile').files[0];if(!title||!start||!end)return RH.toast('শিরোনাম, শুরুর সময় ও শেষের সময় দিন।',false);if(new Date(end)<=new Date(start))return RH.toast('শেষের সময় শুরুর সময়ের পরে হতে হবে।',false);if(!id&&!file)return RH.toast('অফারের ছবি নির্বাচন করুন।',false);if(file&&(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024))return RH.toast('JPG, PNG বা WEBP ছবি দিন (সর্বোচ্চ ৫ MB)।',false);const link=document.getElementById('promoLinkUrl').value.trim();if(link&&!/^https?:\/\//i.test(link))return RH.toast('লিংক http:// অথবা https:// দিয়ে শুরু হতে হবে।',false);let imageUrl=document.getElementById('promoExistingImage').value;if(file){const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg',path=`${currentSession.user.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;const up=await sb.storage.from('site-promotions').upload(path,file,{contentType:file.type,upsert:false});if(up.error)return RH.toast('ছবি আপলোড হয়নি: '+up.error.message,false);imageUrl=sb.storage.from('site-promotions').getPublicUrl(path).data.publicUrl;}const row={title,description,image_url:imageUrl,starts_at:new Date(start).toISOString(),ends_at:new Date(end).toISOString(),link_url:link||null,link_label:document.getElementById('promoLinkLabel').value.trim()||null,sort_order:Number(document.getElementById('promoSortOrder').value)||10,is_published:document.getElementById('promoPublished').checked,updated_at:new Date().toISOString()};const q=id?sb.from('site_promotions').update(row).eq('id',id):sb.from('site_promotions').insert({...row,created_by:currentSession.user.id});const {error}=await q;if(error)return RH.toast('অফার সংরক্ষণ ব্যর্থ: '+error.message,false);RH.toast('অফার সংরক্ষণ হয়েছে।');resetPromotionForm();await loadSitePromotionsAdmin();}
-function editSitePromotion(id){const x=window.sitePromotionsCache?.find(p=>p.id===id);if(!x)return;document.getElementById('promoEditId').value=x.id;document.getElementById('promoExistingImage').value=x.image_url;document.getElementById('promoTitle').value=x.title;document.getElementById('promoDescription').value=x.description||'';document.getElementById('promoStartsAt').value=localDateTimeInput(x.starts_at);document.getElementById('promoEndsAt').value=localDateTimeInput(x.ends_at);document.getElementById('promoLinkUrl').value=x.link_url||'';document.getElementById('promoLinkLabel').value=x.link_label||'';document.getElementById('promoSortOrder').value=x.sort_order||10;document.getElementById('promoPublished').checked=!!x.is_published;document.getElementById('promoImagePreview').innerHTML=`বর্তমান ছবি: <a href="${RH.esc(x.image_url)}" target="_blank" rel="noopener">দেখুন</a> (নতুন ছবি দিলে পরিবর্তন হবে)`;document.getElementById('promoTitle').scrollIntoView({behavior:'smooth'});}
+async function saveSitePromotion(){if(!requireSuperAdmin())return;const btn=document.getElementById('savePromotionBtn'),id=document.getElementById('promoEditId').value,title=document.getElementById('promoTitle').value.trim(),description=document.getElementById('promoDescription').value.trim(),start=document.getElementById('promoStartsAt').value,end=document.getElementById('promoEndsAt').value,file=document.getElementById('promoImageFile').files[0];if(!title||!start||!end)return RH.toast('শিরোনাম, শুরুর সময় ও শেষের সময় দিন।',false);if(new Date(end)<=new Date(start))return RH.toast('শেষের সময় শুরুর সময়ের পরে হতে হবে।',false);if(!id&&!file)return RH.toast('অফারের ছবি নির্বাচন করুন।',false);if(file&&(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024))return RH.toast('JPG, PNG বা WebP ছবি দিন (সর্বোচ্চ ৫ MB)।',false);const link=document.getElementById('promoLinkUrl').value.trim();if(link&&!/^https?:\/\//i.test(link))return RH.toast('লিংক http:// অথবা https:// দিয়ে শুরু হতে হবে।',false);let imageUrl=document.getElementById('promoExistingImage').value;btn.disabled=true;try{if(file){const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg',path=`${currentSession.user.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;btn.textContent='ছবি আপলোড হচ্ছে...';await uploadPromotionImageWithProgress(file,path);imageUrl=sb.storage.from('site-promotions').getPublicUrl(path).data.publicUrl;}if(!imageUrl)throw new Error('অফারের ছবি পাওয়া যায়নি।');btn.textContent='তথ্য সংরক্ষণ হচ্ছে...';const row={title,description,image_url:imageUrl,starts_at:new Date(start).toISOString(),ends_at:new Date(end).toISOString(),link_url:link||null,link_label:document.getElementById('promoLinkLabel').value.trim()||null,sort_order:Number(document.getElementById('promoSortOrder').value)||10,is_published:document.getElementById('promoPublished').checked,updated_at:new Date().toISOString()};const q=id?sb.from('site_promotions').update(row).eq('id',id):sb.from('site_promotions').insert({...row,created_by:currentSession.user.id});const {error}=await q;if(error)throw error;RH.toast('অফার সংরক্ষণ হয়েছে।');resetPromotionForm();await loadSitePromotionsAdmin();}catch(error){RH.toast('অফার সংরক্ষণ ব্যর্থ: '+(error.message||error),false);btn.disabled=false;btn.textContent='আবার চেষ্টা করুন';}}
+
+function editSitePromotion(id){const x=window.sitePromotionsCache?.find(p=>p.id===id);if(!x)return;document.getElementById('promoEditId').value=x.id;document.getElementById('promoExistingImage').value=x.image_url;document.getElementById('promoTitle').value=x.title;document.getElementById('promoDescription').value=x.description||'';document.getElementById('promoStartsAt').value=localDateTimeInput(x.starts_at);document.getElementById('promoEndsAt').value=localDateTimeInput(x.ends_at);document.getElementById('promoLinkUrl').value=x.link_url||'';document.getElementById('promoLinkLabel').value=x.link_label||'';document.getElementById('promoSortOrder').value=x.sort_order||10;document.getElementById('promoPublished').checked=!!x.is_published;if(promoPreviewObjectUrl){URL.revokeObjectURL(promoPreviewObjectUrl);promoPreviewObjectUrl=null;}renderPromotionImagePreview(x.image_url,'বর্তমান আপলোড করা ছবি — নতুন ছবি নির্বাচন করলে এটি পরিবর্তিত হবে।');document.getElementById('promoTitle').scrollIntoView({behavior:'smooth'});}
 async function deleteSitePromotion(id){if(!requireSuperAdmin()||!confirm('এই অফারটি মুছে ফেলবেন?'))return;const {error}=await sb.from('site_promotions').delete().eq('id',id);if(error)return RH.toast(error.message,false);await loadSitePromotionsAdmin();}
+
 
 // ================= ADMIN: ACCESS REQUESTS =================
 async function loadAdminRequests() {
   const el = document.getElementById('adminRequestsList');
   if (!can('access_requests.view')) { el.innerHTML = '<div class="alert alert-error">আবেদন দেখার অনুমতি নেই।</div>'; return; }
   el.innerHTML = 'লোড হচ্ছে...';
-  const {data, error} = await sb.rpc('admin_list_access_requests');
+  const {data, error} = await sb.rpc('admin_list_access_requests_display');
   if (error) { el.innerHTML = `<div class="alert alert-error">${RH.esc(error.message)}</div>`; return; }
   if (!data?.length) { el.innerHTML = '<div class="alert alert-info">কোনো আবেদন পাওয়া যায়নি।</div>'; return; }
 
@@ -1201,12 +1274,14 @@ async function loadAdminRequests() {
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <strong>আবেদন #${RH.esc(r.id.slice(0,8))}</strong><span class="badge ${r.status==='approved'?'badge-verified':r.status==='pending'?'badge-pending':'badge-rejected'}">${badge}</span>
       </div>
-      <p class="muted-small">বায়োডাটা ID: <span class="id-short">${RH.esc(r.biodata_id)}</span></p>
-      <p class="muted-small">আবেদনকারী: <span class="id-short">${RH.esc(r.requester_user_id)}</span></p>
-      <p class="muted-small">মালিক: <span class="id-short">${RH.esc(r.owner_user_id)}</span></p>
-      ${r.message ? `<p><strong>বার্তা:</strong> ${RH.esc(r.message)}</p>` : ''}
-      ${r.admin_note ? `<p class="note">${RH.esc(r.admin_note)}</p>` : ''}
-      <div class="muted-small">জমা: ${RH.fmtDate(r.created_at)} ${r.expires_at ? '| মেয়াদ: '+RH.fmtDate(r.expires_at):''}</div>
+      <div class="request-card-details">
+        <p class="muted-small"><strong>সদস্য নিবন্ধন আইডি:</strong> <span class="id-short">${RH.esc(r.member_registration_code || 'তথ্য পাওয়া যায়নি')}</span></p>
+        <p class="muted-small"><strong>আবেদনকারী:</strong> ${RH.esc(r.requester_name || 'নাম পাওয়া যায়নি')}</p>
+        <p class="muted-small"><strong>মালিক:</strong> ${RH.esc(r.owner_name || 'নাম পাওয়া যায়নি')}</p>
+        ${r.message ? `<p><strong>বার্তা:</strong> ${RH.esc(r.message)}</p>` : ''}
+        ${r.admin_note ? `<p class="note">${RH.esc(r.admin_note)}</p>` : ''}
+        <div class="muted-small">জমা: ${RH.fmtDate(r.created_at)} ${r.expires_at ? '| মেয়াদ: '+RH.fmtDate(r.expires_at):''}</div>
+      </div>
       ${r.status === 'approved' && r.expires_at ? `<div class="countdown-wrap" data-expires="${r.expires_at}" style="margin-top:.5rem">${renderCountdown(r.expires_at)}</div>` : ''}
       <div class="admin-actions mt-1">${buttons || '<span class="muted-small">এখানে কোনো কার্যকর অনুমতি নেই।</span>'}</div>
     </div>`;
@@ -1603,5 +1678,5 @@ async function loadAuditLogs() {
 }
 
 </script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const input=document.getElementById('promoImageFile');if(input)input.addEventListener('change',handlePromotionImageChange);});</script>
 </body>
-</html>
