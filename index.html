@@ -799,6 +799,59 @@
 .site-topnav nav a::before,.site-topnav nav a::after{display:none!important;content:none!important}
 .site-topnav nav a{font-family:'Hind Siliguri','Noto Sans Bengali',sans-serif;font-weight:600;letter-spacing:.05px}
 
+
+/* বাংলা হিজরি ক্যালেন্ডার ও লাইভ ঘড়ি */
+.header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;text-align:left;gap:18px}
+.header-brand{position:relative;z-index:1;min-width:0}
+.header-brand h1{margin:0}
+.header-brand .slogan{margin-top:.7rem}
+.home-calendar{position:relative;z-index:2;width:245px;flex-shrink:0;padding:12px 15px;border:1px solid rgba(255,255,255,.28);border-radius:16px;background:rgba(255,255,255,.12);backdrop-filter:blur(9px);text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.10)}
+.home-clock{font-size:1.42rem;font-weight:800;letter-spacing:.04em;line-height:1.25;font-variant-numeric:tabular-nums;color:#fff}
+.home-date-trigger{display:block;width:100%;border:0;background:transparent;color:#fff;cursor:pointer;padding:5px 0 0;font:inherit}
+.home-date-trigger:hover .home-hijri{text-decoration:underline;text-underline-offset:4px}
+.home-hijri{display:block;font-size:1rem;font-weight:800;color:#ffe7aa;line-height:1.5}
+.home-gregorian,.home-weekday{display:block;font-size:.85rem;color:#fff;line-height:1.45}
+.home-weekday{font-weight:700;color:#d7f1e6}
+.home-calendar-hint{display:block;font-size:.68rem;color:#e1eee8;opacity:.9;margin-top:3px}
+.calendar-modal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(5,24,19,.68);padding:16px;align-items:center;justify-content:center}
+.calendar-modal.open{display:flex}
+.calendar-dialog{width:min(480px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;padding:18px;box-shadow:0 25px 80px rgba(0,0,0,.3)}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.calendar-head h3{color:#145b43;font-size:1.15rem}
+.calendar-nav{display:flex;gap:7px}
+.calendar-nav button,.calendar-close{border:1px solid #d7e6dc;background:#f3f8f4;color:#145b43;border-radius:9px;padding:7px 11px;cursor:pointer}
+.calendar-month-label{text-align:center;font-weight:800;color:#164c39;margin:8px 0 12px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;text-align:center}
+.calendar-grid .weekday{font-size:.78rem;font-weight:800;color:#61766a;padding:5px 0}
+.calendar-day{min-height:49px;border:1px solid #e3ece5;border-radius:9px;padding:5px 2px;background:#fbfdfb;color:#244b39}
+.calendar-day.today{background:#e5f5eb;border:2px solid #168254;font-weight:900}
+.calendar-day.muted{opacity:.35}
+.calendar-day strong{display:block;font-size:.9rem;line-height:1.2}
+.calendar-day small{display:block;font-size:.62rem;color:#75887c;line-height:1.2;margin-top:3px}
+.calendar-hijri-note{text-align:center;color:#66786e;font-size:.78rem;margin-top:12px}
+@media(max-width:760px){.header{grid-template-columns:1fr;text-align:center;padding:1.4rem 1rem}.home-calendar{width:min(100%,300px);margin:0 auto}.header-brand h1{font-size:1.8rem}}
+@media(max-width:520px){.home-clock{font-size:1.3rem}.home-calendar{padding:10px 12px}.calendar-dialog{padding:13px}.calendar-day{min-height:44px}}
+/* অফার/ইভেন্ট স্লাইডার */
+.promo-section{margin:0 0 20px;border:1px solid #d7e8de;border-radius:18px;background:#f8fcf9;padding:14px;box-shadow:0 8px 24px rgba(12,74,62,.07)}
+.promo-section[hidden]{display:none!important}
+.promo-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;color:#14543f;font-weight:800}
+.promo-slider{position:relative;overflow:hidden;border-radius:14px;background:#103f32;min-height:210px}
+.promo-slide{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr);min-height:245px;color:#fff}
+.promo-slide img{width:100%;height:100%;min-height:245px;max-height:330px;object-fit:cover;background:#dce9e0}
+.promo-copy{padding:20px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg,#104b38,#0b3b36)}
+.promo-copy h3{font-size:1.3rem;color:#ffe7aa;margin-bottom:7px}
+.promo-copy p{font-size:.92rem;color:#e6f3eb;white-space:pre-line}
+.promo-countdown{margin-top:12px;padding:8px 10px;border-radius:10px;background:#ffffff18;border:1px solid #ffffff30;font-weight:800;color:#ffdf91;font-variant-numeric:tabular-nums}
+.promo-period{font-size:.75rem;color:#cfe5d7;margin-top:7px}
+.promo-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+.promo-controls button{border:1px solid #cfe0d5;background:#fff;color:#14543f;border-radius:50%;width:34px;height:34px;cursor:pointer}
+.promo-dots{display:flex;gap:6px}
+.promo-dots button{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#b7cfc0;cursor:pointer}
+.promo-dots button.active{background:#176b4b;width:20px;border-radius:8px}
+@media(max-width:650px){.promo-slide{grid-template-columns:1fr}.promo-slide img{height:175px;min-height:175px;max-height:190px}.promo-copy{padding:15px}.promo-copy h3{font-size:1.12rem}.promo-slider{min-height:0}}
+.side-links a i{display:none!important}
+.side-links a{padding-left:10px}
+
 </style>
 </head>
 <body>
@@ -806,11 +859,27 @@
 
     <div class="container">
         <div class="header">
-            <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
-            <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
+            <div class="header-brand">
+                <h1>রফিকে হায়াত <i class="fas fa-heart"></i></h1>
+                <div class="slogan">“জান্নাতের পথে সাথীর সন্ধানে...”</div>
+            </div>
+            <div class="home-calendar" aria-label="ঘড়ি ও ক্যালেন্ডার">
+                <div class="home-clock" id="homeClock">--:--:-- --</div>
+                <button type="button" class="home-date-trigger" id="openCalendarBtn" aria-haspopup="dialog" aria-controls="calendarModal">
+                    <span class="home-hijri" id="homeHijriDate">হিজরি তারিখ</span>
+                    <span class="home-gregorian" id="homeGregorianDate">ইংরেজি তারিখ</span>
+                    <span class="home-weekday" id="homeWeekday">বার</span>
+                    <span class="home-calendar-hint">পূর্ণ ক্যালেন্ডার দেখতে স্পর্শ করুন</span>
+                </button>
+            </div>
         </div>
         <div class="site-topnav"><div class="brand-mini"><i class="fas fa-mosque"></i> জান্নাতের পথে সাথীর সন্ধানে</div><nav aria-label="প্রধান মেনু"><a href="index.html">মূল পেজ</a><a href="register.html">সদস্য রেজিস্ট্রেশন</a><a href="login.html">সদস্য লগইন</a><a href="dashboard.html">ড্যাশবোর্ড</a><a href="admin-login.html">অ্যাডমিন</a></nav></div>
         <div class="notice-ticker" id="noticeTicker" aria-live="polite"><strong><i class="fas fa-bullhorn"></i> নোটিশ</strong><div class="notice-ticker-track"><span id="noticeTickerText">সর্বশেষ নোটিশ এখানে প্রদর্শিত হবে।</span></div></div>
+        <section class="promo-section" id="promoSection" hidden aria-label="বিশেষ অফার ও ঘোষণা">
+          <div class="promo-heading"><span><i class="fas fa-gift"></i> বিশেষ অফার ও ঘোষণা</span><small id="promoCounter"></small></div>
+          <div class="promo-slider" id="promoSlider" aria-live="polite"></div>
+          <div class="promo-controls"><button type="button" id="promoPrev" aria-label="আগের অফার"><i class="fas fa-chevron-left"></i></button><div class="promo-dots" id="promoDots"></div><button type="button" id="promoNext" aria-label="পরের অফার"><i class="fas fa-chevron-right"></i></button></div>
+        </section>
         <div class="home-grid"><div class="home-main">
         <section class="hero-intro">
             <span class="hero-kicker"><i class="fas fa-heart"></i> সম্মান, আস্থা ও দ্বীনদারির বন্ধনে</span>
@@ -920,6 +989,16 @@
         </footer>
     </div>
 
+    <div class="calendar-modal" id="calendarModal" role="dialog" aria-modal="true" aria-labelledby="calendarTitle">
+      <div class="calendar-dialog">
+        <div class="calendar-head"><h3 id="calendarTitle"><i class="fas fa-calendar-alt"></i> পূর্ণ ক্যালেন্ডার</h3><button class="calendar-close" type="button" id="closeCalendarBtn" aria-label="বন্ধ করুন"><i class="fas fa-times"></i></button></div>
+        <div class="calendar-nav"><button type="button" id="calendarPrev" aria-label="আগের মাস"><i class="fas fa-chevron-left"></i></button><button type="button" id="calendarToday">আজ</button><button type="button" id="calendarNext" aria-label="পরের মাস"><i class="fas fa-chevron-right"></i></button></div>
+        <div class="calendar-month-label" id="calendarMonthLabel"></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-hijri-note" id="calendarHijriToday"></div>
+      </div>
+    </div>
+
     <button type="button" class="back-to-top" id="backToTop" aria-label="উপরে যান" title="উপরে যান">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -934,6 +1013,34 @@
         function closeNoticeArchive(){document.getElementById('noticeArchive').style.display='none';}
         function escapeNoticeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
         function safeNoticeUrl(s){try{const u=new URL(s,location.href);return ['http:','https:'].includes(u.protocol)?u.href:'#';}catch(e){return '#';}}
+        // বাংলা হরফে হিজরি তারিখ ও পূর্ণ মাসভিত্তিক ক্যালেন্ডার
+        const bnDigits=n=>String(n).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[Number(d)]);
+        const hijriMonthsBn=['মুহাররম','সফর','রবিউল আউয়াল','রবিউস সানি','জুমাদাল উলা','জুমাদাল উখরা','রজব','শাবান','রমজান','শাওয়াল','জিলকদ','জিলহজ'];
+        const bnWeekdays=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+        const bnGregorianMonths=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+        function hijriParts(date){try{const parts=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(date);const o={};parts.forEach(p=>o[p.type]=p.value);return {day:Number(o.day),month:Number(o.month),year:Number(o.year)};}catch(e){return null;}}
+        function hijriBn(date){const h=hijriParts(date);return h?`${bnDigits(h.day)} ${hijriMonthsBn[h.month-1]||''} ${bnDigits(h.year)} হি.`:'হিজরি তারিখ পাওয়া যায়নি';}
+        function updateHomeClock(){const now=new Date();document.getElementById('homeClock').textContent=new Intl.DateTimeFormat('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);document.getElementById('homeHijriDate').textContent=hijriBn(now);document.getElementById('homeGregorianDate').textContent=new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'long',year:'numeric'}).format(now);document.getElementById('homeWeekday').textContent=bnWeekdays[now.getDay()];}
+        let calendarMonth=new Date();calendarMonth.setDate(1);
+        function renderFullCalendar(){const y=calendarMonth.getFullYear(),m=calendarMonth.getMonth(),first=new Date(y,m,1),start=first.getDay(),days=new Date(y,m+1,0).getDate(),today=new Date();document.getElementById('calendarMonthLabel').textContent=`${bnGregorianMonths[m]} ${bnDigits(y)}`;const names=['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];let html=names.map(x=>`<div class="weekday">${x}</div>`).join('');for(let i=0;i<start;i++)html+='<div class="calendar-day muted"></div>';for(let d=1;d<=days;d++){const dt=new Date(y,m,d),h=hijriParts(dt),isToday=dt.toDateString()===today.toDateString();html+=`<div class="calendar-day ${isToday?'today':''}"><strong>${bnDigits(d)}</strong><small>${h?bnDigits(h.day):''}</small></div>`;}const used=start+days;for(let i=used;i<Math.ceil(used/7)*7;i++)html+='<div class="calendar-day muted"></div>';document.getElementById('calendarGrid').innerHTML=html;document.getElementById('calendarHijriToday').textContent='আজকের হিজরি তারিখ: '+hijriBn(today)+' · প্রতিটি দিনের নিচে হিজরি দিন দেখানো হয়েছে।';}
+        const calendarModal=document.getElementById('calendarModal');
+        document.getElementById('openCalendarBtn').addEventListener('click',()=>{calendarMonth=new Date();calendarMonth.setDate(1);renderFullCalendar();calendarModal.classList.add('open');});
+        document.getElementById('closeCalendarBtn').addEventListener('click',()=>calendarModal.classList.remove('open'));
+        calendarModal.addEventListener('click',e=>{if(e.target===calendarModal)calendarModal.classList.remove('open');});
+        document.getElementById('calendarPrev').addEventListener('click',()=>{calendarMonth.setMonth(calendarMonth.getMonth()-1);renderFullCalendar();});
+        document.getElementById('calendarNext').addEventListener('click',()=>{calendarMonth.setMonth(calendarMonth.getMonth()+1);renderFullCalendar();});
+        document.getElementById('calendarToday').addEventListener('click',()=>{calendarMonth=new Date();calendarMonth.setDate(1);renderFullCalendar();});
+        updateHomeClock();setInterval(updateHomeClock,1000);
+
+        // অ্যাডমিন থেকে প্রকাশিত সময়সীমার মধ্যে থাকা অফার স্লাইডার
+        let publicPromotions=[],promotionIndex=0,promoTimer=null,promoCountdownTimer=null;
+        function promoTime(v){return new Date(v).toLocaleString('bn-BD',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
+        function renderPromotion(){const section=document.getElementById('promoSection'),host=document.getElementById('promoSlider');if(!publicPromotions.length){section.hidden=true;return;}section.hidden=false;promotionIndex=(promotionIndex+publicPromotions.length)%publicPromotions.length;const p=publicPromotions[promotionIndex],now=Date.now(),start=new Date(p.starts_at).getTime(),end=new Date(p.ends_at).getTime();const img=safeNoticeUrl(p.image_url);host.innerHTML=`<article class="promo-slide"><img src="${img}" alt="${escapeNoticeHtml(p.title)}" loading="lazy"><div class="promo-copy"><h3>${escapeNoticeHtml(p.title)}</h3><p>${escapeNoticeHtml(p.description||'')}</p><div class="promo-countdown" id="promoCountdown"></div><div class="promo-period">শুরু: ${promoTime(p.starts_at)}<br>শেষ: ${promoTime(p.ends_at)}</div>${p.link_url?`<p style="margin-top:10px"><a href="${safeNoticeUrl(p.link_url)}" target="_blank" rel="noopener" style="color:#ffe7aa;font-weight:800">${escapeNoticeHtml(p.link_label||'বিস্তারিত দেখুন')}</a></p>`:''}</div></article>`;document.getElementById('promoCounter').textContent=`${bnDigits(promotionIndex+1)} / ${bnDigits(publicPromotions.length)}`;document.getElementById('promoDots').innerHTML=publicPromotions.map((_,i)=>`<button type="button" class="${i===promotionIndex?'active':''}" aria-label="অফার ${i+1}" data-promo-index="${i}"></button>`).join('');document.querySelectorAll('[data-promo-index]').forEach(b=>b.addEventListener('click',()=>{promotionIndex=Number(b.dataset.promoIndex);renderPromotion();}));updatePromoCountdown();}
+        function updatePromoCountdown(){const p=publicPromotions[promotionIndex],el=document.getElementById('promoCountdown');if(!p||!el)return;const now=Date.now(),start=new Date(p.starts_at).getTime(),end=new Date(p.ends_at).getTime();let diff,label;if(now<start){diff=start-now;label='শুরু হতে বাকি';}else if(now<end){diff=end-now;label='শেষ হতে বাকি';}else{el.textContent='অফারের সময় শেষ';return;}const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),sec=Math.floor(diff%60000/1000);el.textContent=`${label}: ${bnDigits(d)} দিন ${bnDigits(h)}:${bnDigits(m)}:${bnDigits(sec)}`;}
+        async function loadPublicPromotions(){const client=(typeof sb!=='undefined'&&sb)?sb:(window.sb||window.supabaseClient||null);if(!client)return;const now=new Date().toISOString();const {data,error}=await client.from('site_promotions').select('id,title,description,image_url,link_url,link_label,starts_at,ends_at').eq('is_published',true).gt('ends_at',now).order('sort_order',{ascending:true}).order('starts_at',{ascending:true}).limit(20);if(error){console.warn('Promotions load:',error.message);return;}publicPromotions=data||[];promotionIndex=0;renderPromotion();if(promoTimer)clearInterval(promoTimer);if(promoCountdownTimer)clearInterval(promoCountdownTimer);if(publicPromotions.length>1)promoTimer=setInterval(()=>{promotionIndex=(promotionIndex+1)%publicPromotions.length;renderPromotion();},7000);promoCountdownTimer=setInterval(()=>{updatePromoCountdown();if(publicPromotions.length&&publicPromotions.every(x=>new Date(x.ends_at).getTime()<=Date.now()))loadPublicPromotions();},1000);}
+        document.getElementById('promoPrev').addEventListener('click',()=>{promotionIndex--;renderPromotion();});
+        document.getElementById('promoNext').addEventListener('click',()=>{promotionIndex++;renderPromotion();});
+
         async function loadPublicNoticeContent(){
             const client = (typeof sb !== 'undefined' && sb) ? sb : (window.sb || window.supabaseClient || null);
             const ticker=document.getElementById('noticeTickerText');
@@ -951,14 +1058,15 @@
                 ticker.textContent=publicNotices.length?publicNotices.slice(0,8).map(n=>`${n.notice_type==='urgent'?'জরুরি: ':n.notice_type==='important'?'গুরুত্বপূর্ণ: ':''}${n.title} — ${n.body||''}`).join('  •  '):'এই মুহূর্তে কোনো প্রকাশিত নোটিশ নেই।';
                 side.innerHTML=publicNotices.length?publicNotices.map(n=>{const fresh=n.published_at&&(Date.now()-new Date(n.published_at).getTime())<=7*86400000;return `<article class="side-notice ${n.notice_type==='urgent'?'urgent':n.notice_type==='important'?'important':''}"><strong>${escapeNoticeHtml(n.title)}</strong>${fresh?'<span class="new-tag">নতুন</span>':''}<div>${escapeNoticeHtml((n.body||'').slice(0,150))}${(n.body||'').length>150?'…':''}</div><small>${safeNoticeDate(n.published_at)}</small>${n.link_url?`<div><a href="${safeNoticeUrl(n.link_url)}" target="_blank" rel="noopener">${escapeNoticeHtml(n.link_label||'বিস্তারিত')}</a></div>`:''}</article>`}).join(''):'<div class="side-notice">এখনো কোনো নোটিশ প্রকাশিত হয়নি।</div>';
                 if(lr.error){console.warn('Important links load:',lr.error.message);}
-                links.innerHTML=lr.data?.length?lr.data.map(l=>`<a href="${safeNoticeUrl(l.url)}" target="_blank" rel="noopener">${escapeNoticeHtml(l.title)} <i class="fas fa-external-link-alt"></i></a>`).join(''):'<a href="https://www.supremecourt.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ সুপ্রিম কোর্ট</a><a href="https://www.bangladesh.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ জাতীয় তথ্য বাতায়ন</a>';
+                links.innerHTML=lr.data?.length?lr.data.map(l=>`<a href="${safeNoticeUrl(l.url)}" target="_blank" rel="noopener">${escapeNoticeHtml(l.title)}</a>`).join(''):'<a href="https://www.supremecourt.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ সুপ্রিম কোর্ট</a><a href="https://www.bangladesh.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ জাতীয় তথ্য বাতায়ন</a>';
             }catch(err){console.error('Public notice load failed:',err);ticker.textContent='নোটিশ লোড করা যায়নি। Supabase-এর site_notices public SELECT policy ও config.js পরীক্ষা করুন।';side.innerHTML='<div class="side-notice">নোটিশ সাময়িকভাবে পাওয়া যাচ্ছে না।</div>';}
         }
 
         document.getElementById('footerYear').textContent = new Date().getFullYear();
         loadPublicNoticeContent();
-        document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadPublicNoticeContent();});
-        window.addEventListener("focus",loadPublicNoticeContent);
+        loadPublicPromotions();
+        document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadPublicNoticeContent();loadPublicPromotions();}});
+        window.addEventListener("focus",()=>{loadPublicNoticeContent();loadPublicPromotions();});
 
         // স্ক্রল প্রোগ্রেস ও ব্যাক-টু-টপ বাটন কন্ট্রোল
         const scrollProgress = document.getElementById('scrollProgress');
