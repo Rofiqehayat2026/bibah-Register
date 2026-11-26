@@ -199,9 +199,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 }
 @media(prefers-reduced-motion:no-preference){.card,.candidate-card,.btn{transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease}}
 
-
-/* Smart member features */
-.smart-bar-track{height:14px;background:#edf3f6;border-radius:20px;overflow:hidden}.smart-bar-fill{height:100%;background:linear-gradient(90deg,#1e7e5e,#68b99a);border-radius:20px;min-width:2px}.saved-biodata-btn{background:#fff7e8;color:#8a5b00;border:1px solid #f0d59c}.saved-biodata-btn.is-saved{background:#eaf7ef;color:#17603a;border-color:#c8e8d2}
 </style>
 </head>
 <body class="member-page">
@@ -238,7 +235,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="tab-btn role-member" data-tab="browse"><i class="fas fa-users"></i> প্রার্থী খুঁজুন</button>
     <button class="tab-btn role-member" data-tab="requests"><i class="fas fa-paper-plane"></i> আমার অনুরোধ</button>
     <button class="tab-btn role-member" data-tab="approved"><i class="fas fa-eye"></i> অনুমোদিত বায়োডাটা</button>
-    <button class="tab-btn role-member" data-tab="saved"><i class="fas fa-bookmark"></i> সংরক্ষিত বায়োডাটা</button>
     <button class="tab-btn role-member" data-tab="account"><i class="fas fa-user-cog"></i> আমার অ্যাকাউন্ট</button>
     <button class="tab-btn role-admin hidden" id="tabAdminRequests" data-tab="admin-requests"><i class="fas fa-clipboard-check"></i> আবেদন ব্যবস্থাপনা</button>
     <button class="tab-btn role-admin hidden" id="tabAdminBiodata" data-tab="admin-biodata"><i class="fas fa-file-circle-check"></i> বায়োডাটা যাচাই</button>
@@ -249,7 +245,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 
   <div class="tab-panel active" id="panel-home">
     <div id="biodataStatusCard" class="card">লোড হচ্ছে...</div>
-    <div id="profileCompletenessCard" class="card hidden"></div>
     <div class="section-title"><i class="fas fa-bell"></i> নোটিফিকেশন</div>
     <div id="notificationsList">লোড হচ্ছে...</div>
   </div>
@@ -276,6 +271,11 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
             <option>রংপুর</option><option>ময়মনসিংহ</option>
           </select>
         </div>
+        <div class="form-group"><label for="filterDistrict">জেলা (ঐচ্ছিক)</label><input id="filterDistrict" type="text" placeholder="যেমন: ঢাকা"></div>
+        <div class="form-group"><label for="filterAgeMin">সর্বনিম্ন বয়স</label><input id="filterAgeMin" type="number" min="18" max="100" placeholder="18"></div>
+        <div class="form-group"><label for="filterAgeMax">সর্বোচ্চ বয়স</label><input id="filterAgeMax" type="number" min="18" max="100" placeholder="40"></div>
+        <div class="form-group"><label for="filterMarital">বৈবাহিক অবস্থা</label><input id="filterMarital" type="text" placeholder="যেমন: অবিবাহিত"></div>
+        <div class="form-group"><label for="filterEducation">শিক্ষাগত যোগ্যতা</label><input id="filterEducation" type="text" placeholder="যেমন: স্নাতক"></div>
         <div class="form-group" style="display:flex;align-items:flex-end">
           <button class="btn btn-block" id="searchBtn" style="width:100%">
             <i class="fas fa-search"></i> খুঁজুন
@@ -296,11 +296,6 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 
   <div class="tab-panel" id="panel-approved">
     <div id="approvedList">লোড হচ্ছে...</div>
-  </div>
-
-  <div class="tab-panel" id="panel-saved">
-    <div class="section-title"><i class="fas fa-bookmark"></i> আমার সংরক্ষিত বায়োডাটা</div>
-    <div id="savedBiodataList" class="alert alert-info">লোড হচ্ছে...</div>
   </div>
 
   <div class="tab-panel" id="panel-account">
@@ -465,7 +460,7 @@ setInterval(updateDashboardClock,1000);
 
   if (currentRole === 'member') {
     try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
-    await Promise.all([loadHome(), loadNotifications(), loadProfileCompleteness(), loadSavedBiodata()]);
+    await Promise.all([loadHome(), loadNotifications()]);
   } else {
     if (can('access_requests.view')) await loadAdminRequests();
     if (can('access_requests.view') || can('access_requests.approve') || can('access_requests.extend')) await loadAdminViewPermissions();
@@ -760,9 +755,22 @@ async function loadBrowse() {
     return;
   }
 
-  const {data:savedRows}=await sb.from('saved_biodata').select('biodata_id').eq('user_id',currentSession.user.id);
-  const savedIds=new Set((savedRows||[]).map(x=>x.biodata_id));
-  el.innerHTML = data.map(b => {
+  const district=(document.getElementById('filterDistrict')?.value||'').trim().toLocaleLowerCase();
+  const ageMin=Number(document.getElementById('filterAgeMin')?.value||0);
+  const ageMax=Number(document.getElementById('filterAgeMax')?.value||0);
+  const marital=(document.getElementById('filterMarital')?.value||'').trim().toLocaleLowerCase();
+  const education=(document.getElementById('filterEducation')?.value||'').trim().toLocaleLowerCase();
+  const filtered=(data||[]).filter(b=>{
+    const age=Number(b.age||0);
+    if(district&&!String(b.current_district||'').toLocaleLowerCase().includes(district))return false;
+    if(ageMin&&(!age||age<ageMin))return false;
+    if(ageMax&&(!age||age>ageMax))return false;
+    if(marital&&!String(b.marital_status||'').toLocaleLowerCase().includes(marital))return false;
+    if(education&&!String(b.education_type||'').toLocaleLowerCase().includes(education))return false;
+    return true;
+  });
+  if(!filtered.length){el.innerHTML='<div class="alert alert-info">এই শর্তে কোনো প্রার্থী পাওয়া যায়নি। ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</div>';return;}
+  el.innerHTML = filtered.map(b => {
     const typeLabel = {
       male: 'পাত্র', female: 'পাত্রী',
       boy_khunsha: 'ছেলে খুনসা', girl_khunsha: 'মেয়ে খুনসা'
@@ -782,7 +790,7 @@ async function loadBrowse() {
             <span class="code-badge">${RH.esc(b.biodata_code_masked)}</span>
             <span class="code-badge" style="background:#e8f3f0;color:#0f5132;margin-left:.3rem">${typeLabel}</span>
           </div>
-          <div style="display:flex;gap:7px;flex-wrap:wrap">${btnHtml}<button class="btn btn-small saved-biodata-btn ${savedIds.has(b.biodata_id)?'is-saved':''}" onclick="toggleSavedBiodata('${b.biodata_id}',this)">${savedIds.has(b.biodata_id)?'<i class="fas fa-check"></i> সংরক্ষিত':'<i class="fas fa-bookmark"></i> সংরক্ষণ'}</button></div>
+          <div>${btnHtml}</div>
         </div>
         <div class="grid-2 mt-1" style="font-size:.88rem">
           <div class="info-row"><strong>বয়স:</strong> ${b.age || '—'} বছর</div>
@@ -795,24 +803,6 @@ async function loadBrowse() {
         </div>
       </div>`;
   }).join('');
-}
-async function toggleSavedBiodata(biodataId,button){
- if(!currentSession?.user?.id)return RH.toast('আবার লগইন করুন।',false);
- const {data:existing,error:readError}=await sb.from('saved_biodata').select('id').eq('user_id',currentSession.user.id).eq('biodata_id',biodataId).maybeSingle();
- if(readError)return RH.toast('সংরক্ষণের অবস্থা যাচাই করা যায়নি: '+readError.message,false);
- if(existing){const {error}=await sb.from('saved_biodata').delete().eq('id',existing.id);if(error)return RH.toast('সংরক্ষণ থেকে সরানো যায়নি: '+error.message,false);if(button){button.classList.remove('is-saved');button.innerHTML='<i class="fas fa-bookmark"></i> সংরক্ষণ';}RH.toast('সংরক্ষিত তালিকা থেকে সরানো হয়েছে।');}
- else{const {error}=await sb.from('saved_biodata').insert({user_id:currentSession.user.id,biodata_id:biodataId});if(error)return RH.toast('সংরক্ষণ করা যায়নি: '+error.message,false);if(button){button.classList.add('is-saved');button.innerHTML='<i class="fas fa-check"></i> সংরক্ষিত';}RH.toast('বায়োডাটা সংরক্ষণ হয়েছে।');}
-}
-async function loadSavedBiodata(){
- const el=document.getElementById('savedBiodataList');if(!el||!currentSession?.user?.id)return;el.innerHTML='লোড হচ্ছে...';
- const {data:saved,error}=await sb.from('saved_biodata').select('id,biodata_id,created_at').eq('user_id',currentSession.user.id).order('created_at',{ascending:false});
- if(error){el.innerHTML=`<div class="alert alert-error">সংরক্ষিত তালিকা লোড হয়নি: ${RH.esc(error.message)}</div>`;return;}if(!saved?.length){el.innerHTML='<div class="alert alert-info">এখনো কোনো বায়োডাটা সংরক্ষণ করেননি। প্রার্থী খুঁজুন ট্যাব থেকে সংরক্ষণ করতে পারবেন।</div>';return;}
- const {data:all,error:e}=await sb.rpc('list_public_biodatas',{p_gender:null,p_division:null,p_limit:100,p_offset:0});if(e){el.innerHTML=`<div class="alert alert-error">তালিকা দেখানো যাচ্ছে না: ${RH.esc(e.message)}</div>`;return;}const ids=new Set(saved.map(x=>x.biodata_id));const rows=(all||[]).filter(x=>ids.has(x.biodata_id));if(!rows.length){el.innerHTML='<div class="alert alert-info">সংরক্ষিত প্রোফাইলগুলো বর্তমানে প্রকাশ্য তালিকায় নেই।</div>';return;}el.innerHTML=rows.map(b=>`<div class="candidate-card"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong class="code-badge">${RH.esc(b.biodata_code_masked||'বায়োডাটা')}</strong><button class="btn btn-small btn-secondary" onclick="toggleSavedBiodata('${b.biodata_id}');loadSavedBiodata()">তালিকা থেকে সরান</button></div><div class="grid-2 mt-1"><div class="info-row">বয়স: ${b.age||'—'} বছর</div><div class="info-row">বিভাগ: ${RH.esc(b.current_division||'—')}</div><div class="info-row">জেলা: ${RH.esc(b.current_district||'—')}</div><div class="info-row">শিক্ষা: ${RH.esc(b.education_type||'—')}</div></div><div class="mt-1"><button class="btn btn-small" onclick="openRequest('${b.biodata_id}')">বিস্তারিত দেখার অনুরোধ</button></div></div>`).join('');
-}
-async function loadProfileCompleteness(){
- const el=document.getElementById('profileCompletenessCard');if(!el||!currentSession?.user?.id)return;
- const {data,error}=await sb.from('biodata_records').select('id,full_name,dob,current_division,current_district,permanent_district,marital_status,form_data,status').eq('user_id',currentSession.user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
- if(error||!data){el.classList.add('hidden');return;}const fd=data.form_data&&typeof data.form_data==='object'?data.form_data:{};const fields=[data.full_name,data.dob,data.current_division,data.current_district,data.permanent_district,data.marital_status,fd.fatherName,fd.motherName,fd.educationType,fd.salah,fd.parda,fd.prefAgeFrom||fd.prefAge,fd.prefArea,fd.extraRequirements];const done=fields.filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='').length;const pct=Math.round(done/fields.length*100);el.classList.remove('hidden');el.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><strong><i class="fas fa-chart-pie"></i> বায়োডাটা পূর্ণতার স্কোর</strong><strong style="color:#1e7e5e">${pct}%</strong></div><div class="smart-bar-track" style="height:14px;margin:9px 0"><div class="smart-bar-fill" style="width:${pct}%"></div></div><small class="text-muted">${done} / ${fields.length}টি গুরুত্বপূর্ণ তথ্য পূরণ করা হয়েছে। অসম্পূর্ণ তথ্য সম্পন্ন করলে প্রোফাইল আরও কার্যকর হবে।</small>`;
 }
 document.getElementById('searchBtn').addEventListener('click', loadBrowse);
 
