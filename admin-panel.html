@@ -241,6 +241,30 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
 .promo-upload-fill{height:100%;width:0;background:linear-gradient(90deg,#1e7e5e,#38a789);transition:width .15s}
 .promo-upload-status{font-size:.85rem;color:#456579;margin-top:5px}
 
+
+/* ===== Header actions: compact, plain inline links/buttons ===== */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;margin-left:auto}
+.header-action-link,.header-action-button{display:inline-flex;align-items:center;gap:6px;padding:4px 2px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#23664d!important;font:inherit;font-size:.9rem;font-weight:700;text-decoration:none!important;white-space:nowrap}
+.header-action-link:hover,.header-action-button:hover{color:#123f30!important;text-decoration:underline!important;transform:none!important}
+.header-role-chip{padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#23664d!important;white-space:nowrap}
+.header-actions #userInfo{white-space:nowrap}
+.admin-notification-wrap{flex:0 0 auto}
+.admin-notification-bell.header-action-button{position:relative}
+.header-logout{cursor:pointer}
+@media(max-width:850px){.header-actions{gap:10px;margin-left:0}}
+@media(max-width:520px){.header-actions{width:100%;justify-content:flex-start;gap:12px}.header-actions #userInfo{width:auto!important;order:initial}}
+/* Security history: readable spacing and expandable full user-agent string */
+.security-history-card{line-height:1.55}
+.security-history-content{padding:12px 4px 3px;line-height:1.5}
+.security-event-row{padding:12px 2px;border-bottom:1px solid #edf2f5}
+.security-event-main{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.security-event-main strong{color:#174d39}
+.security-event-main small{color:#71877c;white-space:nowrap}
+.security-device-details{margin-top:8px;border:1px solid #e2ebe5;border-radius:9px;background:#fbfdfb;overflow:hidden}
+.security-device-details>summary{cursor:pointer;list-style:none;padding:9px 11px!important;background:#f5f9f6!important;border-radius:8px!important;font-size:.86rem!important;line-height:1.4!important;color:#23664d!important}
+.security-device-details>summary::-webkit-details-marker{display:none}
+.security-device-details[open]>summary{border-bottom:1px solid #e2ebe5;border-radius:8px 8px 0 0!important}
+.security-device-value{padding:11px 12px;color:#405969;font-family:ui-monospace,Consolas,monospace;font-size:.82rem;line-height:1.65;overflow-wrap:anywhere;word-break:break-word;user-select:text}
 </style>
 </head>
 <body class="admin-page">
@@ -249,12 +273,10 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
     <button class="dashboard-menu-toggle" type="button" onclick="toggleDashboardSidebar()" aria-label="মেনু খুলুন"><i class="fas fa-bars"></i> মেনু</button>
     <h1 id="dashboardHeading"><i class="fas fa-user-circle"></i> আমার ড্যাশবোর্ড</h1>
     <div id="dashboardClock" class="dashboard-clock" aria-live="off"><strong id="clockTime">--:--:--</strong><small id="clockDate">তারিখ লোড হচ্ছে...</small></div>
-    <a class="btn btn-secondary" href="index.html" style="padding:.5rem 1rem;font-size:.9rem;text-decoration:none">
-      <i class="fas fa-home"></i> মূল পেজ
-    </a>
-    <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
+    <div class="header-actions">
+      <a class="header-action-link" href="index.html"><i class="fas fa-home"></i> মূল পেজ</a>
       <div id="adminNotificationWrap" class="admin-notification-wrap hidden">
-        <button id="adminNotificationBell" class="admin-notification-bell" type="button" onclick="toggleAdminNotificationPanel()" aria-haspopup="true" aria-expanded="false" aria-controls="adminNotificationPanel" title="পেন্ডিং নোটিফিকেশন">
+        <button id="adminNotificationBell" class="admin-notification-bell header-action-button" type="button" onclick="toggleAdminNotificationPanel()" aria-haspopup="true" aria-expanded="false" aria-controls="adminNotificationPanel" title="পেন্ডিং নোটিফিকেশন">
           <i class="fas fa-bell bell-icon"></i><span>নোটিফিকেশন</span><span id="adminNotificationCount" class="admin-notification-count" hidden>0</span>
         </button>
         <div id="adminNotificationPanel" class="admin-notification-panel" hidden role="dialog" aria-label="পেন্ডিং নোটিফিকেশন">
@@ -263,10 +285,8 @@ input:focus,select:focus,textarea:focus{border-color:#b9954d;box-shadow:0 0 0 3p
           <div id="adminNotificationUpdated" class="admin-notification-foot"></div>
         </div>
       </div>
-      <span id="roleChip" class="role-chip hidden"></span><span id="userInfo" style="font-size:.9rem;color:#45748a"></span>
-      <button class="btn btn-secondary" onclick="RH.logout()" style="padding:.5rem 1rem;font-size:.9rem">
-        <i class="fas fa-sign-out-alt"></i> লগআউট
-      </button>
+      <span id="roleChip" class="role-chip header-role-chip hidden"></span><span id="userInfo" style="font-size:.9rem;color:#45748a"></span>
+      <button class="header-action-button header-logout" onclick="RH.logout()"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
     </div>
   </div>
 
@@ -552,7 +572,7 @@ async function loadAdminSummary(){
   if(pageName==='admin-panel.html' && currentRole==='member'){location.replace('member.html');return;}
   document.body.classList.toggle('member-page',pageName==='member.html');
   document.body.classList.toggle('admin-page',pageName==='admin-panel.html');
-  await recordSecurityEventOnce('login', {device: navigator.userAgent.slice(0,240)});
+  await recordSecurityEventOnce('login', {device: navigator.userAgent});
 
   if (currentRole === 'member') {
     try { await sb.rpc('expire_old_access_requests'); } catch (e) { console.warn(e); }
@@ -707,7 +727,7 @@ async function loadSecurityHistory(){
   if(error){el.innerHTML='<div class="muted-small">নিরাপত্তা ইতিহাস দেখাতে SQL সেটআপ প্রয়োজন।</div>';return;}
   if(!data?.length){el.innerHTML='<div class="muted-small">এখনো কোনো নিরাপত্তা কার্যক্রম নেই।</div>';return;}
   const labels={login:'লগইন',password_changed:'পাসওয়ার্ড পরিবর্তন'};
-  el.innerHTML=data.map(x=>`<div class="perm-row"><div><strong>${labels[x.event_type]||RH.esc(x.event_type)}</strong><div class="muted-small">${x.details?.device?RH.esc(x.details.device.slice(0,95))+'…':''}</div></div><small>${RH.fmtDate(x.created_at)}</small></div>`).join('');
+  el.innerHTML=data.map(x=>{const device=String(x.details?.device||'');return `<div class="security-event-row"><div class="security-event-main"><strong>${labels[x.event_type]||RH.esc(x.event_type)}</strong><small>${RH.fmtDate(x.created_at)}</small></div>${device?`<details class="security-device-details"><summary><i class="fas fa-laptop"></i> ডিভাইস/ব্রাউজারের বিস্তারিত দেখুন</summary><div class="security-device-value">${RH.esc(device)}</div></details>`:''}</div>`;}).join('');
 }
 
 async function changeMemberPassword(){
